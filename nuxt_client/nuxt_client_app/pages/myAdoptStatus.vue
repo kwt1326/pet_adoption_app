@@ -1,11 +1,12 @@
 <template>
-  <div class="container" />
+  <section class="container">
+    myAdoptStatus
+  </section>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  name: 'IndexPage',
-  layout: 'default',
+
 }
 </script>
 

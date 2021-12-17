@@ -1,11 +1,13 @@
 <template>
-  <div class="container" />
+  <section class="container">
+    Company List
+  </section>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  name: 'IndexPage',
-  layout: 'default',
+  name: 'CompanyList',
+  layout: 'listLayout',
 }
 </script>
 

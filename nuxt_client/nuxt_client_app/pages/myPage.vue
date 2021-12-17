@@ -1,11 +1,12 @@
 <template>
-  <div class="container" />
+  <section class="container">
+    My Page
+  </section>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'IndexPage',
-  layout: 'default',
+  name: 'MyPage',
 }
 </script>
 
