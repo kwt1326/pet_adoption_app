@@ -1,22 +1,26 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { CoreEntity } from 'src/common/entities/core.entity';
+import { CoreEntity } from 'src/entities/common/core.entity';
 import { Column, Entity } from 'typeorm';
 
-type UserRole = 'client' | 'owner' | 'delivery';
+type UserType = 'ADOPT_USER' | 'ADOPTEE_USER';
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
-  @Column()
+  @Column({ update: false })
   @Field(() => String)
   email: string;
 
-  @Column()
+  @Column({ nullable: false })
   @Field(() => String)
   password: string;
 
-  @Column()
+  @Column({ nullable: false })
   @Field(() => String)
-  role: UserRole;
+  userType: UserType;
+
+  @Column({ default: false })
+  @Field(() => Boolean)
+  isAvailable: boolean;
 }
