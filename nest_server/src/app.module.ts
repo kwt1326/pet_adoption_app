@@ -3,9 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { CommonModule } from './common/common.module';
-import { User } from './user/entities/user.entity';
+import modules from './modules';
+import entities from './entities';
 
 @Module({
   imports: [
@@ -35,10 +34,9 @@ import { User } from './user/entities/user.entity';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities,
     }),
-    UserModule,
-    CommonModule,
+    ...modules,
   ],
   controllers: [],
   providers: [],

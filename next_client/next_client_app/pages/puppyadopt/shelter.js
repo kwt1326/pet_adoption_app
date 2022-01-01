@@ -2,7 +2,9 @@ import React from "react";
 import PetShopLayout from "../../components/PetShopLayout";
 
 function shelter(props) {
-  return <PetShopLayout category="shelter"></PetShopLayout>;
+  return (
+    <PetShopLayout category="shelter"/>
+  )
 }
 
 export default shelter;
