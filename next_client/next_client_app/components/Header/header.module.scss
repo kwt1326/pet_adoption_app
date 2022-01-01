@@ -1,0 +1,23 @@
+.header {
+  padding: 5px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .logo {
+    width: 45%;
+    img {
+      width: 100%;
+    }
+  }
+}
+.hamberger {
+  span {
+    width: 30px;
+    border: 1px solid #333;
+    margin-top: 8px;
+    display: block;
+    &:first-child {
+      margin: 0;
+    }
+  }
+}
