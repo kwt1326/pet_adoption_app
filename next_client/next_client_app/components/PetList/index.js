@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import PetListItem from "./PetListItem";
+import PetListItem from "../PetListItem";
 import style from "./PetList.module.scss";
 import axios from "axios";
 
@@ -46,11 +46,11 @@ function PetList({ category }) {
       }
     }
   }, [loading]);
-  
+
   if (!petlist) {
     return null;
   }
-  
+
   const loadMore = () => {
     setPage((prev) => prev + 1);
   };

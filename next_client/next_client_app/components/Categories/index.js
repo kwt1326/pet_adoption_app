@@ -23,15 +23,9 @@ const categories = [
 function Categories({ category, onSelect }) {
   return (
     <div className={styles.CategoryBlock}>
-      {categories.map((c) => (
-        <Link href={`/puppyadopt/${c.link}`}>
-          <div
-            className={`${styles.CategoryItem} ${
-              category === c.name ? `${styles.active}` : ""
-            }`}
-            key={c.name}
-            onClick={() => onSelect(c.name)}
-          >
+      {categories.map((c, index) => (
+        <Link href={`/puppyadopt/${c.link}`} key={index}>
+          <div className={`${styles.CategoryItem} ${category === c.name ? `${styles.active}` : ""}`} key={c.name} onClick={() => onSelect(c.name)}>
             <a>{c.text}</a>
           </div>
         </Link>
