@@ -12,9 +12,8 @@ function PetList({ category }) {
 
   const fetchData = async (page) => {
     try {
-      const res = await axios.get(`${category}/${page}`);
-      console.log(res)
-      setPetlist((petlist) => [...petlist, ...res.data.data]);
+      const res = await axios.get(`/api/list?category=${category}&page=${page}`);
+      setPetlist((petlist) => [...petlist, ...res.data.list]);
       setLoading(true);
     } catch (e) {
       console.error(e);
