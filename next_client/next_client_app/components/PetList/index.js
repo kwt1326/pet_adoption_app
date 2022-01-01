@@ -12,7 +12,9 @@ function PetList({ category }) {
 
   const fetchData = async (page) => {
     try {
-      const res = await axios.get(`/api/list?category=${category}&page=${page}`);
+      const res = await axios.get(
+        `/api/list?category=${category}&page=${page}`
+      );
       setPetlist((petlist) => [...petlist, ...res.data.list]);
       setLoading(true);
     } catch (e) {
@@ -59,13 +61,7 @@ function PetList({ category }) {
     <>
       <div className={style.PetList}>
         {petlist.map((petitem) => (
-          <PetListItem
-            petitem={petitem}
-            key={petitem.id}
-            onClick={() => {
-              petitem.islike = !petitem.islike;
-            }}
-          ></PetListItem>
+          <PetListItem petitem={petitem} key={petitem.id}></PetListItem>
         ))}
       </div>
       <button onClick={loadMore} ref={pageEnd}>
