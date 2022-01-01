@@ -1,0 +1,24 @@
+.PetListItem {
+  padding: 10px;
+  display: table;
+  margin: auto;
+  .PetListItemPrice {
+    color: red;
+  }
+  .PetListItemTitle {
+    font-weight: bold;
+  }
+  .PetListItemImage {
+    padding: 5px;
+    object-fit: cover;
+    .active {
+      color: red;
+    }
+  }
+  .PetListItemDescription {
+    font-size: small;
+  }
+  .PetListItemDate {
+    font-size: small;
+  }
+}
