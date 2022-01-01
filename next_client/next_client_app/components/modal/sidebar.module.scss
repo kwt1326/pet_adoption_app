@@ -1,0 +1,86 @@
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  section {
+    width: 75%;
+    height: 100%;
+    max-width: 450px;
+    background-color: #fff;
+    animation: sidebar-show 0.3s;
+    .userSection {
+      padding: 15px;
+      height: 100px;
+      background-color: #eee;
+      .login {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        span {
+          font-weight: 600;
+          font-size: 18px;
+          color: #333;
+        }
+        svg {
+          font-size: 26px;
+          color: #999;
+        }
+      }
+      .info {
+        & > span {
+          font-size: 12px;
+          color: #999;
+        }
+        & > div {
+          margin-top: 5px;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .menuList {
+      padding: 15px;
+      margin: 0;
+      & > li {
+        font-weight: 600;
+        padding: 10px 0;
+        &:first-child {
+          font-size: 18px;
+          color: #ff914d;
+        }
+        ul {
+          li {
+            padding: 15px 15px 0 15px;
+            font-weight: 300;
+          }
+        }
+      }
+    }
+  }
+}
+.modal.openSidebar {
+  display: flex;
+  animation: sidebar-bg-show 0.1s;
+}
+
+@keyframes sidebar-show {
+  from {
+    margin-left: -200px;
+  }
+  to {
+    margin-top: 0;
+  }
+}
+@keyframes sidebar-bg-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
