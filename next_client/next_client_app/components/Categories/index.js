@@ -1,5 +1,5 @@
 import React from "react";
-import s from "./Categories.module.scss";
+import styles from "./Categories.module.scss";
 import Link from "next/link";
 
 const categories = [
@@ -22,12 +22,12 @@ const categories = [
 
 function Categories({ category, onSelect }) {
   return (
-    <div className={s.CategoryBlock}>
+    <div className={styles.CategoryBlock}>
       {categories.map((c) => (
         <Link href={`/puppyadopt/${c.link}`}>
           <div
-            className={`${s.CategoryItem} ${
-              category === c.name ? `${s.active}` : ""
+            className={`${styles.CategoryItem} ${
+              category === c.name ? `${styles.active}` : ""
             }`}
             key={c.name}
             onClick={() => onSelect(c.name)}

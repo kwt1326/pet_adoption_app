@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
-import Categories from "./Categories";
-import PetList from "./PetList";
+import Categories from "../Categories";
+import PetList from "../PetList";
 
 function PetShopLayout({ category }) {
   const [category2, setCategory] = useState(category);

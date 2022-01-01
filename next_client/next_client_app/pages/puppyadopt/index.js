@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import PetShopLayout from "../../components/PetShopLayout";
 
-function index(props) {
-  return <PetShopLayout category="all"></PetShopLayout>;
+function puppyAdopt(props) {
+  return (
+    <PetShopLayout category="all" />
+  )
 }
 
-export default index;
+export default puppyAdopt;

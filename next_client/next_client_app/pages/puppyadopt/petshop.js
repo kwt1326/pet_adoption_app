@@ -1,8 +1,10 @@
 import React from "react";
 import PetShopLayout from "../../components/PetShopLayout";
-function petshop(props) {
-  return <PetShopLayout category="petshop"></PetShopLayout>;
+
+function petShop(props) {
+  return (
+    <PetShopLayout category="petshop" />
+  )
 }
 
-export default petshop;
-petshop;
+export default petShop;
