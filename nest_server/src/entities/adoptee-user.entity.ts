@@ -11,7 +11,7 @@ export class AdopteeUser extends CoreDateEntity {
   @OneToOne(() => User, { primary: true })
   @JoinColumn()
   @Field(() => User)
-  user: number;
+  user: User;
 
   @Column({ nullable: false })
   @Field(() => String)

@@ -8,6 +8,7 @@ module.exports = {
       resourceRegExp: /\.test.(js|ts|tsx)$/,
     }));
     config.plugins.push(new webpack.DefinePlugin({
+      'process.env.JWT_KEY': JSON.stringify('with-pet-jwt'),
       'process.env.PORT': JSON.stringify(process.env.PORT),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.NEXT_IS_SERVER': JSON.stringify(

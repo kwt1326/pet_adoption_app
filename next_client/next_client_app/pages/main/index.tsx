@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import styles from "../../styles/Main.module.scss";
-import Header from "../../components/Header/index";
-import Carousel from "./carousel";
-import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
-import {useRouter} from 'next/router';
-import PetListItem from "../../components/PetListItem";
-import petstyles from "../../components/PetList/PetList.module.scss";
+import { useLazyQuery } from "@apollo/client";
+import { useRouter } from 'next/router';
 import axios from "axios";
+import cookie from 'js-cookie';
+import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
+import Carousel from "./carousel";
+import Header from "../../components/Header/index";
+import PetListItem from "../../components/PetList/PetListItem";
+import { LOGIN_QUERY } from '../../quries/authQuery';
+
+import petstyles from "../../components/PetList/PetList.module.scss";
+import styles from "../../styles/Main.module.scss";
+
 const Main = () => {
 
   const [petlist, setPetlist] = useState([]);
   const [list, setList] = useState([]);
   const router = useRouter();
+
+  const [loginQuery, { data: token }] = useLazyQuery(LOGIN_QUERY);
+  
   const fetchData = async () => {
     try {
       const res = await axios.get(
@@ -25,17 +32,33 @@ const Main = () => {
     }
   };
 
- 
+  const loginFunc = async () => {
+    const response = await loginQuery({
+      variables: {
+        input: {
+          email: "tester@unknowncompany.com",
+          password: "dqwjklw@123132"
+        }
+      }
+    });
+
+    const responseData = response?.data?.login;
+    if (responseData) {
+      cookie.set(process.env.JWT_KEY, responseData.result);
+    }
+    console.log("RESPONSE", response, token);
+  }
 
   useEffect(() => {
-     fetchData() ;
+    // fetchData();
+    loginFunc();
   }, []);
 
-  useEffect (()=> {
-  const temp = petlist.slice(0,6);
-  setList(temp);
+  useEffect(() => {
+    const temp = petlist.slice(0, 6);
+    setList(temp);
   }, [petlist]);
-  
+
   return (
     <div>
       <Header children={""} />

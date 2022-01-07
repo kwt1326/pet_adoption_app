@@ -12,14 +12,14 @@ import { User, UserType } from '../../../entities/user.entity';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
 export interface CreateAccountUserInput {
-  email: string,
-  password: string,
-  userType: UserType,
+  email: string;
+  password: string;
+  userType: UserType;
 }
 
 export interface ErrorOutput {
-  statusCode: number
-  message: string
+  statusCode: number;
+  message: string;
 }
 
 @InputType()
@@ -37,7 +37,7 @@ export class CreateAccountAdoptUserInput extends IntersectionType(
     'updatedAt',
     'isAuthenticated',
     'authenticatedAt',
-  ]),
+  ] as const),
   PickType(User, ['email', 'password'] as const),
 ) {}
 
@@ -55,9 +55,10 @@ export class CreateAccountOutput {
     This JSON Object consists of 'statusCode' and 'message'
     - statusCode : Error Status code number
     - message : Error message
-    `})
+    `,
+  })
   error?: ErrorOutput;
 
-  @Field(() => String, { nullable: true})
-  data?: String;
+  @Field(() => String, { nullable: true })
+  data?: string;
 }

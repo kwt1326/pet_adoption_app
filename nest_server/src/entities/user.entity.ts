@@ -12,7 +12,7 @@ export enum UserType {
 @Entity()
 @Unique(['email'])
 export class User extends CoreEntity {
-  @Column({ update: false })
+  @Column({ update: false, unique: true })
   @Field(() => String)
   email: string;
 
@@ -21,10 +21,10 @@ export class User extends CoreEntity {
   password: string;
 
   @Column({ nullable: false })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   userType: UserType;
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   isAvailable: boolean;
 }

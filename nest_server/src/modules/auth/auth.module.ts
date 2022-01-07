@@ -10,7 +10,7 @@ import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt'}),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -18,11 +18,11 @@ import { JwtStrategy } from './jwt.strategy';
         signOptions: {
           expiresIn: '1d',
         },
-      })
+      }),
     }),
     TypeOrmModule.forFeature([UserRepository]),
   ],
   providers: [AuthResolver, AuthService, JwtStrategy],
-  exports: [JwtStrategy, AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

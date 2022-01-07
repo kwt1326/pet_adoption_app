@@ -12,12 +12,12 @@ import { Pets } from './pets.entity';
 export class AdoptionPost extends CoreEntity {
   @ManyToOne(() => AdoptUser)
   @JoinColumn()
-  @Field(() => AdoptUser)
+  @Field(() => AdoptUser, { nullable: true })
   writter: AdoptUser;
 
   @OneToOne(() => Pets)
   @JoinColumn()
-  @Field(() => Pets)
+  @Field(() => Pets, { nullable: true })
   pet: Pets;
 
   @Column()

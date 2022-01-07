@@ -5,8 +5,6 @@ import Link from "next/link";
 
 const Sidebar = (props) => {
   const { open, close } = props;
-  console.log(open);
-  console.log(close);
   return (
     <div className={open ? `${styles.modal} ${styles.openSidebar}` : styles.modal}>
       {open ? (

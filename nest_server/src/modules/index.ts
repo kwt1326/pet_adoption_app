@@ -5,7 +5,6 @@ import { AdoptReviewModule } from './adopt-review/adopt-review.module';
 import { BannerModule } from './banner/banner.module';
 import { AuthModule } from './auth/auth.module';
 
-
 export default [
   UserModule,
   PetModule,
