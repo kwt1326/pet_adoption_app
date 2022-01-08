@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./sidebar.module.scss";
 import { IoCloseOutline } from "react-icons/io5";
+import Link from "next/link";
 
 const Sidebar = (props) => {
   const { open, close } = props;
@@ -12,13 +13,23 @@ const Sidebar = (props) => {
         <section>
           <div className={styles.userSection}>
             <div className={styles.login}>
-              <span>로그인하기</span>
+              <Link href="login/login">
+                <a>
+                  <span>로그인하기</span>
+                </a>
+              </Link>
               <IoCloseOutline onClick={close} />
             </div>
             <div className={styles.info}>
               <span>회원가입 후 다양한 서비스를 이용해보세요</span>
               <div>
-                <span>개인회원가입</span> / <span>업체회원가입</span>
+                <Link href="signIn/personalSignIn">
+                  <a>개인 회원가입</a>
+                </Link>
+                <span>/</span>
+                <Link href="signIn/corpSignIn">
+                  <a>업체 회원가입</a>
+                </Link>
               </div>
             </div>
           </div>
