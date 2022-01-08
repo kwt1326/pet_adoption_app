@@ -8,7 +8,19 @@ import {
 } from '@nestjs/graphql';
 import { AdopteeUser } from '../../../entities/adoptee-user.entity';
 import { AdoptUser } from '../../../entities/adopt-user.entity';
-import { User } from '../../../entities/user.entity';
+import { User, UserType } from '../../../entities/user.entity';
+import { GraphQLJSONObject } from 'graphql-type-json';
+
+export interface CreateAccountUserInput {
+  email: string,
+  password: string,
+  userType: UserType,
+}
+
+export interface ErrorOutput {
+  statusCode: number
+  message: string
+}
 
 @InputType()
 export class CreateAccountAdopteeUserInput extends IntersectionType(
@@ -23,6 +35,7 @@ export class CreateAccountAdoptUserInput extends IntersectionType(
     'createdAt',
     'removedAt',
     'updatedAt',
+    'isAuthenticated',
     'authenticatedAt',
   ]),
   PickType(User, ['email', 'password'] as const),
@@ -36,9 +49,15 @@ export class CreateAccountAdminUserInput extends IntersectionType(
 
 @ObjectType()
 export class CreateAccountOutput {
-  @Field(() => String, { nullable: true })
-  error?: string;
+  @Field(() => GraphQLJSONObject, {
+    nullable: true,
+    description: `
+    This JSON Object consists of 'statusCode' and 'message'
+    - statusCode : Error Status code number
+    - message : Error message
+    `})
+  error?: ErrorOutput;
 
-  @Field(() => Boolean)
-  result: boolean;
+  @Field(() => String, { nullable: true})
+  data?: String;
 }

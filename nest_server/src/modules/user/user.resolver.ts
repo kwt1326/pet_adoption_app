@@ -18,9 +18,16 @@ export class UserResolver {
   }
 
   @Mutation(() => CreateAccountOutput)
-  createAccount(
+  createAdopteeAccount(
+    @Args('input') createAccountInput: CreateAccountAdopteeUserInput,
+  ) {
+    return this.userService.createAdopteeAccount(createAccountInput);
+  }
+
+  @Mutation(() => CreateAccountOutput)
+  createAdoptAccount(
     @Args('input') createAccountInput: CreateAccountAdoptUserInput,
   ) {
-    return;
+    return this.userService.createAdoptAccount(createAccountInput);
   }
 }
