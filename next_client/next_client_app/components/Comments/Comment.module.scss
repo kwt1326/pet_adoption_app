@@ -1,0 +1,48 @@
+.replyTitle {
+  margin: 10px;
+  font-size: large;
+}
+.formLayout {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  .nickname {
+    display: flex;
+    margin-bottom: 5px;
+
+    .nicknameText {
+      width: 60%;
+      border-radius: 5px;
+      background-color: #dedede;
+      border: none;
+      &::placeholder {
+        color: #999999;
+        padding-left: 10px;
+        padding-top: 10px;
+      }
+    }
+  }
+  .commentLayout {
+    display: flex;
+    .comment {
+      width: 85%;
+      border-radius: 5px;
+
+      flex: 1;
+      background-color: #dedede;
+      border: none;
+      &::placeholder {
+        color: #999999;
+        padding-left: 10px;
+        padding-top: 10px;
+      }
+    }
+    .button {
+      border-radius: 5px;
+      border: none;
+      margin: 3px;
+      background-color: #00aaff;
+      color: white;
+    }
+  }
+}

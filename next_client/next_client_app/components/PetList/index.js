@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import PetListItem from "./PetListItem";
+import PetListItem from "../PetListItem";
 import style from "./PetList.module.scss";
 import axios from "axios";
 
@@ -12,8 +12,10 @@ function PetList({ category }) {
 
   const fetchData = async (page) => {
     try {
-      const res = await axios.get(`http://localhost:3001/${category}/${page}`);
-      setPetlist((petlist) => [...petlist, ...res.data.data]);
+      const res = await axios.get(
+        `/api/list?category=${category}&page=${page}`
+      );
+      setPetlist((petlist) => [...petlist, ...res.data.list]);
       setLoading(true);
     } catch (e) {
       console.error(e);
@@ -46,11 +48,11 @@ function PetList({ category }) {
       }
     }
   }, [loading]);
-  
+
   if (!petlist) {
     return null;
   }
-  
+
   const loadMore = () => {
     setPage((prev) => prev + 1);
   };
@@ -59,13 +61,7 @@ function PetList({ category }) {
     <>
       <div className={style.PetList}>
         {petlist.map((petitem) => (
-          <PetListItem
-            petitem={petitem}
-            key={petitem.id}
-            onClick={() => {
-              petitem.islike = !petitem.islike;
-            }}
-          ></PetListItem>
+          <PetListItem petitem={petitem} key={petitem.id}></PetListItem>
         ))}
       </div>
       <button onClick={loadMore} ref={pageEnd}>

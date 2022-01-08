@@ -1,0 +1,15 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  .writer {
+    font-weight: bold;
+    font-size: medium;
+  }
+  .content {
+    font-size: small;
+  }
+  .reply {
+    font-size: xx-small;
+  }
+}
