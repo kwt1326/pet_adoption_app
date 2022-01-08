@@ -3,7 +3,7 @@ import styles from "./header.module.scss";
 import { FaHome } from "react-icons/fa";
 import Sidebar from "../../components/modal/sidebar.js";
 
-const Header = () => {
+const Header = ({children}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
     setModalOpen(true);
@@ -21,11 +21,15 @@ const Header = () => {
             <span></span>
           </div>
         </div>
+       
         <Sidebar open={modalOpen} close={closeModal}></Sidebar>
-        <div className={styles.title}>
+        {children && <div className={styles.title}> {children} </div>}
+        {!children && 
+        <div className={styles.logo}>
           <img src="images/logo.png"></img>
-        </div>
-        <FaHome size="1.8em" color="#555" className={styles.homeIcon} />
+        </div>}
+        <FaHome size="1.8em" color="#555" />
+      
       </div>
       <div></div>
       <div></div>
