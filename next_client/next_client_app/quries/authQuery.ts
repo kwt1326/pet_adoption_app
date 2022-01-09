@@ -8,3 +8,5 @@ export const LOGIN_QUERY = gql`
     }
   }
 `
+
+export const SIGN_UP_QUERY = gql``
