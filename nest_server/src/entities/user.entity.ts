@@ -10,7 +10,6 @@ export enum UserType {
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
-@Unique(['email'])
 export class User extends CoreEntity {
   @Column({ update: false, unique: true })
   @Field(() => String)

@@ -14,6 +14,9 @@ import {
 } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from '../auth/auth.service';
+import { AdopteeUser } from 'src/entities/adoptee-user.entity';
+import { AdoptUser } from 'src/entities/adopt-user.entity';
+import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -31,6 +34,11 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
+  async hashingPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    return await bcrypt.hash(password, salt);
+  }
+
   async createUserAccount(
     createAccountInput:
       | CreateAccountAdoptUserInput
@@ -45,8 +53,7 @@ export class UserService {
       throw new ConflictException('Existing Email');
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await this.hashingPassword(password);
     const createUserInput: CreateAccountUserInput = {
       email,
       password: hashedPassword,
@@ -98,7 +105,6 @@ export class UserService {
         await this.authService.login({ email, password })
       )?.result?.token;
     } catch (error) {
-      console.error(error);
       result.error = {
         statusCode: error.response.statusCode,
         message: error.message,
@@ -108,7 +114,49 @@ export class UserService {
     return result;
   }
 
-  async findOne(id: number) {
-    return await this.adoptUserRepository.findOne(id);
+  async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
+    return this.adopteeUserRepository.getOneAdopteeUserById(id);
+  }
+
+  async getAllAdopteeUser(): Promise<AdopteeUser[]> {
+    return this.adopteeUserRepository.getAllAdopteeUser();
+  }
+
+  async getOneAdoptUser(id: number): Promise<AdoptUser> {
+    return this.adoptUserRepository.getOneAdoptUserById(id);
+  }
+
+  async getAllAdoptUser(): Promise<AdoptUser[]> {
+    return this.adoptUserRepository.getAllAdoptUser();
+  }
+
+  async deleteOneUser(id: number) {
+    const result = await this.userRepository.deleteOneUserById(id);
+    console.log(result)
+    return result.affected ? true : false;
+  }
+
+  async updateAdopteeUser(updateInput: UpdateAdopteeUserInput) {
+    const { id, user: userInput, ...adopteeInput } = updateInput;
+    const adopteeUser: AdopteeUser = await this.adopteeUserRepository.getOneAdopteeUserById(id);
+
+    if (userInput?.password){
+      userInput.password = await this.hashingPassword(userInput.password)
+    }
+    adopteeUser.user = { ...adopteeUser.user, ...userInput };
+    const updatedUser: AdopteeUser = await this.adopteeUserRepository.save({...adopteeUser, ...adopteeInput});
+    return updatedUser
+  }
+
+  async updateAdoptUser(updateInput: UpdateAdoptUserInput) {
+    const { id, user: userInput, ...adoptInput } = updateInput;
+    const adoptUser: AdoptUser = await this.adoptUserRepository.getOneAdoptUserById(id);
+
+    if (userInput?.password){
+      userInput.password = await this.hashingPassword(userInput.password)
+    }
+    adoptUser.user = { ...adoptUser.user, ...userInput };
+    const updatedUser: AdoptUser = await this.adoptUserRepository.save({...adoptUser, ...adoptInput});
+    return updatedUser
   }
 }

@@ -1,7 +1,8 @@
+import { BadRequestException } from '@nestjs/common';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { User } from 'src/entities/user.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, getConnection, Repository } from 'typeorm';
 import {
   CreateAccountAdopteeUserInput,
   CreateAccountAdoptUserInput,
@@ -10,6 +11,7 @@ import {
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+
   async findOneByEmail(email: string): Promise<User> {
     return await this.findOne({ email });
   }
@@ -17,6 +19,16 @@ export class UserRepository extends Repository<User> {
   async createUser(createAccountInput: CreateAccountUserInput): Promise<User> {
     const user = await this.create({ ...createAccountInput });
     return await this.save(user);
+  }
+
+  async deleteOneUserById(id: number) {
+    const result = await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(User)
+      .where("id = :id", { id })
+      .execute();
+    return result;
   }
 }
 
@@ -29,6 +41,29 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
     const adopteeUser = this.create({ user, ...createAccountInput });
     await this.save(adopteeUser);
   }
+
+  async getOneAdopteeUserById(
+    id: number
+  ): Promise<AdopteeUser> {
+    const user = await this
+      .createQueryBuilder('adopteeUser')
+      .leftJoinAndSelect('adopteeUser.user', 'user')
+      .where('adopteeUser.userId = :id', { id })
+      .getOne();
+
+    if (!user) {
+      throw new BadRequestException(`The user with (id:${id}) isn't AdopteeUser`)
+    }
+    return user;
+  }
+
+  async getAllAdopteeUser(): Promise<AdopteeUser[]>{
+    const allUsers = await this
+      .createQueryBuilder('adopteeUser')
+      .leftJoinAndSelect('adopteeUser.user', 'user')
+      .getMany();
+    return allUsers;
+  }
 }
 
 @EntityRepository(AdoptUser)
@@ -39,5 +74,28 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
   ): Promise<void> {
     const adoptUser = this.create({ user, ...createAccountInput });
     await this.save(adoptUser);
+  }
+
+  async getOneAdoptUserById(
+    id: number
+  ): Promise<AdoptUser> {
+    const user = await this
+      .createQueryBuilder('adoptUser')
+      .leftJoinAndSelect('adoptUser.user', 'user')
+      .where('adoptUser.userId = :id', { id })
+      .getOne();
+
+    if (!user) {
+      throw new BadRequestException(`The user with (id:${id}) isn't AdoptUser`)
+    }
+    return user;
+  }
+
+  async getAllAdoptUser(): Promise<AdoptUser[]>{
+    const allUsers = await this
+      .createQueryBuilder('adoptUser')
+      .leftJoinAndSelect('adoptUser.user', 'user')
+      .getMany();
+    return allUsers;
   }
 }

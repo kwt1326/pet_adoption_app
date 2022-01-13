@@ -8,7 +8,7 @@ import { User } from './user.entity';
 @Entity()
 export class AdoptUser extends CoreDateEntity {
   // PK ref User.id
-  @OneToOne(() => User, { primary: true, cascade: true })
+  @OneToOne(() => User, { primary: true, cascade: true, onDelete: 'CASCADE'})
   @JoinColumn()
   @Field(() => User, { nullable: true })
   user: User;

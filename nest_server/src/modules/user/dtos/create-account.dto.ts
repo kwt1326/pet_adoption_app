@@ -1,6 +1,7 @@
 import {
   Field,
   InputType,
+  Int,
   IntersectionType,
   ObjectType,
   OmitType,
@@ -9,17 +10,11 @@ import {
 import { AdopteeUser } from '../../../entities/adoptee-user.entity';
 import { AdoptUser } from '../../../entities/adopt-user.entity';
 import { User, UserType } from '../../../entities/user.entity';
-import { GraphQLJSONObject } from 'graphql-type-json';
 
 export interface CreateAccountUserInput {
   email: string;
   password: string;
   userType: UserType;
-}
-
-export interface ErrorOutput {
-  statusCode: number;
-  message: string;
 }
 
 @InputType()
@@ -47,18 +42,30 @@ export class CreateAccountAdminUserInput extends IntersectionType(
   PickType(User, ['email', 'password'] as const),
 ) {}
 
+
+@ObjectType()
+export class ErrorOutput {
+  @Field(() => Int, {
+    description: 'Error Status code number'
+  })
+  statusCode: number;
+
+  @Field(() => String, {
+    description: 'Error message'
+  })
+  message: string;
+}
+
 @ObjectType()
 export class CreateAccountOutput {
-  @Field(() => GraphQLJSONObject, {
+  @Field(() => ErrorOutput, {
     nullable: true,
-    description: `
-    This JSON Object consists of 'statusCode' and 'message'
-    - statusCode : Error Status code number
-    - message : Error message
-    `,
   })
   error?: ErrorOutput;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, {
+    nullable: true,
+    description: 'This is jwt-AccessToken'
+  })
   data?: string;
 }

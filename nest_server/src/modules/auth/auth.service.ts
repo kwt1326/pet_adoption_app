@@ -29,7 +29,7 @@ export class AuthService {
       const payload = { email, userType, isAvailable };
       const accessToken = await this.jwtService.sign(payload);
 
-      return RequestOutputObj(accessToken, 200);
+      return RequestOutputObj({ token: accessToken }, 200);
     } else {
       throw new UnauthorizedException('Login Failed');
     }
