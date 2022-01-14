@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req) => String(req.headers['x-jwt']),
+        (req) => String(req.headers['x-jwt']), // Authorization: Bearer 타입으로 수정해야 함
       ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,

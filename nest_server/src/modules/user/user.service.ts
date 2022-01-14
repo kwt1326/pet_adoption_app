@@ -30,7 +30,6 @@ export class UserService {
     @InjectRepository(AdoptUserRepository)
     private adoptUserRepository: AdoptUserRepository,
 
-    @Inject(AuthService)
     private authService: AuthService,
   ) {}
 
@@ -158,5 +157,12 @@ export class UserService {
     adoptUser.user = { ...adoptUser.user, ...userInput };
     const updatedUser: AdoptUser = await this.adoptUserRepository.save({...adoptUser, ...adoptInput});
     return updatedUser
+  }
+
+  async findAdoptUser(user: User) {
+    return await this.adoptUserRepository.findOne(user.id);
+  }
+  async findAdopteeUser(user: User) {
+    return await this.adopteeUserRepository.findOne(user.id);
   }
 }

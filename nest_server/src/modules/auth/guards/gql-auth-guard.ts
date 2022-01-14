@@ -8,7 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
-  handleRequest(err, user, info) {
+  handleRequest(err, user, _info) {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }

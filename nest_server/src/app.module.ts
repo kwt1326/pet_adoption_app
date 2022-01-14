@@ -23,7 +23,9 @@ import entities from './entities';
       }),
     }),
     GraphQLModule.forRoot({
+      playground: process.env.NODE_ENV !== 'production',
       autoSchemaFile: true,
+      // installSubscriptionHandlers: true,
       context: ({ req, connection }) => {
         // if apply global guard, get token from GqlExecutionContext
         const HEADER_TOKEN_KEY = 'x-jwt';

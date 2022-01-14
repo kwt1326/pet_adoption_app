@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
@@ -31,7 +31,7 @@ export enum PetType {
 @Entity()
 export class Pets extends CoreEntity {
   @ManyToOne(() => AdoptUser)
-  @JoinColumn()
+  @JoinColumn({ name: 'registrantId' })
   @Field(() => AdoptUser, { nullable: true })
   registrant: AdoptUser;
 

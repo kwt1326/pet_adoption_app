@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  RelationId,
+} from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from './common/core.entity';
 import { AdoptUser } from './adopt-user.entity';
@@ -11,11 +18,11 @@ import { Pets } from './pets.entity';
 @Entity()
 export class AdoptionPost extends CoreEntity {
   @ManyToOne(() => AdoptUser)
-  @JoinColumn()
+  @JoinColumn({ name: 'writterId' })
   @Field(() => AdoptUser, { nullable: true })
   writter: AdoptUser;
 
-  @OneToOne(() => Pets)
+  @OneToOne(() => Pets, (pet) => pet.id, { cascade: true })
   @JoinColumn()
   @Field(() => Pets, { nullable: true })
   pet: Pets;

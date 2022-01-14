@@ -8,8 +8,14 @@ import { AdoptUserPicture } from '../../entities/adopt-user-picture.entity';
 import { AuthenticateInfo } from '../../entities/authenticate-info.entity';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
-import { AdopteeUserRepository, AdoptUserRepository, UserRepository } from './user.repository';
+import {
+  AdopteeUserRepository,
+  AdoptUserRepository,
+  UserRepository,
+} from './user.repository';
 import { AuthModule } from '../auth/auth.module';
+import { AuthService } from '../auth/auth.service';
+import { JwtService } from '../auth/jwt.service';
 
 @Module({
   imports: [
@@ -26,9 +32,7 @@ import { AuthModule } from '../auth/auth.module';
     ]),
     AuthModule,
   ],
-  providers: [
-    UserService,
-    UserResolver,
-  ],
+  providers: [UserService, UserResolver, AuthService, JwtService],
+  exports: [UserService],
 })
 export class UserModule {}

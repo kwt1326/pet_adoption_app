@@ -5,6 +5,7 @@ import { Column, Entity, Unique } from 'typeorm';
 export enum UserType {
   ADOPT = 'ADOPT_USER',
   ADOPTEE = 'ADOPTEE_USER',
+  ADMIN = 'ADMIN',
 }
 
 @InputType({ isAbstract: true })

@@ -18,4 +18,7 @@ export class CreateAdoptionPostArgs extends IntersectionType(
 export class CreateAdoptionPostOutput {
   @Field(() => Boolean)
   result: boolean;
+
+  @Field(() => Number)
+  id: number;
 }

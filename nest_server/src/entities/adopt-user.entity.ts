@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreDateEntity } from 'src/entities/common/core.entity';
 import { User } from './user.entity';
@@ -8,10 +8,14 @@ import { User } from './user.entity';
 @Entity()
 export class AdoptUser extends CoreDateEntity {
   // PK ref User.id
-  @OneToOne(() => User, { primary: true, cascade: true, onDelete: 'CASCADE'})
-  @JoinColumn()
+  @OneToOne(() => User, { primary: true, cascade: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
   @Field(() => User, { nullable: true })
   user: User;
+
+  // PK ref User.id
+  @PrimaryColumn()
+  userId: number;
 
   @Column({ nullable: false })
   @Field(() => String, { nullable: true })
