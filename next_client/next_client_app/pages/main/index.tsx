@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import axios from "axios";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 import Carousel from "./carousel";
@@ -8,48 +8,19 @@ import PetListItem from "../../components/PetList/PetListItem";
 import petstyles from "../../components/PetList/PetList.module.scss";
 import styles from "../../styles/Main.module.scss";
 
-// import cookie from 'js-cookie';
-// import { useLazyQuery } from "@apollo/client";
-// import { LOGIN_QUERY } from '../../quries/authQuery';
-
 const Main = () => {
-
   const [petlist, setPetlist] = useState([]);
   const [list, setList] = useState([]);
   const router = useRouter();
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(
-        `/api/list?category=all&page=1`
-      );
+      const res = await axios.get(`/api/list?category=all&page=1`);
       setPetlist((petlist) => [...petlist, ...res.data.list]);
-    
     } catch (e) {
       console.error(e);
     }
   };
-
-  // const [loginQuery, { data: token }] = useLazyQuery(LOGIN_QUERY);
-
-  // GraphQL / LOGIN QUERY
-  //
-  // const loginFunc = async () => {
-  //   const response = await loginQuery({
-  //     variables: {
-  //       input: {
-  //         email: "tester@unknowncompany.com",
-  //         password: "dqwjklw@123132"
-  //       }
-  //     }
-  //   });
-
-  //   const responseData = response?.data?.login;
-  //   if (responseData) {
-  //     cookie.set(process.env.JWT_KEY, responseData.result);
-  //   }
-  //   console.log("RESPONSE", response, token);
-  // }
 
   useEffect(() => {
     fetchData();
@@ -95,22 +66,14 @@ const Main = () => {
       </ul>
       <div className={styles.contentBox}>
         <h4>최신 강아지 분양글</h4>
-        <div className={petstyles.PetList}>
-        {  list && list.map((petitem) => (
-         <PetListItem petitem={petitem} key={petitem.id}></PetListItem>)
-        )}
-      </div>
-        <div className={styles.btnBox}>     
-          <button onClick={()=>router.push('./puppyadopt')} >더 많은 강아지 보러가기 &#62;</button>
+        <div className={petstyles.PetList}>{list && list.map((petitem) => <PetListItem petitem={petitem} key={petitem.id}></PetListItem>)}</div>
+        <div className={styles.btnBox}>
+          <button onClick={() => router.push("./puppyadopt")}>더 많은 강아지 보러가기 &#62;</button>
         </div>
         <h4>최신 고양이 분양글</h4>
-        <div className={petstyles.PetList}>
-        {list && list.map((petitem) => (
-         <PetListItem petitem={petitem} key={petitem.id}></PetListItem>)
-        )}
-      </div>
-          <div className={styles.btnBox}>
-          <button onClick={()=>router.push('./puppyadopt')}>더 많은 고양이 보러가기 &#62;</button>
+        <div className={petstyles.PetList}>{list && list.map((petitem) => <PetListItem petitem={petitem} key={petitem.id}></PetListItem>)}</div>
+        <div className={styles.btnBox}>
+          <button onClick={() => router.push("./puppyadopt")}>더 많은 고양이 보러가기 &#62;</button>
         </div>
       </div>
     </div>

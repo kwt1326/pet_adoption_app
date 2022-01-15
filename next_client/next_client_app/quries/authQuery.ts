@@ -7,6 +7,16 @@ export const LOGIN_QUERY = gql`
       statusCode
     }
   }
-`
+`;
 
-export const SIGN_UP_QUERY = gql``
+export const SIGN_UP_QUERY = gql`
+  mutation createAdopteeAccount($input: CreateAccountAdopteeUserInput!) {
+    createAdopteeAccount(input: $input) {
+      error {
+        statusCode
+        message
+      }
+      data
+    }
+  }
+`;
