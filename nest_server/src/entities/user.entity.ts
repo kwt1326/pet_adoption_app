@@ -24,7 +24,7 @@ export class User extends CoreEntity {
   @Field(() => String, { nullable: true })
   userType: UserType;
 
-  @Column({ default: false })
+  @Column({ default: true })
   @Field(() => Boolean, { nullable: true })
   isAvailable: boolean;
 }

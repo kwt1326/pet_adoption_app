@@ -26,9 +26,9 @@ export class AdoptionPostResolver {
     @Args('postArgs') postArgs: CreateAdoptionPostArgs,
   ): Promise<CreateAdoptionPostOutput> {
     if (user && user.userType === UserType.ADOPT) {
-      if (!user.isAvailable) {
+      /*  if (!user.isAvailable) {
         throw new HttpException('Not available User', 401);
-      }
+      }*/
       const adoptUser = await this.userService.findAdoptUser(user);
       if (adoptUser) {
         return await this.adoptionPostService.createAdoptionPost(

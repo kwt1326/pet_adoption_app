@@ -4,12 +4,20 @@ import styles from "./PetListItem.module.scss";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 function PetListItem({ petitem }) {
-  const { text, kind, islike, price, description, date, img } = petitem;
-  const imgsrc = `/${img}.jpg`;
+  console.log(petitem);
+  // const text = petitem.title;
+  // const description = petitem.content;
+  // const petinfo = petitem.pet;
+  // const kind = petinfo.type;
+  // const price = petinfo.price;
 
-  return (
-    <div className={styles.PetListItem}>
-      <div className={styles.PetListItemImage}>
+  return <div className={styles.PetListItem}></div>;
+}
+
+export default PetListItem;
+
+/*
+<div className={styles.PetListItemImage}>
         <Image src={imgsrc} alt="Vercel Logo" width={150} height={100} />
         <div className={` ${islike === true ? `${styles.active}` : ""}`}>
           <AiFillHeart></AiFillHeart>
@@ -22,8 +30,4 @@ function PetListItem({ petitem }) {
         <div className={styles.PetListItemDescription}>{description}</div>
         <div className={styles.PetListItemDate}>{date}</div>
       </div>
-    </div>
-  );
-}
-
-export default PetListItem;
+*/
