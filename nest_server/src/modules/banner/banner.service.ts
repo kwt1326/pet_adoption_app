@@ -38,6 +38,6 @@ export class BannerService {
   }
 
   async getBanners(): Promise<Banner[]> {
-    return await this.bannerRepository.find({});
+    return await this.bannerRepository.find({ relations: ['content'] });
   }
 }
