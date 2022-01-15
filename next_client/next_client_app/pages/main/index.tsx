@@ -8,10 +8,6 @@ import PetListItem from "../../components/PetList/PetListItem";
 import petstyles from "../../components/PetList/PetList.module.scss";
 import styles from "../../styles/Main.module.scss";
 
-// import cookie from 'js-cookie';
-// import { useLazyQuery } from "@apollo/client";
-// import { LOGIN_QUERY } from '../../quries/authQuery';
-
 const Main = () => {
   const [petlist, setPetlist] = useState([]);
   const [list, setList] = useState([]);
@@ -25,27 +21,6 @@ const Main = () => {
       console.error(e);
     }
   };
-
-  // const [loginQuery, { data: token }] = useLazyQuery(LOGIN_QUERY);
-
-  // GraphQL / LOGIN QUERY
-  //
-  // const loginFunc = async () => {
-  //   const response = await loginQuery({
-  //     variables: {
-  //       input: {
-  //         email: "tester@unknowncompany.com",
-  //         password: "dqwjklw@123132"
-  //       }
-  //     }
-  //   });
-
-  //   const responseData = response?.data?.login;
-  //   if (responseData) {
-  //     cookie.set(process.env.JWT_KEY, responseData.result);
-  //   }
-  //   console.log("RESPONSE", response, token);
-  // }
 
   useEffect(() => {
     fetchData();

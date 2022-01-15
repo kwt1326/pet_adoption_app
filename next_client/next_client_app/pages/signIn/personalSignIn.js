@@ -17,8 +17,8 @@ function personalSignIn() {
   const onChange = (e) => {
     const { value, name } = e.target;
     setInputs({
-      ...inputs, // 기존의 input 객체를 복사한 뒤
-      [name]: value, // name 키를 가진 값을 value 로 설정
+      ...inputs,
+      [name]: value,
     });
   };
 
@@ -27,17 +27,13 @@ function personalSignIn() {
     const response = signUpQuery({
       variables: {
         input: {
-          email: inputs.name,
+          email: inputs.email,
           password: inputs.password,
           nickname: inputs.nickname,
         },
       },
     });
   };
-  // type Mutation {
-  //  createAccount(input: CreateAccountAdoptUserInput!): CreateAccountOutput!
-  // }
-  //variables 안에 input: CreateAccountAdoptUserInput 부분을 넣은것
 
   //     const responseData = response?.data?.login;
   //   if (responseData) {
