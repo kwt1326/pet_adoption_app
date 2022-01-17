@@ -1,14 +1,18 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
 
-type UserType = 'ADOPT_USER' | 'ADOPTEE_USER';
+export enum UserType {
+  ADOPT = 'ADOPT_USER',
+  ADOPTEE = 'ADOPTEE_USER',
+  ADMIN = 'ADMIN',
+}
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
-  @Column({ update: false })
+  @Column({ update: false, unique: true })
   @Field(() => String)
   email: string;
 
@@ -17,10 +21,10 @@ export class User extends CoreEntity {
   password: string;
 
   @Column({ nullable: false })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   userType: UserType;
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   isAvailable: boolean;
 }

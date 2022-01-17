@@ -1,8 +1,47 @@
 import React from "react";
 import Header from "../../components/Header/subHeader";
 import style from "./signIn.module.scss";
+import { useState } from "react";
+// import cookie from 'js-cookie';
+import { useMutation } from "@apollo/client";
+import { SIGN_UP_QUERY } from "../../quries/authQuery";
 
 function personalSignIn() {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+    nickname: "",
+  });
+  const { name, password, nickname } = inputs;
+
+  const onChange = (e) => {
+    const { value, name } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
+  };
+
+  const [signUpQuery, { data: token }] = useMutation(SIGN_UP_QUERY);
+  const handleUserCreateClick = () => {
+    const response = signUpQuery({
+      variables: {
+        input: {
+          email: inputs.email,
+          password: inputs.password,
+          nickname: inputs.nickname,
+        },
+      },
+    });
+  };
+
+  //     const responseData = response?.data?.login;
+  //   if (responseData) {
+  //     cookie.set(process.env.JWT_KEY, responseData.result);
+  //   }
+  //   console.log("RESPONSE", response, token);
+  // }
+
   return (
     <div>
       <Header />
@@ -10,19 +49,21 @@ function personalSignIn() {
         <div className={style.infoContainer}>
           <h4>개인정보</h4>
           <div>
-            <input className={style.inputArea} placeholder="이메일을 입력하세요"></input>
+            <input name="email" onChange={onChange} value={name} className={style.inputArea} placeholder="이메일을 입력하세요"></input>
             <button className={style.button}>조회</button>
           </div>
-          <input className={style.inputArea} type="password" placeholder="비밀번호를 입력하세요"></input>
+          <input name="password" onChange={onChange} value={password} className={style.inputArea} type="password" placeholder="비밀번호를 입력하세요"></input>
           <input className={style.inputArea} type="password" placeholder="비밀번호를 재입력하세요"></input>
           <div>
-            <input className={style.inputArea} placeholder="닉네임을 입력하세요"></input>
+            <input name="nickname" onChange={onChange} value={nickname} className={style.inputArea} placeholder="닉네임을 입력하세요"></input>
             <button className={style.button}>중복확인</button>
           </div>
         </div>
       </div>
       <div className={style.searchContainer}>
-        <button className={style.button}>회원가입하기</button>
+        <button className={style.button} onClick={handleUserCreateClick}>
+          회원가입하기
+        </button>
       </div>
     </div>
   );

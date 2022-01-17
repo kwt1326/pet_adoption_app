@@ -11,7 +11,7 @@ export class AdminUser extends CoreDateEntity {
   @OneToOne(() => User, { primary: true, cascade: true })
   @JoinColumn()
   @Field(() => User)
-  user: number;
+  user: User;
 
   @Column({ update: false })
   @Field(() => String)

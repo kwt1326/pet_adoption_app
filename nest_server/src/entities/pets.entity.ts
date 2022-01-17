@@ -1,19 +1,38 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 
 // 펫 데이터 - 업체만 생성 가능, 소개글 작성시 추가
 
-type PetType = 'dog' | 'cat';
+/**
+ * 입력 예시
+ * 
+		name: "요크셔1",
+		breed: "요크셔테리어",
+		type: "dog",
+		price: 3000000,
+		age: 1,
+		weight: 5.5,
+		isGenderMale: false,
+		vaccinated: false,
+		neutered: false,
+		characteristic: "잘 뛰어다녀요~!",
+		othersInfo: "낮선 사람에게도 순종적입니다!"
+ */
+
+export enum PetType {
+  DOG = 'dog',
+  CAT = 'cat',
+}
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class Pets extends CoreEntity {
   @ManyToOne(() => AdoptUser)
-  @JoinColumn()
-  @Field(() => AdoptUser)
+  @JoinColumn({ name: 'registrantId' })
+  @Field(() => AdoptUser, { nullable: true })
   registrant: AdoptUser;
 
   @Column({ nullable: false })
@@ -41,22 +60,22 @@ export class Pets extends CoreEntity {
   weight: number; // 몸무게
 
   @Column({ nullable: false })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   isGenderMale: boolean; // 성별 - 수컷: true / 암컷 : false
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   vaccinated: boolean; // 예방접종 여부
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   neutered: boolean; // 중성화 여부
 
   @Column('text', { nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   characteristic: string; // 특징 // nullable
 
   @Column('text', { nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   othersInfo: string; // 기타정보 // nullable
 }
