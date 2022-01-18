@@ -22,6 +22,6 @@ export class AdopteeUser extends CoreDateEntity {
   isAuthenticated: boolean;
 
   @Column({ nullable: true })
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   authenticatedAt: Date;
 }
