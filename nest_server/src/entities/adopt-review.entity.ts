@@ -9,7 +9,7 @@ import { CoreEntity } from './common/core.entity';
 @ObjectType()
 @Entity()
 export class AdoptReview extends CoreEntity {
-  @ManyToOne(() => AdopteeUser)
+  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => AdopteeUser)
   adopteeUser: AdopteeUser;
