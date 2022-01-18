@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserType } from 'src/entities/user.entity';
 import {
@@ -17,6 +17,7 @@ import { AuthService } from '../auth/auth.service';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
+import { DeleteUserOutput } from './dtos/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -127,9 +128,13 @@ export class UserService {
   }
 
   async deleteOneUser(id: number) {
-    const result = await this.userRepository.deleteOneUserById(id);
-    console.log(result)
-    return result.affected ? true : false;
+    const deleteResult: DeleteUserOutput = {
+      result: (await this.userRepository.deleteOneUserById(id)).affected
+    }
+    if (deleteResult.result === 0) {
+      throw new BadRequestException(`There is no user with id of ${id}`);
+    }
+    return deleteResult;
   }
 
   async updateAdopteeUser(updateInput: UpdateAdopteeUserInput) {

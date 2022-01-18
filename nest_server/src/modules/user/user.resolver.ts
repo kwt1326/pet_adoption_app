@@ -10,6 +10,7 @@ import { UserService } from './user.service';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput } from './dtos/update-user.dto';
+import { DeleteUserOutput } from './dtos/delete-user.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -44,7 +45,7 @@ export class UserResolver {
     return this.userService.getAllAdoptUser();
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => DeleteUserOutput)
   deleteOneUser(
     @Args('id') id: number
   ) {
