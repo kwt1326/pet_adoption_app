@@ -43,9 +43,7 @@ export class UserService {
     createAccountInput: CreateAccountUserInput
   ): Promise<User> {
     const { email, password, userType } = createAccountInput;
-    const foundUserByEmail: User = await this.userRepository.findOneByEmail(
-      email,
-    );
+    const foundUserByEmail: User = await this.userRepository.findOneByEmail(email);
     if (foundUserByEmail) {
       throw new ConflictException('Existing Email');
     }
