@@ -39,12 +39,9 @@ export class UserService {
   }
 
   async createUserAccount(
-    createAccountInput:
-      | CreateAccountAdoptUserInput
-      | CreateAccountAdopteeUserInput,
-    userType: UserType,
+    createAccountInput: CreateAccountUserInput
   ): Promise<User> {
-    const { email, password } = createAccountInput;
+    const { email, password, userType } = createAccountInput;
     const foundUserByEmail: User = await this.userRepository.findOneByEmail(
       email,
     );
@@ -68,10 +65,10 @@ export class UserService {
     const result: CreateAccountOutput = {};
     try {
       const { email, password } = createAccountInput;
-      const user: User = await this.createUserAccount(
-        createAccountInput,
-        UserType.ADOPTEE,
-      );
+      const createAccountUserInput: CreateAccountUserInput = {
+        email, password, userType: UserType.ADOPTEE
+      }
+      const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adopteeUserRepository.createAdopteeUser(
         createAccountInput,
         user,
@@ -95,10 +92,10 @@ export class UserService {
     const result: CreateAccountOutput = {};
     try {
       const { email, password } = createAccountInput;
-      const user: User = await this.createUserAccount(
-        createAccountInput,
-        UserType.ADOPT,
-      );
+      const createAccountUserInput: CreateAccountUserInput = {
+        email, password, userType: UserType.ADOPT
+      }
+      const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
       result.data = (
         await this.authService.login({ email, password })
