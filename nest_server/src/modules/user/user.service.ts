@@ -17,7 +17,7 @@ import { AuthService } from '../auth/auth.service';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
-import { DeleteUserOutput } from './dtos/delete-user.dto';
+import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 
 @Injectable()
 export class UserService {
@@ -126,7 +126,7 @@ export class UserService {
   }
 
   async deleteOneUser(id: number) {
-    const deleteResult: DeleteUserOutput = {
+    const deleteResult: DeleteRequestOutput = {
       result: (await this.userRepository.deleteOneUserById(id)).affected
     }
     if (deleteResult.result === 0) {
