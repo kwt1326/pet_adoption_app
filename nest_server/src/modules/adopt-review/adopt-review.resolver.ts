@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AdoptReview } from '../../entities/adopt-review.entity';
 import { AdoptReviewService } from './adopt-review.service';
 import { CreateReviewInput } from './dtos/create-review.dto';
@@ -12,5 +12,12 @@ export class AdoptReviewResolver {
     @Args('input') createReviewInput: CreateReviewInput
   ) {
     return this.adoptReviewService.createAdoptReview(createReviewInput);
+  }
+
+  @Query(() => AdoptReview)
+  getOneAdoptReview(
+    @Args('id') id: number
+    ) {
+    return this.adoptReviewService.getOneAdoptReview(id);
   }
 }

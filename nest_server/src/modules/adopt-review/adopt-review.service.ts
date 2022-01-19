@@ -21,4 +21,8 @@ export class AdoptReviewService {
     const adoptReview = await this.adoptReviewRepository.create({adopteeUser, ...createInput});
     return await this.adoptReviewRepository.save(adoptReview);
   }
+
+  async getOneAdoptReview(id: number) {
+    return await this.adoptReviewRepository.getOneAdoptReviewById(id);
+  }
 }
