@@ -20,4 +20,9 @@ export class AdoptReviewResolver {
     ) {
     return this.adoptReviewService.getOneAdoptReview(id);
   }
+
+  @Query(() => [AdoptReview])
+  getAllAdoptReview() {
+    return this.adoptReviewService.getAllAdoptReview();
+  }
 }
