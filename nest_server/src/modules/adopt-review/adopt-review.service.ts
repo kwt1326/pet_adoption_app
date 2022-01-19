@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AdoptReview } from 'src/entities/adopt-review.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
+import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdopteeUserRepository } from '../user/user.repository';
 import { AdoptReviewRepository } from './adopt-review.repository';
 import { CreateReviewInput } from './dtos/create-review.dto';
@@ -35,5 +36,15 @@ export class AdoptReviewService {
     const { id, ...restOfUpdateInput } = updateReviewInput;
     const review = await this.adoptReviewRepository.getOneAdoptReviewById(id);
     return await this.adoptReviewRepository.updateAdoptReview(review, restOfUpdateInput);
+  }
+
+  async deleteAdoptReview(id: number): Promise<DeleteRequestOutput> {
+    const deleteResult: DeleteRequestOutput = {
+      result: (await this.adoptReviewRepository.deleteOneUserById(id)).affected
+    }
+    if (deleteResult.result === 0) {
+      throw new BadRequestException(`There is no review with id of ${id}`);
+    }
+    return deleteResult;
   }
 }

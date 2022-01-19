@@ -1,7 +1,7 @@
 import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
-import { EntityRepository, Repository } from "typeorm";
+import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
 
 interface createReviewInput {
   title: string
@@ -46,5 +46,15 @@ export class AdoptReviewRepository extends Repository<AdoptReview>{
   async updateAdoptReview(review: AdoptReview, updateInput: restOfUpdateInput): Promise<AdoptReview> {
     const updatedReview: AdoptReview = { ...review, ...updateInput };
     return await this.save(updatedReview);
+  }
+
+  async deleteOneUserById(id: number): Promise<DeleteResult> {
+    const result = await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(AdoptReview)
+      .where("id = :id", { id })
+      .execute();
+    return result;
   }
 }
