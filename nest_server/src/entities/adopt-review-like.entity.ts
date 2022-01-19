@@ -10,12 +10,12 @@ import { CoreIdEntity } from './common/core.entity';
 @ObjectType()
 @Entity()
 export class AdoptionReviewLike extends CoreIdEntity {
-  @ManyToOne(() => AdopteeUser)
+  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE'})
   @JoinColumn()
   @Field(() => AdopteeUser)
   adopteeUser: AdopteeUser;
 
-  @ManyToOne(() => AdoptionPost)
+  @ManyToOne(() => AdoptionPost, { onDelete: 'CASCADE'})
   @JoinColumn()
   @Field(() => AdoptionPost)
   likePost: AdoptionPost;
