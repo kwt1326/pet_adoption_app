@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserType } from 'src/entities/user.entity';
 import {
@@ -17,6 +17,7 @@ import { AuthService } from '../auth/auth.service';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
+import { DeleteUserOutput } from './dtos/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -39,15 +40,10 @@ export class UserService {
   }
 
   async createUserAccount(
-    createAccountInput:
-      | CreateAccountAdoptUserInput
-      | CreateAccountAdopteeUserInput,
-    userType: UserType,
+    createAccountInput: CreateAccountUserInput
   ): Promise<User> {
-    const { email, password } = createAccountInput;
-    const foundUserByEmail: User = await this.userRepository.findOneByEmail(
-      email,
-    );
+    const { email, password, userType } = createAccountInput;
+    const foundUserByEmail: User = await this.userRepository.findOneByEmail(email);
     if (foundUserByEmail) {
       throw new ConflictException('Existing Email');
     }
@@ -68,10 +64,10 @@ export class UserService {
     const result: CreateAccountOutput = {};
     try {
       const { email, password } = createAccountInput;
-      const user: User = await this.createUserAccount(
-        createAccountInput,
-        UserType.ADOPTEE,
-      );
+      const createAccountUserInput: CreateAccountUserInput = {
+        email, password, userType: UserType.ADOPTEE
+      }
+      const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adopteeUserRepository.createAdopteeUser(
         createAccountInput,
         user,
@@ -95,10 +91,10 @@ export class UserService {
     const result: CreateAccountOutput = {};
     try {
       const { email, password } = createAccountInput;
-      const user: User = await this.createUserAccount(
-        createAccountInput,
-        UserType.ADOPT,
-      );
+      const createAccountUserInput: CreateAccountUserInput = {
+        email, password, userType: UserType.ADOPT
+      }
+      const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
       result.data = (
         await this.authService.login({ email, password })
@@ -130,9 +126,13 @@ export class UserService {
   }
 
   async deleteOneUser(id: number) {
-    const result = await this.userRepository.deleteOneUserById(id);
-    console.log(result)
-    return result.affected ? true : false;
+    const deleteResult: DeleteUserOutput = {
+      result: (await this.userRepository.deleteOneUserById(id)).affected
+    }
+    if (deleteResult.result === 0) {
+      throw new BadRequestException(`There is no user with id of ${id}`);
+    }
+    return deleteResult;
   }
 
   async updateAdopteeUser(updateInput: UpdateAdopteeUserInput) {
