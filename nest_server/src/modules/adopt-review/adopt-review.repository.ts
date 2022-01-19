@@ -1,18 +1,7 @@
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException } from "@nestjs/common";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
 import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
-
-interface createReviewInput {
-  title: string
-  content: string
-}
-
-interface restOfUpdateInput {
-  title?: string
-  content?: string
-}
-import { EntityRepository, Repository } from "typeorm";
 
 interface createReviewInput {
   title: string
