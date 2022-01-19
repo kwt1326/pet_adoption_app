@@ -8,6 +8,11 @@ interface createReviewInput {
   content: string
 }
 
+interface restOfUpdateInput {
+  title?: string
+  content?: string
+}
+
 @EntityRepository(AdoptReview)
 export class AdoptReviewRepository extends Repository<AdoptReview>{
   async createAndSaveReview(adopteeUser: AdopteeUser, createInput: createReviewInput): Promise<AdoptReview> {
@@ -36,5 +41,10 @@ export class AdoptReviewRepository extends Repository<AdoptReview>{
     .leftJoinAndSelect('adopteeUser.user', 'user')
     .getMany();
     return allReviews;
+  }
+
+  async updateAdoptReview(review: AdoptReview, updateInput: restOfUpdateInput): Promise<AdoptReview> {
+    const updatedReview: AdoptReview = { ...review, ...updateInput };
+    return await this.save(updatedReview);
   }
 }
