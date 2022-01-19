@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AdoptReview } from 'src/entities/adopt-review.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdopteeUserRepository } from '../user/user.repository';
 import { AdoptReviewRepository } from './adopt-review.repository';
@@ -15,14 +16,17 @@ export class AdoptReviewService {
     private readonly adopteeUserRepository: AdopteeUserRepository,
   ) {}
 
-  async createAdoptReview(createReviewInput: CreateReviewInput) {
-    const { adopteeUserId: id, ...createInput} = createReviewInput;
+  async createAdoptReview(createReviewInput: CreateReviewInput): Promise<AdoptReview> {
+    const { adopteeUserId: id, ...createInput } = createReviewInput;
     const adopteeUser: AdopteeUser = await this.adopteeUserRepository.getOneAdopteeUserById(id);
-    const adoptReview = await this.adoptReviewRepository.create({adopteeUser, ...createInput});
-    return await this.adoptReviewRepository.save(adoptReview);
+    return await this.adoptReviewRepository.createAndSaveReview(adopteeUser, createInput);
   }
 
-  async getOneAdoptReview(id: number) {
+  async getOneAdoptReview(id: number): Promise<AdoptReview> {
     return await this.adoptReviewRepository.getOneAdoptReviewById(id);
+  }
+
+  async getAllAdoptReview(): Promise<AdoptReview[]> {
+    return await this.adoptReviewRepository.getAllAdoptReview();
   }
 }
