@@ -3,6 +3,7 @@ import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { User } from 'src/entities/user.entity';
 import { EntityRepository, getConnection, Repository } from 'typeorm';
+import { checkDuplicateFieldInput } from './dtos/check-duplicate-field.dto';
 import {
   CreateAccountAdopteeUserInput,
   CreateAccountAdoptUserInput,
@@ -29,6 +30,10 @@ export class UserRepository extends Repository<User> {
       .where("id = :id", { id })
       .execute();
     return result;
+  }
+
+  async checkDuplicateField(checkFieldInput: checkDuplicateFieldInput) {
+    return true;
   }
 }
 

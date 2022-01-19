@@ -18,6 +18,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
+import { checkDuplicateFieldInput } from './dtos/check-duplicate-field.dto';
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,10 @@ export class UserService {
 
     private authService: AuthService,
   ) {}
+
+  async checkDuplicateField(checkFieldInput: checkDuplicateFieldInput) {
+    return this.userRepository.checkDuplicateField(checkFieldInput)
+  }
 
   async hashingPassword(password: string) {
     const salt = await bcrypt.genSalt();

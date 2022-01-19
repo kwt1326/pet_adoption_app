@@ -11,6 +11,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput } from './dtos/update-user.dto';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
+import { checkDuplicateFieldInput } from './dtos/check-duplicate-field.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -19,6 +20,13 @@ export class UserResolver {
   @Query(() => Boolean)
   ping() {
     return true;
+  }
+
+  @Query(() => Boolean)
+  checkDuplicateField(
+    @Args('input') checkFieldInput: checkDuplicateFieldInput
+  ) {
+    return this.userService.checkDuplicateField(checkFieldInput);
   }
 
   @Query(() => AdopteeUser)
