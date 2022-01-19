@@ -5,6 +5,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdopteeUserRepository } from '../user/user.repository';
 import { AdoptReviewRepository } from './adopt-review.repository';
 import { CreateReviewInput } from './dtos/create-review.dto';
+import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 
 @Injectable()
 export class AdoptReviewService {
@@ -28,5 +29,11 @@ export class AdoptReviewService {
 
   async getAllAdoptReview(): Promise<AdoptReview[]> {
     return await this.adoptReviewRepository.getAllAdoptReview();
+  }
+
+  async updateAdoptReview(updateReviewInput: UpdateAdoptReviewInput): Promise<AdoptReview> {
+    const { id, ...restOfUpdateInput } = updateReviewInput;
+    const review = await this.adoptReviewRepository.getOneAdoptReviewById(id);
+    return await this.adoptReviewRepository.updateAdoptReview(review, restOfUpdateInput);
   }
 }
