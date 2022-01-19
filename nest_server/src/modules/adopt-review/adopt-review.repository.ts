@@ -12,6 +12,17 @@ interface restOfUpdateInput {
   title?: string
   content?: string
 }
+import { EntityRepository, Repository } from "typeorm";
+
+interface createReviewInput {
+  title: string
+  content: string
+}
+
+interface restOfUpdateInput {
+  title?: string
+  content?: string
+}
 
 @EntityRepository(AdoptReview)
 export class AdoptReviewRepository extends Repository<AdoptReview>{
