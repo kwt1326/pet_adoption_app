@@ -66,7 +66,7 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
   }
 
   async findOneAdopteeUserByNickname(nickname: string): Promise<AdopteeUser> {
-    const adopteeUser = this.findOne({ nickname });
+    const adopteeUser = await this.findOne({ nickname });
     return adopteeUser
   }
 }
@@ -105,7 +105,7 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
   }
 
   async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {
-    const adoptUser = this.findOne({ nickname });
+    const adoptUser = await this.findOne({ nickname });
     return adoptUser
   }
 }
