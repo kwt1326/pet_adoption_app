@@ -18,7 +18,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
-import { checkDuplicateFieldInput } from './dtos/check-duplicate-field.dto';
+import { CheckDuplicateFieldInput, CheckDuplicateFieldOutput } from './dtos/check-duplicate-field.dto';
 
 @Injectable()
 export class UserService {
@@ -35,8 +35,27 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
-  async checkDuplicateField(checkFieldInput: checkDuplicateFieldInput) {
-    return this.userRepository.checkDuplicateField(checkFieldInput)
+  async checkDuplicateEmail(email: string): Promise<boolean> {
+    const isDup: boolean = (await this.userRepository.findOneByEmail(email)) ? true : false;
+    return isDup;
+  }
+
+  async checkDuplicateNickname(nickname: string): Promise<boolean> {
+    const isDup: boolean = (
+      await this.adoptUserRepository.findOneAdoptUserByNickname(nickname) ||
+      await this.adopteeUserRepository.findOneAdopteeUserByNickname(nickname)
+    ) ? true : false;
+    return isDup;
+  }
+
+  async checkDuplicateField(checkFieldInput: CheckDuplicateFieldInput): Promise<CheckDuplicateFieldOutput> {
+    const { email, nickname } = checkFieldInput;
+    const resOutput: CheckDuplicateFieldOutput = {
+      result: false
+    };
+    if (email) resOutput.result = await this.checkDuplicateEmail(email);
+    if (nickname) resOutput.result = await this.checkDuplicateNickname(nickname);
+    return resOutput;
   }
 
   async hashingPassword(password: string) {

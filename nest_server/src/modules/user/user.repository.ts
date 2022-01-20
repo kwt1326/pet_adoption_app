@@ -3,7 +3,6 @@ import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { User } from 'src/entities/user.entity';
 import { EntityRepository, getConnection, Repository } from 'typeorm';
-import { checkDuplicateFieldInput } from './dtos/check-duplicate-field.dto';
 import {
   CreateAccountAdopteeUserInput,
   CreateAccountAdoptUserInput,
@@ -30,10 +29,6 @@ export class UserRepository extends Repository<User> {
       .where("id = :id", { id })
       .execute();
     return result;
-  }
-
-  async checkDuplicateField(checkFieldInput: checkDuplicateFieldInput) {
-    return true;
   }
 }
 
@@ -69,6 +64,11 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
       .getMany();
     return allUsers;
   }
+
+  async findOneAdopteeUserByNickname(nickname: string): Promise<AdopteeUser> {
+    const adopteeUser = this.findOne({ nickname });
+    return adopteeUser
+  }
 }
 
 @EntityRepository(AdoptUser)
@@ -102,5 +102,10 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
       .leftJoinAndSelect('adoptUser.user', 'user')
       .getMany();
     return allUsers;
+  }
+
+  async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {
+    const adoptUser = this.findOne({ nickname });
+    return adoptUser
   }
 }
