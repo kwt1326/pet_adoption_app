@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreIdEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from './adopt-user.entity';
+import { ColumnTextType } from './database-data-type';
 
 export enum AdoptUserPictureType {
   INTERIOR = 'interior', // 인테리어
@@ -22,7 +23,7 @@ export class AdoptUserPicture extends CoreIdEntity {
   @Field(() => String)
   type: AdoptUserPictureType;
 
-  @Column('text', { nullable: false })
+  @Column(ColumnTextType, { nullable: false })
   @Field(() => String)
   uri: string;
 }

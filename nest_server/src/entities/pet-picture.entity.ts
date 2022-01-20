@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreIdEntity } from 'src/entities/common/core.entity';
 import { Pets } from './pets.entity';
+import { ColumnTextType } from './database-data-type';
 
 // 펫 이미지 테이블
 
@@ -14,7 +15,7 @@ export class PetPicture extends CoreIdEntity {
   @Field(() => Pets)
   pet: Pets;
 
-  @Column('text', { nullable: false })
+  @Column(ColumnTextType, { nullable: false })
   @Field(() => String)
   uri: string;
 }

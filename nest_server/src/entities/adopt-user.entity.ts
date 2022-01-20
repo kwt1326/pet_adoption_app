@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreDateEntity } from 'src/entities/common/core.entity';
 import { User } from './user.entity';
+import { ColumnTextType } from './database-data-type';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -33,7 +34,7 @@ export class AdoptUser extends CoreDateEntity {
   @Field(() => String, { nullable: true })
   phoneNumber: string;
 
-  @Column('text')
+  @Column(ColumnTextType)
   @Field(() => String, { nullable: true })
   pageUri: string;
 

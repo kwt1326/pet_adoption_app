@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreIdEntity } from './common/core.entity';
+import { ColumnTextType } from './database-data-type';
 
 // 입양후기 이미지 테이블
 
@@ -14,7 +15,7 @@ export class AdoptReviewPicture extends CoreIdEntity {
   @Field(() => AdoptReview)
   adoptReview: AdoptReview;
 
-  @Column('text')
+  @Column(ColumnTextType)
   @Field(() => String)
   uri: string;
 }
