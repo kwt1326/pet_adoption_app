@@ -66,10 +66,10 @@ export class UserService {
   async createUserAccount(
     createAccountInput: CreateAccountUserInput
   ): Promise<User> {
-    const { email, password, userType } = createAccountInput;
-    const foundUserByEmail: User = await this.userRepository.findOneByEmail(email);
-    if (foundUserByEmail) {
-      throw new ConflictException('Existing Email');
+    const { email, nickname, password, userType } = createAccountInput;
+    const resultOfCheckDup = await this.checkDuplicateField({ email, nickname });
+    if (resultOfCheckDup.result) {
+      throw new BadRequestException('Please do a duplicate test.')
     }
 
     const hashedPassword = await this.hashingPassword(password);
@@ -87,15 +87,15 @@ export class UserService {
   ): Promise<CreateAccountOutput> {
     const result: CreateAccountOutput = {};
     try {
-      const { email, password } = createAccountInput;
       const createAccountUserInput: CreateAccountUserInput = {
-        email, password, userType: UserType.ADOPTEE
+        ...createAccountInput, userType: UserType.ADOPTEE
       }
       const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adopteeUserRepository.createAdopteeUser(
         createAccountInput,
         user,
       );
+      const { email, password } = createAccountInput;
       result.data = (
         await this.authService.login({ email, password })
       )?.result?.token;
@@ -114,12 +114,15 @@ export class UserService {
   ): Promise<CreateAccountOutput> {
     const result: CreateAccountOutput = {};
     try {
-      const { email, password } = createAccountInput;
       const createAccountUserInput: CreateAccountUserInput = {
-        email, password, userType: UserType.ADOPT
+        ...createAccountInput, userType: UserType.ADOPT
       }
       const user: User = await this.createUserAccount(createAccountUserInput);
-      await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
+      await this.adoptUserRepository.createAdoptUser(
+        createAccountInput,
+        user,
+      );
+      const { email, password } = createAccountInput;
       result.data = (
         await this.authService.login({ email, password })
       )?.result?.token;

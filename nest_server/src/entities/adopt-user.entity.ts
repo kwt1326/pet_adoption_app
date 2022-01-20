@@ -17,7 +17,7 @@ export class AdoptUser extends CoreDateEntity {
   @PrimaryColumn()
   userId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   @Field(() => String, { nullable: true })
   nickname: string;
 
