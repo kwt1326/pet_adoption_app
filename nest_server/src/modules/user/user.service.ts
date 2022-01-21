@@ -18,6 +18,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { UpdateAdopteeUserInput, UpdateAdoptUserInput, UpdateUserInput } from './dtos/update-user.dto';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
+import { CheckDuplicateFieldInput, CheckDuplicateFieldOutput } from './dtos/check-duplicate-field.dto';
 
 @Injectable()
 export class UserService {
@@ -34,6 +35,29 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
+  async checkDuplicateEmail(email: string): Promise<boolean> {
+    const isDup: boolean = (await this.userRepository.findOneByEmail(email)) ? true : false;
+    return isDup;
+  }
+
+  async checkDuplicateNickname(nickname: string): Promise<boolean> {
+    const isDup: boolean = (
+      await this.adoptUserRepository.findOneAdoptUserByNickname(nickname) ||
+      await this.adopteeUserRepository.findOneAdopteeUserByNickname(nickname)
+    ) ? true : false;
+    return isDup;
+  }
+
+  async checkDuplicateField(checkFieldInput: CheckDuplicateFieldInput): Promise<CheckDuplicateFieldOutput> {
+    const { email, nickname } = checkFieldInput;
+    const resOutput: CheckDuplicateFieldOutput = {
+      result: false
+    };
+    if (email) resOutput.result = await this.checkDuplicateEmail(email);
+    if (nickname) resOutput.result = await this.checkDuplicateNickname(nickname);
+    return resOutput;
+  }
+
   async hashingPassword(password: string) {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
@@ -42,10 +66,10 @@ export class UserService {
   async createUserAccount(
     createAccountInput: CreateAccountUserInput
   ): Promise<User> {
-    const { email, password, userType } = createAccountInput;
-    const foundUserByEmail: User = await this.userRepository.findOneByEmail(email);
-    if (foundUserByEmail) {
-      throw new ConflictException('Existing Email');
+    const { email, nickname, password, userType } = createAccountInput;
+    const resultOfCheckDup = await this.checkDuplicateField({ email, nickname });
+    if (resultOfCheckDup.result) {
+      throw new BadRequestException('Please do a duplicate test.')
     }
 
     const hashedPassword = await this.hashingPassword(password);
@@ -63,15 +87,15 @@ export class UserService {
   ): Promise<CreateAccountOutput> {
     const result: CreateAccountOutput = {};
     try {
-      const { email, password } = createAccountInput;
       const createAccountUserInput: CreateAccountUserInput = {
-        email, password, userType: UserType.ADOPTEE
+        ...createAccountInput, userType: UserType.ADOPTEE
       }
       const user: User = await this.createUserAccount(createAccountUserInput);
       await this.adopteeUserRepository.createAdopteeUser(
         createAccountInput,
         user,
       );
+      const { email, password } = createAccountInput;
       result.data = (
         await this.authService.login({ email, password })
       )?.result?.token;
@@ -90,12 +114,15 @@ export class UserService {
   ): Promise<CreateAccountOutput> {
     const result: CreateAccountOutput = {};
     try {
-      const { email, password } = createAccountInput;
       const createAccountUserInput: CreateAccountUserInput = {
-        email, password, userType: UserType.ADOPT
+        ...createAccountInput, userType: UserType.ADOPT
       }
       const user: User = await this.createUserAccount(createAccountUserInput);
-      await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
+      await this.adoptUserRepository.createAdoptUser(
+        createAccountInput,
+        user,
+      );
+      const { email, password } = createAccountInput;
       result.data = (
         await this.authService.login({ email, password })
       )?.result?.token;

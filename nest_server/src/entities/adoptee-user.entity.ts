@@ -13,7 +13,7 @@ export class AdopteeUser extends CoreDateEntity {
   @Field(() => User)
   user: User;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   @Field(() => String)
   nickname: string;
 

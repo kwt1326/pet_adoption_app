@@ -13,6 +13,7 @@ import { User, UserType } from '../../../entities/user.entity';
 
 export interface CreateAccountUserInput {
   email: string;
+  nickname?: string;
   password: string;
   userType: UserType;
 }

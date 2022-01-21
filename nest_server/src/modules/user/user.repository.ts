@@ -64,6 +64,11 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
       .getMany();
     return allUsers;
   }
+
+  async findOneAdopteeUserByNickname(nickname: string): Promise<AdopteeUser> {
+    const adopteeUser = await this.findOne({ nickname });
+    return adopteeUser
+  }
 }
 
 @EntityRepository(AdoptUser)
@@ -97,5 +102,10 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
       .leftJoinAndSelect('adoptUser.user', 'user')
       .getMany();
     return allUsers;
+  }
+
+  async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {
+    const adoptUser = await this.findOne({ nickname });
+    return adoptUser
   }
 }
