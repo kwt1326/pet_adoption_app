@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreEntity } from './common/core.entity';
+import { ColumnTextType } from './database-data-type';
 import { User } from './user.entity';
 
 // 입양후기 댓글 - 모든 권한 작성 가능
@@ -25,7 +26,7 @@ export class Comment extends CoreEntity {
   @Field(() => AdoptReview)
   post: AdoptReview; // 리뷰 pk
 
-  @Column('text')
+  @Column(ColumnTextType)
   @Field(() => String)
   content: string;
 }

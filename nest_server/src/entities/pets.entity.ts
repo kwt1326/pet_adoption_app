@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
+import { ColumnTextType } from './database-data-type';
 
 // 펫 데이터 - 업체만 생성 가능, 소개글 작성시 추가
 
@@ -71,11 +72,11 @@ export class Pets extends CoreEntity {
   @Field(() => Boolean, { nullable: true })
   neutered: boolean; // 중성화 여부
 
-  @Column('text', { nullable: true })
+  @Column(ColumnTextType, { nullable: true })
   @Field(() => String, { nullable: true })
   characteristic: string; // 특징 // nullable
 
-  @Column('text', { nullable: true })
+  @Column(ColumnTextType, { nullable: true })
   @Field(() => String, { nullable: true })
   othersInfo: string; // 기타정보 // nullable
 }

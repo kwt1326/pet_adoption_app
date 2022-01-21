@@ -46,7 +46,10 @@ export class AdoptionPostService {
   }
 
   async getAdoptionPost(id: number): Promise<AdoptionPost> {
-    return await this.adoptionPostRepository.findOne(id);
+    const result = await this.adoptionPostRepository.findOne(id, {
+      relations: ['pet'],
+    });
+    return result;
   }
 
   async getAdoptionPosts(args: GetAdoptionPostArgs): Promise<AdoptionPost[]> {
@@ -61,7 +64,7 @@ export class AdoptionPostService {
       skip: take * (args.page - 1),
       take,
       where,
-      relations: ['writter'],
+      relations: ['writter', 'pet'],
     });
   }
 }

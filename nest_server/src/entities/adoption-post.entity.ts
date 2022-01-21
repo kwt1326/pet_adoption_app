@@ -1,15 +1,9 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from './common/core.entity';
 import { AdoptUser } from './adopt-user.entity';
 import { Pets } from './pets.entity';
+import { ColumnTextType } from './database-data-type';
 
 // 소개글 - 펫 하나당 하나의 글 1:1
 
@@ -31,7 +25,7 @@ export class AdoptionPost extends CoreEntity {
   @Field(() => String)
   title: string;
 
-  @Column('text')
+  @Column(ColumnTextType)
   @Field(() => String)
   content: string;
 }
