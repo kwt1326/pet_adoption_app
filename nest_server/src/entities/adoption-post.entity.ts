@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from './common/core.entity';
 import { AdoptUser } from './adopt-user.entity';

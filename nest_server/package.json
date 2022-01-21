@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "build": "cross-env NODE_ENV=prod nest build",
     "start": "cross-env NODE_ENV=prod nest start",
-    "start:dev": "cross-env NODE_ENV=prod PORT=8090 nest start --watch",
+    "start:dev": "cross-env NODE_ENV=dev PORT=8090 nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=prod node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
