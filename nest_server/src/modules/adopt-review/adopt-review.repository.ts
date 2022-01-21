@@ -1,9 +1,9 @@
 import { BadRequestException } from "@nestjs/common";
 import { AdoptReviewPicture } from "src/entities/adopt-review-picture.entity";
+import { AdoptionReviewLike } from "src/entities/adopt-review-like.entity";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
 import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
-import { DeleteRequestOutput } from "../common/dtos/request-result.dto";
 
 interface createReviewInput {
   title: string
@@ -30,6 +30,8 @@ export class AdoptReviewRepository extends Repository<AdoptReview>{
   async getOneAdoptReviewById(id: number): Promise<AdoptReview> {
     const review = await this
       .createQueryBuilder('review')
+      .leftJoinAndSelect('review.likes', 'likes')
+      .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
       .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
       .where('review.id = :id', { id })
@@ -44,6 +46,8 @@ export class AdoptReviewRepository extends Repository<AdoptReview>{
   async getAllAdoptReview(): Promise<AdoptReview[]> {
     const allReviews = await this
     .createQueryBuilder('review')
+    .leftJoinAndSelect('review.likes', 'likes')
+    .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
     .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
     .leftJoinAndSelect('adopteeUser.user', 'user')
     .getMany();
@@ -81,5 +85,13 @@ export class AdoptReviewPictureRepository extends Repository<AdoptReviewPicture>
       .where("id = :id", { id })
       .execute()
     return result;
+  }
+}
+
+@EntityRepository(AdoptionReviewLike)
+export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike> {
+  async createAdoptionReviewLike(adopteeUser: AdopteeUser, likePost: AdoptReview) {
+    const reviewLike = await this.create({ adopteeUser, likePost });
+    return await this.save(reviewLike);
   }
 }

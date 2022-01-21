@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AdoptionReviewLike } from 'src/entities/adopt-review-like.entity';
 import { AdoptReview } from 'src/entities/adopt-review.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdopteeUserRepository } from '../user/user.repository';
-import { AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
-import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
+import { AdoptionReviewLikeRepository, AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
+import { CreateAdoptionReviewLikeInput } from './dtos/create-review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 
@@ -20,6 +21,9 @@ export class AdoptReviewService {
 
     @InjectRepository(AdoptReviewPictureRepository)
     private readonly adoptReviewPictureRepository: AdoptReviewPictureRepository,
+
+    @InjectRepository(AdoptionReviewLikeRepository)
+    private readonly adoptionReviewLikeRepository: AdoptionReviewLikeRepository,
   ) {}
 
   async createAdoptReview(createReviewInput: CreateReviewInput): Promise<AdoptReview> {
@@ -63,5 +67,19 @@ export class AdoptReviewService {
       result: (await this.adoptReviewPictureRepository.deleteAdoptReviewPicture(id)).affected
     }
     return resOutput;
+  }
+
+  isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
+    return review.likes.some((like) => like.adopteeUser.userId === userId)
+  }
+
+  async createAdoptionReviewLike(input: CreateAdoptionReviewLikeInput): Promise<AdoptionReviewLike> {
+    const { userId, reviewId } = input;
+    const review = await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
+    if (this.isAlreadyInLikes(review, userId)) {
+      throw new BadRequestException("It's already registered");
+    }
+    const user = await this.adopteeUserRepository.getOneAdopteeUserById(userId);
+    return await this.adoptionReviewLikeRepository.createAdoptionReviewLike(user, review);
   }
 }
