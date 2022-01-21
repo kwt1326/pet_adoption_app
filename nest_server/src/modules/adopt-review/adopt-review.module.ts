@@ -11,9 +11,6 @@ import { AdoptReviewService } from './adopt-review.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      AdopteeUser,
-      AdoptReview,
-      AdoptionReviewLike,
       AdoptReviewRepository,
       AdopteeUserRepository,
       AdoptReviewPictureRepository,
