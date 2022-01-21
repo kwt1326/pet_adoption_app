@@ -4,6 +4,7 @@ import { AdoptionReviewLike } from "src/entities/adopt-review-like.entity";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
 import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
+import { AdoptionReviewLikeInput } from "./dtos/review-like.dto";
 
 interface createReviewInput {
   title: string
@@ -93,5 +94,17 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
   async createAdoptionReviewLike(adopteeUser: AdopteeUser, likePost: AdoptReview) {
     const reviewLike = await this.create({ adopteeUser, likePost });
     return await this.save(reviewLike);
+  }
+
+  async deleteAdoptionReviewLike(input: AdoptionReviewLikeInput) {
+    const { userId, reviewId } = input;
+    const result = await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(AdoptionReviewLike)
+      .where("adopteeUser = :userId", { userId })
+      .andWhere("likePost = :reviewId", { reviewId })
+      .execute();
+    return result;
   }
 }

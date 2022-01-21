@@ -5,7 +5,7 @@ import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdoptReviewService } from './adopt-review.service';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 import { AdoptionReviewLike } from 'src/entities/adopt-review-like.entity';
-import { CreateAdoptionReviewLikeInput } from './dtos/create-review-like.dto';
+import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 
@@ -56,10 +56,19 @@ export class AdoptReviewResolver {
     @Args('id') id: number
   ) {
     return this.adoptReviewService.deleteAdoptReviewPicture(id);
+  }
+
   @Mutation(() => AdoptionReviewLike)
   createAdoptionReviewLike(
-    @Args('input') createAdoptionReviewLikeInput: CreateAdoptionReviewLikeInput
+    @Args('input') adoptionReviewLikeInput: AdoptionReviewLikeInput
   ) {
-    return this.adoptReviewService.createAdoptionReviewLike(createAdoptionReviewLikeInput);
+    return this.adoptReviewService.createAdoptionReviewLike(adoptionReviewLikeInput);
+  }
+
+  @Mutation(() => DeleteRequestOutput)
+  deleteAdoptionReviewLike(
+    @Args('input') adoptionReviewLikeInput: AdoptionReviewLikeInput
+  ) {
+    return this.adoptReviewService.deleteAdoptionReviewLike(adoptionReviewLikeInput);
   }
 }

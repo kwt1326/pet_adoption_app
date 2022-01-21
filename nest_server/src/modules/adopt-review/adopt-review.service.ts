@@ -6,9 +6,10 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdopteeUserRepository } from '../user/user.repository';
 import { AdoptionReviewLikeRepository, AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
-import { CreateAdoptionReviewLikeInput } from './dtos/create-review-like.dto';
+import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
+import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 
 @Injectable()
 export class AdoptReviewService {
@@ -73,7 +74,7 @@ export class AdoptReviewService {
     return review.likes.some((like) => like.adopteeUser.userId === userId)
   }
 
-  async createAdoptionReviewLike(input: CreateAdoptionReviewLikeInput): Promise<AdoptionReviewLike> {
+  async createAdoptionReviewLike(input: AdoptionReviewLikeInput): Promise<AdoptionReviewLike> {
     const { userId, reviewId } = input;
     const review = await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
     if (this.isAlreadyInLikes(review, userId)) {
@@ -81,5 +82,12 @@ export class AdoptReviewService {
     }
     const user = await this.adopteeUserRepository.getOneAdopteeUserById(userId);
     return await this.adoptionReviewLikeRepository.createAdoptionReviewLike(user, review);
+  }
+
+  async deleteAdoptionReviewLike(input: AdoptionReviewLikeInput): Promise<DeleteRequestOutput> {
+    const resOutput : DeleteRequestOutput = {
+      result: (await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike(input)).affected
+    }
+    return resOutput;
   }
 }
