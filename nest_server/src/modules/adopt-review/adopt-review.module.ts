@@ -4,7 +4,7 @@ import { AdoptionReviewLike } from 'src/entities/adopt-review-like.entity';
 import { AdoptReview } from '../../entities/adopt-review.entity';
 import { AdopteeUser } from '../../entities/adoptee-user.entity';
 import { AdopteeUserRepository } from '../user/user.repository';
-import { AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
+import { AdoptionReviewLikeRepository, AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
 import { AdoptReviewResolver } from './adopt-review.resolver';
 import { AdoptReviewService } from './adopt-review.service';
 
@@ -17,6 +17,7 @@ import { AdoptReviewService } from './adopt-review.service';
       AdoptReviewRepository,
       AdopteeUserRepository,
       AdoptReviewPictureRepository,
+      AdoptionReviewLikeRepository,
     ]),
   ],
   providers: [
