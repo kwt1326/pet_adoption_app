@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 
 @InputType()
-export class CreateAdoptionReviewLikeInput {
+export class AdoptionReviewLikeInput {
   @Field(() => Number,{
     description: `
     The ID of the AdopteeUser who clicked like.
