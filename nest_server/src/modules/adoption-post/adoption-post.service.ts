@@ -46,25 +46,38 @@ export class AdoptionPostService {
   }
 
   async getAdoptionPost(id: number): Promise<AdoptionPost> {
-    const result = await this.adoptionPostRepository.findOne(id, {
-      relations: ['pet'],
-    });
+    const result = await this.adoptionPostRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.writter', 'writter')
+      .leftJoinAndSelect('post.pet', 'pet')
+      .where('post.id = :id', { id })
+      .getOne();
+
+    if (!result) {
+      throw new HttpException('Not Found AdoptionPost', 410);
+    }
     return result;
   }
 
   async getAdoptionPosts(args: GetAdoptionPostArgs): Promise<AdoptionPost[]> {
-    const take = 20;
-    const where = {};
+    const queryResult =
+      typeof args.isProfit !== 'undefined'
+        ? await this.adoptionPostRepository
+            .createQueryBuilder('post')
+            .leftJoinAndSelect('post.writter', 'writter')
+            .leftJoinAndSelect('post.pet', 'pet')
+            .skip(20 * (args.page - 1))
+            .take(20)
+            .where('writter.isProfit = :isProfit', { isProfit: args.isProfit })
+            .getMany()
+        : await this.adoptionPostRepository
+            .createQueryBuilder('post')
+            .leftJoinAndSelect('post.writter', 'writter')
+            .leftJoinAndSelect('post.pet', 'pet')
+            .skip(20 * (args.page - 1))
+            .take(20)
+            .getMany();
 
-    if (args.isProfit !== undefined) {
-      where['writter'] = { isProfit: args.isProfit };
-    }
-
-    return await this.adoptionPostRepository.find({
-      skip: take * (args.page - 1),
-      take,
-      where,
-      relations: ['writter', 'pet'],
-    });
+    return queryResult;
   }
 }
