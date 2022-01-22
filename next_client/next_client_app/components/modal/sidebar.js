@@ -44,7 +44,11 @@ const Sidebar = (props) => {
               커뮤니티
               <ul>
                 <li>입양후기</li>
-                <li>이벤트 게시판</li>
+                <li>
+                  <Link href="event">
+                    <a>이벤트 게시판</a>
+                  </Link>
+                </li>
               </ul>
             </li>
             <li>인증업체현황</li>

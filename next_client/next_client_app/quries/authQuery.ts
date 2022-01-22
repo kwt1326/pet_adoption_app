@@ -20,3 +20,15 @@ export const SIGN_UP_QUERY = gql`
     }
   }
 `;
+
+export const CORP_SIGN_UP_QUERY = gql`
+  mutation createAdoptAccount($input: CreateAccountAdoptUserInput!) {
+    createAdoptAccount(input: $input) {
+      error {
+        statusCode
+        message
+      }
+      data
+    }
+  }
+`;

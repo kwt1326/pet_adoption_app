@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../../components/Header/subHeader";
+import Header from "../../components/Header/index";
 import style from "./signIn.module.scss";
 import { useState } from "react";
 // import cookie from 'js-cookie';
@@ -10,9 +10,10 @@ function personalSignIn() {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     nickname: "",
   });
-  const { name, password, nickname } = inputs;
+  const { name, password, nickname, confirmPassword } = inputs;
 
   const onChange = (e) => {
     const { value, name } = e.target;
@@ -21,8 +22,8 @@ function personalSignIn() {
       [name]: value,
     });
   };
+  const [signUpQuery] = useMutation(SIGN_UP_QUERY);
 
-  const [signUpQuery, { data: token }] = useMutation(SIGN_UP_QUERY);
   const handleUserCreateClick = () => {
     const response = signUpQuery({
       variables: {
@@ -35,16 +36,9 @@ function personalSignIn() {
     });
   };
 
-  //     const responseData = response?.data?.login;
-  //   if (responseData) {
-  //     cookie.set(process.env.JWT_KEY, responseData.result);
-  //   }
-  //   console.log("RESPONSE", response, token);
-  // }
-
   return (
     <div>
-      <Header />
+      <Header children={"개인 회원가입"} />
       <div className={style.container}>
         <div className={style.infoContainer}>
           <h4>개인정보</h4>
@@ -53,7 +47,7 @@ function personalSignIn() {
             <button className={style.button}>조회</button>
           </div>
           <input name="password" onChange={onChange} value={password} className={style.inputArea} type="password" placeholder="비밀번호를 입력하세요"></input>
-          <input className={style.inputArea} type="password" placeholder="비밀번호를 재입력하세요"></input>
+          <input name="confirmPassword" onChange={onChange} value={confirmPassword} className={style.inputArea} type="password" placeholder="비밀번호를 재입력하세요"></input>
           <div>
             <input name="nickname" onChange={onChange} value={nickname} className={style.inputArea} placeholder="닉네임을 입력하세요"></input>
             <button className={style.button}>중복확인</button>
