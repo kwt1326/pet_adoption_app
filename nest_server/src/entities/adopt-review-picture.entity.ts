@@ -10,8 +10,10 @@ import { ColumnTextType } from './database-data-type';
 @ObjectType()
 @Entity()
 export class AdoptReviewPicture extends CoreIdEntity {
-  @ManyToOne(() => AdoptReview, { onDelete: 'CASCADE'})
-  @JoinColumn()
+  @ManyToOne(
+    () => AdoptReview,
+    (adoptReview) => adoptReview.pictures,
+    { nullable: false, cascade: true, onDelete: 'CASCADE' })
   @Field(() => AdoptReview)
   adoptReview: AdoptReview;
 
