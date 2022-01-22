@@ -6,7 +6,7 @@ import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdopteeUserRepository } from '../user/user.repository';
 import { AdoptionReviewLikeRepository, AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
-import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
+import { AdoptionReviewLikeInput, AdoptionReviewLikeOutput, LikeResult } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
@@ -74,20 +74,19 @@ export class AdoptReviewService {
     return review.likes.some((like) => like.adopteeUser.userId === userId)
   }
 
-  async createAdoptionReviewLike(input: AdoptionReviewLikeInput): Promise<AdoptionReviewLike> {
+  async toggleAdoptionReviewLike(input: AdoptionReviewLikeInput): Promise<AdoptionReviewLikeOutput> {
     const { userId, reviewId } = input;
+    const resOutput: AdoptionReviewLikeOutput = {
+      result: LikeResult.CREATE
+    }
     const review = await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
     if (this.isAlreadyInLikes(review, userId)) {
-      throw new BadRequestException("It's already registered");
-    }
-    const user = await this.adopteeUserRepository.getOneAdopteeUserById(userId);
-    return await this.adoptionReviewLikeRepository.createAdoptionReviewLike(user, review);
-  }
-
-  async deleteAdoptionReviewLike(input: AdoptionReviewLikeInput): Promise<DeleteRequestOutput> {
-    const resOutput : DeleteRequestOutput = {
-      result: (await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike(input)).affected
+      await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike(input)
+      resOutput.result = LikeResult.DELETE;
+    } else {
+      const user = await this.adopteeUserRepository.getOneAdopteeUserById(userId);
+      await this.adoptionReviewLikeRepository.createAdoptionReviewLike(user, review);
     }
     return resOutput;
-  }
+  }W
 }
