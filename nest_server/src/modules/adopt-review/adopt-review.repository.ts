@@ -3,6 +3,7 @@ import { AdoptReviewPicture } from "src/entities/adopt-review-picture.entity";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
 import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
+import { DeleteRequestOutput } from "../common/dtos/request-result.dto";
 
 interface createReviewInput {
   title: string
@@ -70,5 +71,15 @@ export class AdoptReviewPictureRepository extends Repository<AdoptReviewPicture>
   async createAdoptReviewPicture(input: createPictureInput): Promise<AdoptReviewPicture> {
     const picture = await this.create({ ...input });
     return await this.save(picture);
+  }
+
+  async deleteAdoptReviewPicture(id: number): Promise<DeleteResult> {
+    const result = getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(AdoptReviewPicture)
+      .where("id = :id", { id })
+      .execute()
+    return result;
   }
 }

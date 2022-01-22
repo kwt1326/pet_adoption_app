@@ -48,4 +48,11 @@ export class AdoptReviewResolver {
   ) {
     return this.adoptReviewService.createAdoptReviewPicture(createAdoptReviewPictureInput);
   }
+
+  @Mutation(() => DeleteRequestOutput)
+  deleteAdopteReviewPicture(
+    @Args('id') id: number
+  ) {
+    return this.adoptReviewService.deleteAdoptReviewPicture(id);
+  }
 }

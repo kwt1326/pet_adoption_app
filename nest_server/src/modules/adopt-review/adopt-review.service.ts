@@ -57,4 +57,11 @@ export class AdoptReviewService {
     const adoptReview: AdoptReview = await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
     return await this.adoptReviewPictureRepository.createAdoptReviewPicture({ adoptReview, uri });
   }
+
+  async deleteAdoptReviewPicture(id: number) {
+    const resOutput: DeleteRequestOutput = {
+      result: (await this.adoptReviewPictureRepository.deleteAdoptReviewPicture(id)).affected
+    }
+    return resOutput;
+  }
 }
