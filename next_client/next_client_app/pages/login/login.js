@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../../components/Header/subHeader";
+import Header from "../../components/Header/index";
 import style from "./login.module.scss";
 import Link from "next/link";
 import { useState } from "react";
@@ -44,7 +44,7 @@ function login() {
 
   return (
     <div>
-      <Header />
+      <Header children={"로그인"} />
       <div className={style.container}>
         <div className={style.inputArea}>
           <input name="email" onChange={onChange} value={email} placeholder="email을 입력하세요"></input>

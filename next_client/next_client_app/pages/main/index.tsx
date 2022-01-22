@@ -35,9 +35,7 @@ const Main = () => {
   return (
     <div>
       <Header children={""} />
-      <div className={styles.eventBanner}>
-        <Carousel />
-      </div>
+      <Carousel />
       <ul className={styles.nav}>
         <li>
           <div>
