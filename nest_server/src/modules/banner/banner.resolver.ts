@@ -10,6 +10,7 @@ import {
   CreateBannerInput,
   CreateBannerOutput,
 } from './dtos/create-banner.dto';
+import { GetBannersOutput } from './dtos/get-banner.dto';
 
 @Resolver()
 export class BannerResolver {
@@ -37,8 +38,8 @@ export class BannerResolver {
     return await this.bannerService.getBannerContent(id);
   }
 
-  @Query(() => [Banner])
-  async getBanners(): Promise<Banner[]> {
+  @Query(() => [GetBannersOutput])
+  async getBanners(): Promise<GetBannersOutput[]> {
     return await this.bannerService.getBanners();
   }
 }

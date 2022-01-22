@@ -1,7 +1,7 @@
 import { HttpException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
-import { GetAdoptionPostArgs } from './dtos/get-adoption-post.dto';
+import { GetAdoptionPostArgs, GetAdoptionPostsOutput } from './dtos/get-adoption-post.dto';
 import {
   CreateAdoptionPostArgs,
   CreateAdoptionPostOutput,
@@ -39,10 +39,10 @@ export class AdoptionPostResolver {
     }
   }
 
-  @Query(() => [AdoptionPost])
+  @Query(() => [GetAdoptionPostsOutput])
   async getPosts(
     @Args('getPostsArgs') getPostsArgs: GetAdoptionPostArgs,
-  ): Promise<AdoptionPost[]> {
+  ): Promise<GetAdoptionPostsOutput[]> {
     return await this.adoptionPostService.getAdoptionPosts(getPostsArgs);
   }
 
