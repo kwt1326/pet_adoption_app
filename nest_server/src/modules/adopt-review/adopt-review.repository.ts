@@ -1,4 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
+import { AdoptReviewPicture } from "src/entities/adopt-review-picture.entity";
 import { AdoptReview } from "src/entities/adopt-review.entity";
 import { AdopteeUser } from "src/entities/adoptee-user.entity";
 import { DeleteResult, EntityRepository, getConnection, Repository } from "typeorm";
@@ -11,6 +12,11 @@ interface createReviewInput {
 interface restOfUpdateInput {
   title?: string
   content?: string
+}
+
+interface createPictureInput {
+  adoptReview: AdoptReview
+  uri: string
 }
 
 @EntityRepository(AdoptReview)
@@ -56,5 +62,13 @@ export class AdoptReviewRepository extends Repository<AdoptReview>{
       .where("id = :id", { id })
       .execute();
     return result;
+  }
+}
+
+@EntityRepository(AdoptReviewPicture)
+export class AdoptReviewPictureRepository extends Repository<AdoptReviewPicture> {
+  async createAdoptReviewPicture(input: createPictureInput): Promise<AdoptReviewPicture> {
+    const picture = await this.create({ ...input });
+    return await this.save(picture);
   }
 }
