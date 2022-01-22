@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdoptReview } from '../../entities/adopt-review.entity';
 import { AdopteeUser } from '../../entities/adoptee-user.entity';
 import { AdopteeUserRepository } from '../user/user.repository';
-import { AdoptReviewRepository } from './adopt-review.repository';
+import { AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
 import { AdoptReviewResolver } from './adopt-review.resolver';
 import { AdoptReviewService } from './adopt-review.service';
 
@@ -14,6 +14,7 @@ import { AdoptReviewService } from './adopt-review.service';
       AdoptReview,
       AdoptReviewRepository,
       AdopteeUserRepository,
+      AdoptReviewPictureRepository,
     ]),
   ],
   providers: [
