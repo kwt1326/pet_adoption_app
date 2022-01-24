@@ -36,14 +36,26 @@ const Sidebar = (props) => {
             <li>
               분양받기
               <ul>
-                <li>강아지 분양받기</li>
-                <li>고양이 분양받기</li>
+                <li>
+                  <Link href="puppyadopt">
+                    <a>강아지 분양받기</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="catAdopt">
+                    <a>고양이 분양받기</a>
+                  </Link>
+                </li>
               </ul>
             </li>
             <li>
               커뮤니티
               <ul>
-                <li>입양후기</li>
+                <li>
+                  <Link href="adoptReview">
+                    <a>입양후기</a>
+                  </Link>
+                </li>
                 <li>
                   <Link href="event">
                     <a>이벤트 게시판</a>
@@ -51,7 +63,11 @@ const Sidebar = (props) => {
                 </li>
               </ul>
             </li>
-            <li>인증업체현황</li>
+            <li>
+              <Link href="authagency">
+                <a>인증업체현황</a>
+              </Link>
+            </li>
           </ul>
         </section>
       ) : null}
