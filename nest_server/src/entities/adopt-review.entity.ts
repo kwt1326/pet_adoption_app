@@ -1,6 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AdoptReviewPicture } from './adopt-review-picture.entity';
+import { AdoptionReviewLike } from './adopt-review-like.entity';
 import { AdopteeUser } from './adoptee-user.entity';
 import { CoreEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
@@ -11,7 +12,10 @@ import { ColumnTextType } from './database-data-type';
 @ObjectType()
 @Entity()
 export class AdoptReview extends CoreEntity {
-  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
+  @ManyToOne(
+    () => AdopteeUser,
+    { onDelete: 'CASCADE' }
+  )
   @JoinColumn()
   @Field(() => AdopteeUser)
   adopteeUser: AdopteeUser;
@@ -33,5 +37,16 @@ export class AdoptReview extends CoreEntity {
     () => [AdoptReviewPicture],
     { nullable: true }
   )
-  pictures: AdoptReviewPicture[];
+  pictures?: AdoptReviewPicture[];
+
+  @OneToMany(
+    () => AdoptionReviewLike,
+    (like) => like.likePost,
+    { nullable: true }
+  )
+  @Field(
+    () => [AdoptionReviewLike],
+    { nullable: true }
+  )
+  likes?: AdoptionReviewLike[];
 }

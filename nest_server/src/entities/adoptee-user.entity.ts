@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreDateEntity } from 'src/entities/common/core.entity';
 import { User } from './user.entity';
@@ -14,6 +14,10 @@ export class AdopteeUser extends CoreDateEntity {
   user: User;
 
   @Column({ nullable: false, unique: true })
+  @PrimaryColumn()
+  userId: number;
+
+  @Column({ nullable: false })
   @Field(() => String)
   nickname: string;
 
