@@ -1,5 +1,6 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { AdoptReviewPicture } from './adopt-review-picture.entity';
 import { AdopteeUser } from './adoptee-user.entity';
 import { CoreEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
@@ -22,4 +23,15 @@ export class AdoptReview extends CoreEntity {
   @Column(ColumnTextType)
   @Field(() => String)
   content: string;
+
+  @OneToMany(
+    () => AdoptReviewPicture,
+    (review) => review.adoptReview,
+    { nullable: true }
+  )
+  @Field(
+    () => [AdoptReviewPicture],
+    { nullable: true }
+  )
+  pictures: AdoptReviewPicture[];
 }

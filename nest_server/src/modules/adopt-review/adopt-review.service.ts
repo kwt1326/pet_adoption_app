@@ -4,7 +4,8 @@ import { AdoptReview } from 'src/entities/adopt-review.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdopteeUserRepository } from '../user/user.repository';
-import { AdoptReviewRepository } from './adopt-review.repository';
+import { AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
+import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 
@@ -16,6 +17,9 @@ export class AdoptReviewService {
 
     @InjectRepository(AdopteeUserRepository)
     private readonly adopteeUserRepository: AdopteeUserRepository,
+
+    @InjectRepository(AdoptReviewPictureRepository)
+    private readonly adoptReviewPictureRepository: AdoptReviewPictureRepository,
   ) {}
 
   async createAdoptReview(createReviewInput: CreateReviewInput): Promise<AdoptReview> {
@@ -46,5 +50,18 @@ export class AdoptReviewService {
       throw new BadRequestException(`There is no review with id of ${id}`);
     }
     return deleteResult;
+  }
+
+  async createAdoptReviewPicture(input: CreateAdoptReviewPictureInput) {
+    const { reviewId, uri } = input;
+    const adoptReview: AdoptReview = await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
+    return await this.adoptReviewPictureRepository.createAdoptReviewPicture({ adoptReview, uri });
+  }
+
+  async deleteAdoptReviewPicture(id: number) {
+    const resOutput: DeleteRequestOutput = {
+      result: (await this.adoptReviewPictureRepository.deleteAdoptReviewPicture(id)).affected
+    }
+    return resOutput;
   }
 }
