@@ -88,5 +88,5 @@ export class AdoptReviewService {
       await this.adoptionReviewLikeRepository.createAdoptionReviewLike(user, review);
     }
     return resOutput;
-  }W
+  }
 }

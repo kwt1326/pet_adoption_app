@@ -37,7 +37,9 @@ export class AdoptReview extends CoreEntity {
     () => [AdoptReviewPicture],
     { nullable: true }
   )
-  pictures: AdoptReviewPicture[];
+  pictures?: AdoptReviewPicture[];
+
+  @OneToMany(
     () => AdoptionReviewLike,
     (like) => like.likePost,
     { nullable: true }
