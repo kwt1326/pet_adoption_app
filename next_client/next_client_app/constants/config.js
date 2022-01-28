@@ -1,0 +1,1 @@
+export const IMG_HOST_URI = `https://res.cloudinary.com/${process.env.PRESET_NAME}/image/upload/v1642759988`;

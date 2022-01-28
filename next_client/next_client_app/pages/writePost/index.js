@@ -1,12 +1,15 @@
-import React from "react";
-import Header from "../../components/Header";
-import style from "./writePost.module.scss";
-import { useMutation } from "@apollo/client";
-import { useState } from "react";
-import { CREATE_POST_MUTATION } from "../../quries/adoptionPostQuery";
-import { responsePathAsArray } from "graphql";
+import React, { useState } from "react";
 import Axios from "axios";
+import { useMutation } from "@apollo/client";
 import { Image } from "cloudinary-react";
+import { responsePathAsArray } from "graphql";
+
+import Header from "../../components/Header";
+import { CREATE_POST_MUTATION } from "../../quries/adoptionPostQuery";
+import { IMG_HOST_URI } from "../../constants/config";
+
+import style from "./writePost.module.scss";
+
 function WritePost(props) {
   const [inputs, setInputs] = useState({
     title: "",
@@ -42,7 +45,6 @@ function WritePost(props) {
 
   const onClickChoose = (element) => {
     const { name, value } = element.target;
-    console.log(name, value);
     const checkboxes = document.getElementsByName(name);
     checkboxes.forEach((cb) => {
       cb.checked = false;
@@ -52,7 +54,6 @@ function WritePost(props) {
 
   const onChange = (e) => {
     const { value, name } = e.target;
-    console.log(value);
     setInputs({
       ...inputs,
       [name]: value,
@@ -60,7 +61,6 @@ function WritePost(props) {
   };
   const [postQuery] = useMutation(CREATE_POST_MUTATION);
   const writePostFunc = async (e) => {
-    console.log(inputs);
     e.preventDefault();
     const response = await postQuery({
       variables: {
@@ -82,15 +82,12 @@ function WritePost(props) {
       },
     });
     alert("제출이 완료되었습니다.");
-    console.log(response);
   };
 
   const uploadImage = (e) => {
     e.preventDefault();
-    //console.log(files[0]);
     const formData = new FormData();
     formData.append("file", image);
-    console.log(image);
     formData.append("upload_preset", "usyitpua");
     Axios.post(
       "https://api.cloudinary.com/v1_1/duzqh6xr0/image/upload",
@@ -323,8 +320,8 @@ function WritePost(props) {
                 <div className={style.pictureChoice}>
                   <Image
                     className={style.pictureitem}
-                    cloudName="usyitpua"
-                    src="https://res.cloudinary.com/duzqh6xr0/image/upload/v1642759988/ehwg1zei5rf3sj4mftmz.jpg"
+                    cloudName={process.env.CLOUD_NAME}
+                    src={`${IMG_HOST_URI}/ehwg1zei5rf3sj4mftmz.jpg`}
                   ></Image>
                 </div>
               </div>
