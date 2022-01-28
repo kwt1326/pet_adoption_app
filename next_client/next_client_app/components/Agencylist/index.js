@@ -1,6 +1,5 @@
 import React from "react";
-import AgencyListItem from "../AgencyListItem";
-
+import AgencyListItem from "./AgencyListItem";
 function AgencyList({ list }) {
   return (
     <div>

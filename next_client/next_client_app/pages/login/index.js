@@ -47,8 +47,19 @@ function login() {
       <Header children={"로그인"} />
       <div className={style.container}>
         <div className={style.inputArea}>
-          <input name="email" onChange={onChange} value={email} placeholder="email을 입력하세요"></input>
-          <input name="password" onChange={onChange} value={password} type="password" placeholder="비밀번호를 입력하세요"></input>
+          <input
+            name="email"
+            onChange={onChange}
+            value={email}
+            placeholder="email을 입력하세요"
+          ></input>
+          <input
+            name="password"
+            onChange={onChange}
+            value={password}
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+          ></input>
           <button onClick={loginFunc}>로그인</button>
         </div>
         <div className={style.search}>

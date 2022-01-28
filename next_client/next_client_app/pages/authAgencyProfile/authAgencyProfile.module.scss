@@ -1,0 +1,39 @@
+.basicInfo {
+  margin: 10px;
+  .title {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    .contentitem {
+      display: flex;
+      padding: 10px;
+      .subtitle {
+        color: gray;
+        width: 15%;
+      }
+    }
+  }
+}
+.authInfo {
+  margin: 10px;
+
+  .title {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    .contentitem {
+      display: flex;
+      padding: 10px;
+      .subtitle {
+        color: gray;
+        width: 15%;
+      }
+    }
+  }
+}
