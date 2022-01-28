@@ -89,10 +89,7 @@ function WritePost(props) {
     const formData = new FormData();
     formData.append("file", image);
     formData.append("upload_preset", "usyitpua");
-    Axios.post(
-      "https://api.cloudinary.com/v1_1/duzqh6xr0/image/upload",
-      formData
-    ).then((response) => {
+    Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
       console.log(response);
     });
   };
@@ -335,5 +332,3 @@ function WritePost(props) {
 }
 
 export default WritePost;
-/*
- */

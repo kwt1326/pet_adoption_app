@@ -28,11 +28,12 @@ const Main = () => {
       const result = await getPostsQuery({
         variables: {
           input: {
-            isProfit: isProfit,
-            /* isProfit */
+            isProfit,
           },
         },
       });
+
+      console.log(result.error.message)
       const prevData = petList || [];
       const curData = result.data?.getPosts || [];
  

@@ -5,7 +5,6 @@ function adoptReview() {
   return (
     <div>
       <Header children="입양 후기" />
-      ㅁㄴㅇㄹ
     </div>
   );
 }
