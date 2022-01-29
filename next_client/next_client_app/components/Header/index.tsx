@@ -4,7 +4,7 @@ import { FaHome, FaChevronLeft } from "react-icons/fa";
 import Sidebar from "../../components/modal/sidebar.js";
 import Link from "next/link";
 
-const Header = ({ children }) => {
+const Header = ({ children }: { children?: React.ReactNode }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
     setModalOpen(true);

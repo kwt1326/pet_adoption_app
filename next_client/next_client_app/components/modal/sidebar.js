@@ -11,7 +11,7 @@ const Sidebar = (props) => {
         <section>
           <div className={styles.userSection}>
             <div className={styles.login}>
-              <Link href="login/login">
+              <Link href="login">
                 <a>
                   <span>로그인하기</span>
                 </a>

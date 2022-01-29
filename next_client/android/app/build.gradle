@@ -18,11 +18,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            debuggable true
+            buildConfigField("String", "WEB_HOST_URI", "\"http://172.30.1.24:3000/\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "WEB_HOST_URI", "\"https://lucid-thompson-f417fe.netlify.app/\"")
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
