@@ -1,23 +1,18 @@
-import React from "react";
-import Header from "../../components/Header/index";
-import style from "./login.module.scss";
-import Link from "next/link";
-import { useState } from "react";
-import cookie from "js-cookie";
+import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
+import Link from "next/link";
+import cookie from "js-cookie";
+
+import Header from "../../components/Header/index";
 import { LOGIN_QUERY } from "../../quries/authQuery";
+import style from "./login.module.scss";
 
 function login() {
-  // const [inputs, setInputs] = useState({
-  //   email: "",
-  //   password: "",
-  // });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [trigger, setTrigger] = useState({
     isComplete: true,
   });
-  // const { email, password } = inputs;
 
   const onChange = (e) => {
     const { value, name } = e.target;
@@ -26,15 +21,17 @@ function login() {
     } else if (name === "password") {
       setPassword(value);
     }
-    // setInputs({
-    //   ...inputs,
-    //   [name]: value,
-    // });
   };
-  const [loginQuery, { data: token }] = useLazyQuery(LOGIN_QUERY);
-  // const [loginQuery] = useLazyQuery(LOGIN_QUERY);
+  const [loginQuery] = useLazyQuery(LOGIN_QUERY, {
+    variables: {
+      input: {
+        email: email,
+        password: password,
+      },
+    },
+    fetchPolicy: 'no-cache'
+  });
 
-  // GraphQL / LOGIN QUERY
   const loginFunc = async () => {
     if (email === "" || password === "") {
       setTrigger(() => {
@@ -44,19 +41,9 @@ function login() {
       setTrigger(() => {
         return { isComplete: true };
       });
-      const response = await loginQuery({
-        variables: {
-          input: {
-            email: email,
-            password: password,
-          },
-        },
-      });
-      console.log(response);
-      console.log(token);
+      const response = await loginQuery();
       const responseData = response?.data?.login;
       if (responseData) {
-        console.log(responseData.result.token);
         cookie.set(process.env.JWT_KEY, responseData.result.token);
       }
     }
@@ -67,8 +54,8 @@ function login() {
       <Header children={"로그인"} />
       <div className={style.container}>
         <div className={style.inputArea}>
-          <input name="email" onChange={onChange} value={email} placeholder="email을 입력하세요"></input>
-          <input name="password" onChange={onChange} value={password} type="password" placeholder="비밀번호를 입력하세요"></input>
+          <input name="email" onChange={onChange} placeholder="email을 입력하세요"></input>
+          <input name="password" onChange={onChange} type="password" placeholder="비밀번호를 입력하세요"></input>
           <button onClick={loginFunc}>로그인</button>
         </div>
         {trigger.isComplete === false ? "아이디, 비밀번호를 모두 입력하세요" : null}
