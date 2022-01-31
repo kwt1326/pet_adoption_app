@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 import Carousel from "./carousel";
 import Header from "../../components/Header/index";
@@ -20,10 +19,6 @@ const Main = () => {
   );
   const fetchData = async () => {
     try {
-      // const res = await axios.get(`/api/list?category=${category}&page=${page}`);
-      // setPetlist((petlist) => [...petlist, ...res.data.list]);
-
-      // isProfit : true >>> 이득을 보는 업체 false >>> 보호소 undefined >>> 전체
       const isProfit = undefined;
       const result = await getPostsQuery({
         variables: {
@@ -60,7 +55,7 @@ const Main = () => {
 
   return (
     <div>
-      <Header children={""} />
+      <Header />
       <Carousel />
       <ul className={styles.nav}>
         <li>

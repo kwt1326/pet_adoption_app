@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         val webView: WebView = findViewById(R.id.webview);
 
-        val webViewClass = WebViewClass(webView, WebAppInterface(this))
+        val webViewClass = WebViewClass(webView, WebAppInterface(this, webView))
         webViewClass.init()
     }
 
