@@ -15,10 +15,8 @@ function corpSignIn() {
     address: "",
     phoneNumber: "",
     pageUri: "",
-    email: "",
-    password: "",
   });
-  const { name, password, nickname, companyName, address, phoneNumber, pageUri } = inputs;
+  const { email, password, nickname, companyName, address, phoneNumber, pageUri } = inputs;
 
   const onChange = (e) => {
     const { value, name } = e.target;

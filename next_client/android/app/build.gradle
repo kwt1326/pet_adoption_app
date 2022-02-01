@@ -23,7 +23,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled false
             debuggable true
-            buildConfigField("String", "WEB_HOST_URI", "\"http://172.30.1.24:3000/\"")
+            buildConfigField("String", "WEB_HOST_URI", "\"http://172.30.1.5:3000/\"")
         }
         release {
             minifyEnabled false

@@ -1,5 +1,5 @@
 import { useQuery, gql } from "@apollo/client";
-import React, { Component } from "react";
+import React from "react";
 import Slider from "react-slick";
 import styles from "../../styles/Main.module.scss";
 import Link from "next/link";
