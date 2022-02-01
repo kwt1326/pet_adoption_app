@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
 @InputType()
 export class CheckDuplicateFieldInput {
@@ -12,11 +12,11 @@ export class CheckDuplicateFieldInput {
 @ObjectType()
 export class CheckDuplicateFieldOutput {
   @Field(() => Boolean, {
-    description:`
+    description: `
     The results of the duplicate check.
     true: Duplicate exists.
     false: There is no duplicate.
-    `
+    `,
   })
   result: boolean;
 }

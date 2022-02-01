@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateUserInput {
@@ -6,7 +6,7 @@ export class UpdateUserInput {
   password?: string;
 
   @Field(() => Boolean, { nullable: true })
-  isAvailable?: boolean
+  isAvailable?: boolean;
 }
 
 @InputType()
@@ -15,7 +15,7 @@ export class UpdateAdopteeUserInput {
   id: number;
 
   @Field(() => UpdateUserInput, { nullable: true })
-  user?: UpdateUserInput
+  user?: UpdateUserInput;
 
   @Field(() => String, { nullable: true })
   nickname?: string;
@@ -33,7 +33,7 @@ export class UpdateAdoptUserInput {
   id: number;
 
   @Field(() => UpdateUserInput, { nullable: true })
-  user?: UpdateUserInput
+  user?: UpdateUserInput;
 
   @Field(() => String, { nullable: true })
   nickname?: string;

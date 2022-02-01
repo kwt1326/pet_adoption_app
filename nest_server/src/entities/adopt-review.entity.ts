@@ -12,10 +12,7 @@ import { ColumnTextType } from './database-data-type';
 @ObjectType()
 @Entity()
 export class AdoptReview extends CoreEntity {
-  @ManyToOne(
-    () => AdopteeUser,
-    { onDelete: 'CASCADE' }
-  )
+  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => AdopteeUser)
   adopteeUser: AdopteeUser;
@@ -28,25 +25,15 @@ export class AdoptReview extends CoreEntity {
   @Field(() => String)
   content: string;
 
-  @OneToMany(
-    () => AdoptReviewPicture,
-    (review) => review.adoptReview,
-    { nullable: true }
-  )
-  @Field(
-    () => [AdoptReviewPicture],
-    { nullable: true }
-  )
+  @OneToMany(() => AdoptReviewPicture, (review) => review.adoptReview, {
+    nullable: true,
+  })
+  @Field(() => [AdoptReviewPicture], { nullable: true })
   pictures?: AdoptReviewPicture[];
 
-  @OneToMany(
-    () => AdoptionReviewLike,
-    (like) => like.likePost,
-    { nullable: true }
-  )
-  @Field(
-    () => [AdoptionReviewLike],
-    { nullable: true }
-  )
+  @OneToMany(() => AdoptionReviewLike, (like) => like.likePost, {
+    nullable: true,
+  })
+  @Field(() => [AdoptionReviewLike], { nullable: true })
   likes?: AdoptionReviewLike[];
 }

@@ -9,18 +9,18 @@ import { CoreIdEntity } from './common/core.entity';
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
-@Unique(["adopteeUser", "likePost"])
+@Unique(['adopteeUser', 'likePost'])
 export class AdoptionReviewLike extends CoreIdEntity {
-  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE'})
+  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => AdopteeUser)
   adopteeUser: AdopteeUser;
 
-  @ManyToOne(
-    () => AdoptReview,
-    (review) => review.likes,
-    { nullable: false, cascade: true, onDelete: 'CASCADE'}
-  )
+  @ManyToOne(() => AdoptReview, (review) => review.likes, {
+    nullable: false,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => AdoptReview)
   likePost: AdoptReview;
 }

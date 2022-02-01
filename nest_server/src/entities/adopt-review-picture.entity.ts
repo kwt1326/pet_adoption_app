@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreIdEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
@@ -10,10 +10,11 @@ import { ColumnTextType } from './database-data-type';
 @ObjectType()
 @Entity()
 export class AdoptReviewPicture extends CoreIdEntity {
-  @ManyToOne(
-    () => AdoptReview,
-    (adoptReview) => adoptReview.pictures,
-    { nullable: false, cascade: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => AdoptReview, (adoptReview) => adoptReview.pictures, {
+    nullable: false,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => AdoptReview)
   adoptReview: AdoptReview;
 

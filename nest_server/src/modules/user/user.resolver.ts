@@ -9,9 +9,15 @@ import { User } from '../../entities/user.entity';
 import { UserService } from './user.service';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
-import { UpdateAdopteeUserInput, UpdateAdoptUserInput } from './dtos/update-user.dto';
+import {
+  UpdateAdopteeUserInput,
+  UpdateAdoptUserInput,
+} from './dtos/update-user.dto';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
-import { CheckDuplicateFieldInput, CheckDuplicateFieldOutput } from './dtos/check-duplicate-field.dto';
+import {
+  CheckDuplicateFieldInput,
+  CheckDuplicateFieldOutput,
+} from './dtos/check-duplicate-field.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -24,15 +30,13 @@ export class UserResolver {
 
   @Query(() => CheckDuplicateFieldOutput)
   checkDuplicateField(
-    @Args('input') checkFieldInput: CheckDuplicateFieldInput
+    @Args('input') checkFieldInput: CheckDuplicateFieldInput,
   ) {
     return this.userService.checkDuplicateField(checkFieldInput);
   }
 
   @Query(() => AdopteeUser)
-  getOneAdopteeUser(
-    @Args('id') id: number
-  ) {
+  getOneAdopteeUser(@Args('id') id: number) {
     return this.userService.getOneAdopteeUser(id);
   }
 
@@ -42,9 +46,7 @@ export class UserResolver {
   }
 
   @Query(() => AdoptUser)
-  getOneAdoptUser(
-    @Args('id') id: number
-  ) {
+  getOneAdoptUser(@Args('id') id: number) {
     return this.userService.getOneAdoptUser(id);
   }
 
@@ -54,23 +56,19 @@ export class UserResolver {
   }
 
   @Mutation(() => DeleteRequestOutput)
-  deleteOneUser(
-    @Args('id') id: number
-  ) {
+  deleteOneUser(@Args('id') id: number) {
     return this.userService.deleteOneUser(id);
   }
 
   @Mutation(() => AdopteeUser)
   updateAdopteeUser(
-    @Args('input') updateAdopteeUserInput: UpdateAdopteeUserInput
+    @Args('input') updateAdopteeUserInput: UpdateAdopteeUserInput,
   ) {
     return this.userService.updateAdopteeUser(updateAdopteeUserInput);
   }
 
   @Mutation(() => AdoptUser)
-  updateAdoptUser(
-    @Args('input') updateAdoptUserInput: UpdateAdoptUserInput
-  ) {
+  updateAdoptUser(@Args('input') updateAdoptUserInput: UpdateAdoptUserInput) {
     return this.userService.updateAdoptUser(updateAdoptUserInput);
   }
 

@@ -11,7 +11,6 @@ import {
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-
   async findOneByEmail(email: string): Promise<User> {
     return await this.findOne({ email });
   }
@@ -26,7 +25,7 @@ export class UserRepository extends Repository<User> {
       .createQueryBuilder()
       .delete()
       .from(User)
-      .where("id = :id", { id })
+      .where('id = :id', { id })
       .execute();
     return result;
   }
@@ -42,24 +41,22 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
     await this.save(adopteeUser);
   }
 
-  async getOneAdopteeUserById(
-    id: number
-  ): Promise<AdopteeUser> {
-    const user = await this
-      .createQueryBuilder('adopteeUser')
+  async getOneAdopteeUserById(id: number): Promise<AdopteeUser> {
+    const user = await this.createQueryBuilder('adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
       .where('adopteeUser.userId = :id', { id })
       .getOne();
 
     if (!user) {
-      throw new BadRequestException(`The user with (id:${id}) isn't AdopteeUser`)
+      throw new BadRequestException(
+        `The user with (id:${id}) isn't AdopteeUser`,
+      );
     }
     return user;
   }
 
-  async getAllAdopteeUser(): Promise<AdopteeUser[]>{
-    const allUsers = await this
-      .createQueryBuilder('adopteeUser')
+  async getAllAdopteeUser(): Promise<AdopteeUser[]> {
+    const allUsers = await this.createQueryBuilder('adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
       .getMany();
     return allUsers;
@@ -67,7 +64,7 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
 
   async findOneAdopteeUserByNickname(nickname: string): Promise<AdopteeUser> {
     const adopteeUser = await this.findOne({ nickname });
-    return adopteeUser
+    return adopteeUser;
   }
 }
 
@@ -81,24 +78,20 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
     await this.save(adoptUser);
   }
 
-  async getOneAdoptUserById(
-    id: number
-  ): Promise<AdoptUser> {
-    const user = await this
-      .createQueryBuilder('adoptUser')
+  async getOneAdoptUserById(id: number): Promise<AdoptUser> {
+    const user = await this.createQueryBuilder('adoptUser')
       .leftJoinAndSelect('adoptUser.user', 'user')
       .where('adoptUser.userId = :id', { id })
       .getOne();
 
     if (!user) {
-      throw new BadRequestException(`The user with (id:${id}) isn't AdoptUser`)
+      throw new BadRequestException(`The user with (id:${id}) isn't AdoptUser`);
     }
     return user;
   }
 
-  async getAllAdoptUser(): Promise<AdoptUser[]>{
-    const allUsers = await this
-      .createQueryBuilder('adoptUser')
+  async getAllAdoptUser(): Promise<AdoptUser[]> {
+    const allUsers = await this.createQueryBuilder('adoptUser')
       .leftJoinAndSelect('adoptUser.user', 'user')
       .getMany();
     return allUsers;
@@ -106,6 +99,6 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
 
   async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {
     const adoptUser = await this.findOne({ nickname });
-    return adoptUser
+    return adoptUser;
   }
 }

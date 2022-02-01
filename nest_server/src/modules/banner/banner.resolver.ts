@@ -1,7 +1,5 @@
-import { HttpException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BannerContent } from 'src/entities/banner-content.entity';
-import { Banner } from 'src/entities/banner.entity';
 import { User, UserType } from 'src/entities/user.entity';
 import { AuthUser } from '../auth/decorators/auth.decorator';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';

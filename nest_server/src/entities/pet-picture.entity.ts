@@ -10,8 +10,11 @@ import { ColumnTextType } from './database-data-type';
 @ObjectType()
 @Entity()
 export class PetPicture extends CoreIdEntity {
-  @ManyToOne(() => Pets)
-  @JoinColumn()
+  @ManyToOne(() => Pets, (pet) => pet.pictures, {
+    nullable: false,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => Pets)
   pet: Pets;
 

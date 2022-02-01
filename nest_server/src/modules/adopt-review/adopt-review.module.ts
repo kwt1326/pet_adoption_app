@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdopteeUserRepository } from '../user/user.repository';
-import { AdoptionReviewLikeRepository, AdoptReviewPictureRepository, AdoptReviewRepository } from './adopt-review.repository';
+import {
+  AdoptionReviewLikeRepository,
+  AdoptReviewPictureRepository,
+  AdoptReviewRepository,
+} from './adopt-review.repository';
 import { AdoptReviewResolver } from './adopt-review.resolver';
 import { AdoptReviewService } from './adopt-review.service';
 
@@ -14,9 +18,6 @@ import { AdoptReviewService } from './adopt-review.service';
       AdoptionReviewLikeRepository,
     ]),
   ],
-  providers: [
-    AdoptReviewResolver,
-    AdoptReviewService,
-  ],
+  providers: [AdoptReviewResolver, AdoptReviewService],
 })
 export class AdoptReviewModule {}
