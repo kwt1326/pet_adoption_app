@@ -20,7 +20,7 @@ const isSSR = () => /noUserAgentSSR/i.test(userAgent);
 const isMobile = () => Boolean(isAndroid() || isIOS() || isOpera() || isWindows())
 const isDesktop = () => Boolean(!isMobile() && !isSSR())
 
-const localHost = isAndroid() ? '172.30.1.24' : 'localhost';
+const localHost = isAndroid() ? '172.30.1.5' : 'localhost';
 
 const uri = process.env.NODE_ENV === "production" ?
   "" :
@@ -41,7 +41,6 @@ const httpLink = createHttpLink({ uri });
 const authLink = setContext((_, { headers }) => {
   if (isAndroid()) {
     deviceLogin(token);
-    alert('success login android')
   }
   return {
     headers: {

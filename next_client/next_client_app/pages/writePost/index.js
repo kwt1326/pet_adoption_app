@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import Axios from "axios";
 import { useMutation } from "@apollo/client";
 import { Image } from "cloudinary-react";
-import { responsePathAsArray } from "graphql";
 
 import Header from "../../components/Header";
 import { CREATE_POST_MUTATION } from "../../quries/adoptionPostQuery";
-import { IMG_HOST_URI } from "../../constants/config";
+import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../constants/config";
 
 import style from "./writePost.module.scss";
 
@@ -88,7 +87,7 @@ function WritePost(props) {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", image);
-    formData.append("upload_preset", "usyitpua");
+    formData.append("upload_preset", process.env.CLOUD_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
       console.log(response);
     });
