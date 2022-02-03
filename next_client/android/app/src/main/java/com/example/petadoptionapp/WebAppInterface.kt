@@ -1,16 +1,30 @@
 package com.example.petadoptionapp
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.os.Build
+import android.webkit.CookieManager
+import android.webkit.CookieSyncManager // API 21 < current
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import android.widget.Toast
 
-class WebAppInterface(private val mContext: Context) {
+class WebAppInterface(private val mContext: Context, private val mWebView: WebView) {
+    private val cookieManager: CookieManager = CookieManager.getInstance()
+    private val hostUri: String = BuildConfig.WEB_HOST_URI;
+    private val pref = mContext.getSharedPreferences("pref", MODE_PRIVATE)
+    private val editor = pref.edit()
 
-    // val cookieManager: CookieManager = CookieManager.getInstance()
-    val pref = mContext.getSharedPreferences("PREF", 0)
-    val editor = pref.edit()
+    init {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CookieSyncManager.createInstance(mContext)
+        } else {
+            cookieManager.setAcceptCookie(true)
+            cookieManager.setAcceptThirdPartyCookies(mWebView, true);
+        }
 
-    /** Show a toast from the web page  */
+    }
+
     @JavascriptInterface
     fun showToast(toast: String) {
         Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show()
@@ -24,11 +38,11 @@ class WebAppInterface(private val mContext: Context) {
         return ""
     }
 
-    @JavascriptInterface
-    fun subscribeCheck(): Boolean {
-        val result = pref.getBoolean("subscribeCheck", false)
-        return result
-    }
+//    @JavascriptInterface
+//    fun subscribeCheck(): Boolean {
+//        val result = pref.getBoolean("subscribeCheck", false)
+//        return result
+//    }
 
     @JavascriptInterface
     fun onLogout() {
@@ -56,11 +70,15 @@ class WebAppInterface(private val mContext: Context) {
 
     @JavascriptInterface
     fun onLogin(jwt: String) {
-        // cookieManager.setCookie("$BASE_WEB_URL", "jwt=" + jwt);
-        // CookieSyncManager.getInstance().sync();
-        // subscribeToTopic(jwt)
-        // editor.putString("jwt", jwt)
-        // editor.commit()
+        cookieManager.setCookie(hostUri, "authorization=${jwt}; httpOnly")
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CookieSyncManager.getInstance().sync()
+        } else {
+            CookieManager.getInstance().flush()
+        }
+
+        editor.putString("jwt", jwt)
+        editor.commit()
     }
 
     @JavascriptInterface

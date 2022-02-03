@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import PetListItem from "./PetListItem";
 import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
@@ -17,23 +17,16 @@ function PetList({ category }) {
 
   const fetchData = async () => {
     try {
-      // const res = await axios.get(`/api/list?category=${category}&page=${page}`);
-      // setPetlist((petlist) => [...petlist, ...res.data.list]);
-
-      // isProfit : true >>> 이득을 보는 업체 false >>> 보호소 undefined >>> 전체
       const isProfit =
         category === "all" ? undefined : category === "petshop" ? true : false;
-      console.log(isProfit);
       const result = await getPostsQuery({
         variables: {
           input: {
             isProfit: isProfit,
             page: page,
-            /* isProfit */
           },
         },
       });
-      console.log(result);
       const prevData = petList || [];
       const curData = result.data?.getPosts || [];
 
@@ -66,9 +59,11 @@ function PetList({ category }) {
       }
     }
   }, [pageEndRef]);
+
   useEffect(() => {
     fetchData(page);
   }, []);
+
   useEffect(() => {
     setPage(1);
   }, [category]);
@@ -88,10 +83,10 @@ function PetList({ category }) {
           ))}
         </div>
         <button onClick={loadMore} ref={setPageEndRef}>
-          loadmore...
+          <span>loadmore...</span>
         </button>
       </section>
-    );
+    )
   }
   return null;
 }

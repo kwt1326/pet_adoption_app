@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 import Carousel from "./carousel";
 import Header from "../../components/Header/index";
@@ -13,17 +12,14 @@ import { useLazyQuery } from "@apollo/client";
 import cookie from "js-cookie";
 
 const Main = () => {
+  const router = useRouter();
   const [petList, setPetlist] = useState([]);
   const [list, setList] = useState([]);
-
   const router = useRouter();
   const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(GET_ADOPTION_POST_LIST2);
+
   const fetchData = async () => {
     try {
-      // const res = await axios.get(`/api/list?category=${category}&page=${page}`);
-      // setPetlist((petlist) => [...petlist, ...res.data.list]);
-
-      // isProfit : true >>> 이득을 보는 업체 false >>> 보호소 undefined >>> 전체
       const isProfit = undefined;
       const result = await getPostsQuery({
         variables: {
@@ -59,7 +55,7 @@ const Main = () => {
 
   return (
     <div>
-      <Header children={""} />
+      <Header />
       <Carousel />
       <ul className={styles.nav}>
         <li>
@@ -114,6 +110,7 @@ const Main = () => {
         <div className={styles.btnBox}>
           <button onClick={() => router.push("./puppyadopt")}>더 많은 고양이 보러가기 &#62;</button>
         </div>
+        <button onClick={() => router.push("./testUpload")}>테스트 페이지 입장</button>
       </div>
     </div>
   );
