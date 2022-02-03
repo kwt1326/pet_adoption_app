@@ -14,13 +14,17 @@
     background-color: #fff;
     animation: sidebar-show 0.3s;
     .userSection {
-      padding: 15px;
+      // padding: 15px;
       height: 100px;
       background-color: #eee;
       .login {
         display: flex;
         justify-content: space-between;
         margin-bottom: 5px;
+        padding: 15px 15px 0;
+        .loginText {
+          font-size: 14px;
+        }
         span {
           font-weight: 600;
           font-size: 18px;
@@ -32,6 +36,7 @@
         }
       }
       .info {
+        padding: 0 15px 15px;
         & > span {
           font-size: 12px;
           color: #999;
@@ -39,6 +44,22 @@
         & > div {
           margin-top: 5px;
           font-size: 14px;
+        }
+      }
+      .afterInfo {
+        border-top: 1px solid #ccc;
+        margin-top: 22px;
+        display: flex;
+        justify-content: space-between;
+        li {
+          padding: 10px;
+          width: 33%;
+          text-align: center;
+          border-right: 1px solid #ccc;
+          font-size: 14px;
+          &:focus {
+            background-color: #ddd;
+          }
         }
       }
     }

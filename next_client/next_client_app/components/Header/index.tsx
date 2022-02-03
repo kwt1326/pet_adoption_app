@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import styles from "./header.module.scss";
 import { FaHome, FaChevronLeft } from "react-icons/fa";
-import Sidebar from "../../components/modal/sidebar.js";
 import Link from "next/link";
+import Sidebar from "../../components/modal/sidebar.js";
 
-const Header = ({ children }: { children?: React.ReactNode }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const openModal = () => {
-    setModalOpen(true);
+const Header = ({ children }) => {
+  const [sidebarOnOff, setSidebarOnOff] = useState(false);
+  const onOffSidebar = () => {
+    setSidebarOnOff(!sidebarOnOff);
   };
-  const closeModal = () => {
-    setModalOpen(false);
-  };
+
   return (
     <div>
       <div className={styles.header}>
@@ -24,14 +22,14 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
             </Link>
           )}
           {!children && (
-            <div className={styles.hamberger} onClick={openModal}>
+            <div className={styles.hamberger} onClick={onOffSidebar}>
               <span></span>
               <span></span>
               <span></span>
             </div>
           )}
         </div>
-        <Sidebar open={modalOpen} close={closeModal}></Sidebar>
+        <Sidebar sidebarOnOff={sidebarOnOff} onOffSidebar={onOffSidebar} />
         {children && <div className={styles.title}> {children} </div>}
         {!children && (
           <div className={styles.logo}>

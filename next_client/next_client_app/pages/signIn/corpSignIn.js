@@ -17,7 +17,6 @@ function corpSignIn() {
     pageUri: "",
   });
   const { email, password, nickname, companyName, address, phoneNumber, pageUri } = inputs;
-
   const onChange = (e) => {
     const { value, name } = e.target;
     setInputs({
