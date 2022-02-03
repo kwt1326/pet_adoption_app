@@ -10,14 +10,14 @@ import styles from "../../styles/Main.module.scss";
 import Link from "next/link";
 import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
 import { useLazyQuery } from "@apollo/client";
+import cookie from "js-cookie";
 
 const Main = () => {
   const [petList, setPetlist] = useState([]);
   const [list, setList] = useState([]);
+
   const router = useRouter();
-  const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(
-    GET_ADOPTION_POST_LIST2
-  );
+  const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(GET_ADOPTION_POST_LIST2);
   const fetchData = async () => {
     try {
       // const res = await axios.get(`/api/list?category=${category}&page=${page}`);
@@ -33,10 +33,10 @@ const Main = () => {
         },
       });
 
-      console.log(result.error.message)
+      console.log(result.error.message);
       const prevData = petList || [];
       const curData = result.data?.getPosts || [];
- 
+
       if (petList) {
         const newData = petList.concat(curData);
         setPetlist(newData);
@@ -47,7 +47,6 @@ const Main = () => {
       console.error(e);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -111,7 +110,7 @@ const Main = () => {
           <button onClick={() => router.push("./puppyadopt")}>더 많은 강아지 보러가기 &#62;</button>
         </div>
         <h4>최신 고양이 분양글</h4>
-        <div className={petstyles.PetList}>{list && list.map((petitem,i) => <PetListItem petitem={petitem} key={i}></PetListItem>)}</div>
+        <div className={petstyles.PetList}>{list && list.map((petitem, i) => <PetListItem petitem={petitem} key={i}></PetListItem>)}</div>
         <div className={styles.btnBox}>
           <button onClick={() => router.push("./puppyadopt")}>더 많은 고양이 보러가기 &#62;</button>
         </div>

@@ -2,26 +2,18 @@ import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Link from "next/link";
 import cookie from "js-cookie";
-
 import Header from "../../components/Header/index";
 import { LOGIN_QUERY } from "../../quries/authQuery";
 import style from "./login.module.scss";
+import Router from "next/router";
+import SignInput from "../../components/signInput";
 
 function login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [trigger, setTrigger] = useState({
-    isComplete: true,
-  });
+  const [isCookie, setIsCookie] = useState("");
+  const [errorText, setErrorText] = useState("");
 
-  const onChange = (e) => {
-    const { value, name } = e.target;
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
-  };
   const [loginQuery] = useLazyQuery(LOGIN_QUERY, {
     variables: {
       input: {
@@ -29,38 +21,62 @@ function login() {
         password: password,
       },
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: "no-cache",
   });
-
-  const loginFunc = async () => {
-    if (email === "" || password === "") {
-      setTrigger(() => {
-        return { isComplete: false };
-      });
-    } else {
-      setTrigger(() => {
-        return { isComplete: true };
-      });
+  const validateForm = () => {
+    let validated = true;
+    if (!email) {
+      setErrorText("이메일을 입력하세요");
+      validated = false;
+    } else if (!password) {
+      setErrorText("비밀번호를 입력하세요");
+      validated = false;
+    }
+    return validated;
+  };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
       const response = await loginQuery();
       const responseData = response?.data?.login;
       if (responseData) {
         cookie.set(process.env.JWT_KEY, responseData.result.token);
+      }
+      if (response?.data?.login?.statusCode === 200) {
+        setIsCookie(responseData.result.token);
+        Router.push("/");
+      } else {
+        setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
     }
   };
 
   return (
     <div>
-      <Header children={"로그인"} />
+      <Header children={"로그인"} isLogin={isCookie} />
       <div className={style.container}>
-        <div className={style.inputArea}>
-          <input name="email" onChange={onChange} placeholder="email을 입력하세요"></input>
-          <input name="password" onChange={onChange} type="password" placeholder="비밀번호를 입력하세요"></input>
-          <button onClick={loginFunc}>로그인</button>
-        </div>
-        {trigger.isComplete === false ? "아이디, 비밀번호를 모두 입력하세요" : null}
+        <form onSubmit={onSubmit} className={style.inputArea}>
+          <SignInput
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            placeholder="email을 입력하세요"
+            type="text"
+          />
+          <SignInput
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            placeholder="비밀번호를 입력하세요"
+            type="password"
+          />
+          <div className={style.validText}>{errorText}</div>
+          <button type="submit">로그인</button>
+        </form>
+
         <div className={style.search}>
-          <div>아이디 찾기</div>
           <div>비밀번호 찾기</div>
         </div>
         <div className={style.join}>
