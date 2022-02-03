@@ -12,7 +12,6 @@ import { useLazyQuery } from "@apollo/client";
 import cookie from "js-cookie";
 
 const Main = () => {
-  const router = useRouter();
   const [petList, setPetlist] = useState([]);
   const [list, setList] = useState([]);
   const router = useRouter();
