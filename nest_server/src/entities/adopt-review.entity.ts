@@ -5,6 +5,7 @@ import { AdoptionReviewLike } from './adopt-review-like.entity';
 import { AdopteeUser } from './adoptee-user.entity';
 import { CoreEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
+import { Comment } from './comment.entity';
 
 // 입양후기 - 입양자(adoptee_user)만 작성가능
 
@@ -14,7 +15,7 @@ import { ColumnTextType } from './database-data-type';
 export class AdoptReview extends CoreEntity {
   @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
   @JoinColumn()
-  @Field(() => AdopteeUser)
+  @Field(() => AdopteeUser, { nullable: true })
   adopteeUser: AdopteeUser;
 
   @Column()
@@ -25,7 +26,7 @@ export class AdoptReview extends CoreEntity {
   @Field(() => String)
   content: string;
 
-  @OneToMany(() => AdoptReviewPicture, (review) => review.adoptReview, {
+  @OneToMany(() => AdoptReviewPicture, (picture) => picture.adoptReview, {
     nullable: true,
   })
   @Field(() => [AdoptReviewPicture], { nullable: true })
@@ -36,4 +37,10 @@ export class AdoptReview extends CoreEntity {
   })
   @Field(() => [AdoptionReviewLike], { nullable: true })
   likes?: AdoptionReviewLike[];
+
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    nullable: true,
+  })
+  @Field(() => [Comment], { nullable: true })
+  comments?: Comment[];
 }
