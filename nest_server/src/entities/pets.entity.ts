@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
@@ -81,6 +81,7 @@ export class Pets extends CoreEntity {
   @Field(() => String, { nullable: true })
   othersInfo: string; // 기타정보 // nullable
 
+  @OneToMany(() => PetPicture, (petPicture) => petPicture.pet)
   @Field(() => [PetPicture], { nullable: true })
   pictures?: PetPicture[];
 }

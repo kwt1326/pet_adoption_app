@@ -317,7 +317,7 @@ function WritePost(props) {
                   <Image
                     className={style.pictureitem}
                     cloudName={process.env.CLOUD_NAME}
-                    src={`${IMG_HOST_URI}/ehwg1zei5rf3sj4mftmz.jpg`}
+                    src={`https://res.cloudinary.com/${PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
                   ></Image>
                 </div>
               </div>

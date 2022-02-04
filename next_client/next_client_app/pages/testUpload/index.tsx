@@ -14,7 +14,7 @@ function TEST() {
     formData.append("upload_preset", process.env.CLOUD_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
       const requestData = response.data;
-      const fileName = requestData.public_id; // TEST: "vazvgydltxgzmxgrejud"
+      const fileName = requestData.secure_url; // TEST: https://res.cloudinary.com/duzqh6xr0/image/upload/v1643722889/vazvgydltxgzmxgrejud.png
     });
   };
 

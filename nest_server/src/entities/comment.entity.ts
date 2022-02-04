@@ -21,7 +21,7 @@ export class Comment extends CoreEntity {
   @Field(() => User)
   writter: User; // 작성자 pk
 
-  @ManyToOne(() => AdoptReview, { onDelete: 'CASCADE'})
+  @ManyToOne(() => AdoptReview, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => AdoptReview)
   post: AdoptReview; // 리뷰 pk
