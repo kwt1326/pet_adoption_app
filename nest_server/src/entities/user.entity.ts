@@ -1,6 +1,6 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
-import { Column, Entity, Unique } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 export enum UserType {
   ADOPT = 'ADOPT_USER',
@@ -17,7 +17,6 @@ export class User extends CoreEntity {
   email: string;
 
   @Column({ nullable: false })
-  @Field(() => String)
   password: string;
 
   @Column({ nullable: false })
