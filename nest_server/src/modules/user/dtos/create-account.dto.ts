@@ -21,8 +21,11 @@ export interface CreateAccountUserInput {
 @InputType()
 export class CreateAccountAdopteeUserInput extends IntersectionType(
   PickType(AdopteeUser, ['nickname'] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
+}
 
 @InputType()
 export class CreateAccountAdoptUserInput extends IntersectionType(
@@ -34,14 +37,20 @@ export class CreateAccountAdoptUserInput extends IntersectionType(
     'isAuthenticated',
     'authenticatedAt',
   ] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
+}
 
 @InputType()
 export class CreateAccountAdminUserInput extends IntersectionType(
   PickType(AdopteeUser, ['nickname'] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
+}
 
 @ObjectType()
 export class ErrorOutput {
