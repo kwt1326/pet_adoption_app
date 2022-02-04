@@ -1,4 +1,9 @@
-import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
 export enum LikeResult {
   CREATE,
@@ -7,7 +12,7 @@ export enum LikeResult {
 
 @InputType()
 export class AdoptionReviewLikeInput {
-  @Field(() => Number,{
+  @Field(() => Number, {
     description: `
     The ID of the AdopteeUser who clicked like.
     `,
@@ -17,7 +22,7 @@ export class AdoptionReviewLikeInput {
   @Field(() => Number, {
     description: `
     The ID of the AdoptReview where the likes will be recorded
-    `
+    `,
   })
   reviewId: number;
 }
@@ -31,8 +36,8 @@ registerEnumType(LikeResult, {
     },
     DELETE: {
       description: '좋아요 삭제 작업',
-    }
-  }
+    },
+  },
 });
 
 @ObjectType()

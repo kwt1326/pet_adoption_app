@@ -4,7 +4,10 @@ import { AdoptReview } from '../../entities/adopt-review.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdoptReviewService } from './adopt-review.service';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
-import { AdoptionReviewLikeInput, AdoptionReviewLikeOutput } from './dtos/review-like.dto';
+import {
+  AdoptionReviewLikeInput,
+  AdoptionReviewLikeOutput,
+} from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 
@@ -13,16 +16,12 @@ export class AdoptReviewResolver {
   constructor(private readonly adoptReviewService: AdoptReviewService) {}
 
   @Mutation(() => AdoptReview)
-  createAdoptReview(
-    @Args('input') createReviewInput: CreateReviewInput
-  ) {
+  createAdoptReview(@Args('input') createReviewInput: CreateReviewInput) {
     return this.adoptReviewService.createAdoptReview(createReviewInput);
   }
 
   @Query(() => AdoptReview)
-  getOneAdoptReview(
-    @Args('id') id: number
-  ) {
+  getOneAdoptReview(@Args('id') id: number) {
     return this.adoptReviewService.getOneAdoptReview(id);
   }
 
@@ -33,7 +32,7 @@ export class AdoptReviewResolver {
 
   @Mutation(() => AdoptReview)
   updateAdoptReview(
-    @Args('input') updateAdoptReviewInput: UpdateAdoptReviewInput
+    @Args('input') updateAdoptReviewInput: UpdateAdoptReviewInput,
   ) {
     return this.adoptReviewService.updateAdoptReview(updateAdoptReviewInput);
   }
@@ -45,22 +44,24 @@ export class AdoptReviewResolver {
 
   @Mutation(() => AdoptReviewPicture)
   createAdoptReviewPicture(
-    @Args('input') createAdoptReviewPictureInput: CreateAdoptReviewPictureInput
+    @Args('input') createAdoptReviewPictureInput: CreateAdoptReviewPictureInput,
   ) {
-    return this.adoptReviewService.createAdoptReviewPicture(createAdoptReviewPictureInput);
+    return this.adoptReviewService.createAdoptReviewPicture(
+      createAdoptReviewPictureInput,
+    );
   }
 
   @Mutation(() => DeleteRequestOutput)
-  deleteAdopteReviewPicture(
-    @Args('id') id: number
-  ) {
+  deleteAdopteReviewPicture(@Args('id') id: number) {
     return this.adoptReviewService.deleteAdoptReviewPicture(id);
   }
 
   @Mutation(() => AdoptionReviewLikeOutput)
   toggleAdoptionReviewLike(
-    @Args('input') adoptionReviewLikeInput: AdoptionReviewLikeInput
+    @Args('input') adoptionReviewLikeInput: AdoptionReviewLikeInput,
   ) {
-    return this.adoptReviewService.toggleAdoptionReviewLike(adoptionReviewLikeInput);
+    return this.adoptReviewService.toggleAdoptionReviewLike(
+      adoptionReviewLikeInput,
+    );
   }
 }

@@ -1,9 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from './common/core.entity';
 import { AdoptUser } from './adopt-user.entity';
 import { Pets } from './pets.entity';
 import { ColumnTextType } from './database-data-type';
+import { AdoptionPostLike } from './adoption-post-like.entity';
 
 // 소개글 - 펫 하나당 하나의 글 1:1
 
@@ -28,4 +36,8 @@ export class AdoptionPost extends CoreEntity {
   @Column(ColumnTextType)
   @Field(() => String)
   content: string;
+
+  @OneToMany(() => AdoptionPostLike, (like) => like.likePost)
+  @Field(() => [AdoptionPostLike], { nullable: true })
+  likes: AdoptionPostLike[];
 }

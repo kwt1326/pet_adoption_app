@@ -7,7 +7,7 @@ export class DeleteRequestOutput {
   @Field(() => Int, {
     description: `
     The number of records affected by the request.
-    `
+    `,
   })
   result: number;
 }

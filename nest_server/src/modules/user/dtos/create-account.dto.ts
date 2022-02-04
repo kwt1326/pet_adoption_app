@@ -43,16 +43,15 @@ export class CreateAccountAdminUserInput extends IntersectionType(
   PickType(User, ['email', 'password'] as const),
 ) {}
 
-
 @ObjectType()
 export class ErrorOutput {
   @Field(() => Int, {
-    description: 'Error Status code number'
+    description: 'Error Status code number',
   })
   statusCode: number;
 
   @Field(() => String, {
-    description: 'Error message'
+    description: 'Error message',
   })
   message: string;
 }
@@ -66,7 +65,7 @@ export class CreateAccountOutput {
 
   @Field(() => String, {
     nullable: true,
-    description: 'This is jwt-AccessToken'
+    description: 'This is jwt-AccessToken',
   })
   data?: string;
 }

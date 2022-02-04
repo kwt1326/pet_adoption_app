@@ -13,10 +13,13 @@ export class AdoptionPostLike extends CoreIdEntity {
   @ManyToOne(() => AdopteeUser)
   @JoinColumn()
   @Field(() => AdopteeUser)
-  adopteeUser: AdopteeUser;
+  adoptee: AdopteeUser;
 
-  @ManyToOne(() => AdoptionPost)
-  @JoinColumn()
+  @ManyToOne(() => AdoptionPost, (post) => post.likes, {
+    nullable: false,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => AdoptionPost)
   likePost: AdoptionPost;
 }

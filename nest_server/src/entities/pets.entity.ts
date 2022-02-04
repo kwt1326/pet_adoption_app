@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { ColumnTextType } from './database-data-type';
+import { PetPicture } from './pet-picture.entity';
 
 // 펫 데이터 - 업체만 생성 가능, 소개글 작성시 추가
 
@@ -79,4 +80,8 @@ export class Pets extends CoreEntity {
   @Column(ColumnTextType, { nullable: true })
   @Field(() => String, { nullable: true })
   othersInfo: string; // 기타정보 // nullable
+
+  @OneToMany(() => PetPicture, (petPicture) => petPicture.pet)
+  @Field(() => [PetPicture], { nullable: true })
+  pictures?: PetPicture[];
 }
