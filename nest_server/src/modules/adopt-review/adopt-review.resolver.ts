@@ -10,8 +10,12 @@ import {
 } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
+import { Comment } from 'src/entities/comment.entity';
+import { CreateCommentInput } from './dtos/create-comment.dto';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
+import { AuthUser } from '../auth/decorators/auth.decorator';
+import { User } from 'src/entities/user.entity';
 
 @Resolver()
 export class AdoptReviewResolver {
@@ -70,6 +74,18 @@ export class AdoptReviewResolver {
   ) {
     return this.adoptReviewService.toggleAdoptionReviewLike(
       adoptionReviewLikeInput,
+    );
+  }
+
+  @Mutation(() => Comment)
+  @UseGuards(GqlAuthGuard)
+  async createAdoptReviewComment(
+    @AuthUser() user: User,
+    @Args('input') createCommentInput: CreateCommentInput,
+  ): Promise<Comment> {
+    return await this.adoptReviewService.createAdoptReviewComment(
+      createCommentInput,
+      user,
     );
   }
 }
