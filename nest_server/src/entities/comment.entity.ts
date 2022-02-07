@@ -1,15 +1,6 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
-import { AdopteeUser } from './adoptee-user.entity';
 import { CoreEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
 
@@ -31,10 +22,9 @@ export class Comment extends CoreEntity {
   @Field(() => [Comment], { nullable: true })
   child?: Comment[];
 
-  @ManyToOne(() => AdopteeUser)
-  @JoinColumn({ name: 'writer_id' })
-  @Field(() => AdopteeUser)
-  writer: AdopteeUser; // 작성자 pk
+  @Column()
+  @Field(() => String)
+  writer: string; // 작성 유저의 닉네임
 
   @ManyToOne(() => AdoptReview, (post) => post.comments, {
     onDelete: 'CASCADE',

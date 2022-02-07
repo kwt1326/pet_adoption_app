@@ -166,12 +166,13 @@ export class AdoptReviewService {
     const parent: Comment = await this.exceptionHandlingOfParentComment(
       parentCommentId,
     );
-    const adopteeUser: AdopteeUser =
-      await this.adopteeUserRepository.getOneAdopteeUserById(user.id);
+    const writer: string = (
+      await this.adopteeUserRepository.getOneAdopteeUserById(user.id)
+    ).nickname;
     return await this.adoptReviewCommentRepository.createAdoptReviewComment({
       parent,
       post,
-      writer: adopteeUser,
+      writer,
       content,
     });
   }

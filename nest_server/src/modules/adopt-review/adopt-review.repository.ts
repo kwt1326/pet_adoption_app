@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { Comment } from 'src/entities/comment.entity';
-import { User } from 'src/entities/user.entity';
 
 interface CreateReviewInput {
   title: string;
@@ -30,7 +29,7 @@ interface CreatePictureInput {
 
 interface CreateCommentArgs {
   parent: Comment;
-  writer: AdopteeUser;
+  writer: string;
   post: AdoptReview;
   content: string;
 }
@@ -49,11 +48,9 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
     const review = await this.createQueryBuilder('review')
       .leftJoinAndSelect('review.likes', 'likes')
       .leftJoinAndSelect('review.comments', 'comment')
-      .leftJoinAndSelect('comment.writer', 'writer1')
       .leftJoinAndSelect('comment.post', 'post')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.child', 'child')
-      .leftJoinAndSelect('child.writer', 'writer2')
       .leftJoinAndSelect('post.adopteeUser', 'adopteeUser1')
       .leftJoinAndSelect('adopteeUser1.user', 'user1')
       .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
