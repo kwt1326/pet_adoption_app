@@ -18,6 +18,8 @@ import {
   CheckDuplicateFieldInput,
   CheckDuplicateFieldOutput,
 } from './dtos/check-duplicate-field.dto';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -60,6 +62,7 @@ export class UserResolver {
     return this.userService.deleteOneUser(id);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => AdopteeUser)
   updateAdopteeUser(
     @Args('input') updateAdopteeUserInput: UpdateAdopteeUserInput,
@@ -67,6 +70,7 @@ export class UserResolver {
     return this.userService.updateAdopteeUser(updateAdopteeUserInput);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptUser)
   updateAdoptUser(@Args('input') updateAdoptUserInput: UpdateAdoptUserInput) {
     return this.userService.updateAdoptUser(updateAdoptUserInput);
