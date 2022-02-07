@@ -23,8 +23,9 @@ import { CreateReviewInput } from './dtos/create-review.dto';
 import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 import { CreateCommentInput } from './dtos/create-comment.dto';
-import { User, UserType } from 'src/entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AdoptReviewService {
@@ -43,6 +44,8 @@ export class AdoptReviewService {
 
     @InjectRepository(AdoptReviewCommentRepository)
     private readonly adoptReviewCommentRepository: AdoptReviewCommentRepository,
+
+    private readonly userService: UserService,
   ) {}
 
   async createAdoptReview(
@@ -158,17 +161,16 @@ export class AdoptReviewService {
     input: CreateCommentInput,
     user: User,
   ): Promise<Comment> {
-    if (!(user && user.userType === UserType.ADOPTEE)) {
-      throw new UnauthorizedException('댓글을 작성할 권한이 없습니다.');
+    if (!user) {
+      throw new UnauthorizedException('로그인을 해주세요.');
     }
     const { parentCommentId, postId, content } = input;
     const post: AdoptReview = await this.exceptionHandlingOfPost(postId);
     const parent: Comment = await this.exceptionHandlingOfParentComment(
       parentCommentId,
     );
-    const writer: string = (
-      await this.adopteeUserRepository.getOneAdopteeUserById(user.id)
-    ).nickname;
+    const writer: string = (await this.userService.getOneUser(user.id))
+      .nickname;
     return await this.adoptReviewCommentRepository.createAdoptReviewComment({
       parent,
       post,
