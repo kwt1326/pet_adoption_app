@@ -60,6 +60,10 @@ export class AdoptReviewService {
     );
   }
 
+  async getOneReviewComment(id: number): Promise<Comment> {
+    return await this.adoptReviewCommentRepository.findOneCommentById(id);
+  }
+
   async getOneAdoptReview(id: number): Promise<AdoptReview> {
     return await this.adoptReviewRepository.getOneAdoptReviewById(id);
   }
@@ -109,7 +113,7 @@ export class AdoptReviewService {
   }
 
   isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
-    return review.likes.some((like) => like.adopteeUser.userId === userId);
+    return review.likes.some((like) => like.userId === userId);
   }
 
   async toggleAdoptionReviewLike(

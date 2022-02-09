@@ -88,4 +88,9 @@ export class AdoptReviewResolver {
       user,
     );
   }
+
+  @Query(() => Comment)
+  async getOneReviewComment(@Args('id') id: number) {
+    return await this.adoptReviewService.getOneReviewComment(id);
+  }
 }

@@ -7,6 +7,7 @@ import {
   DeleteResult,
   EntityRepository,
   getConnection,
+  getManager,
   Repository,
 } from 'typeorm';
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
@@ -46,31 +47,29 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
 
   async getOneAdoptReviewById(id: number): Promise<AdoptReview> {
     const review = await this.createQueryBuilder('review')
+      .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
+      .leftJoinAndSelect('adopteeUser.user', 'user')
+      .leftJoinAndSelect('review.pictures', 'pictures')
       .leftJoinAndSelect('review.likes', 'likes')
       .leftJoinAndSelect('review.comments', 'comment')
-      .leftJoinAndSelect('comment.post', 'post')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.child', 'child')
-      .leftJoinAndSelect('post.adopteeUser', 'adopteeUser1')
-      .leftJoinAndSelect('adopteeUser1.user', 'user1')
-      .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
-      .leftJoinAndSelect('review.adopteeUser', 'adopteeUser2')
-      .leftJoinAndSelect('adopteeUser2.user', 'user2')
-      .where('review.id = :id', { id })
+      .where('comment.parentId IS NULL')
+      .andWhere('review.id = :id', { id })
       .getOne();
-
-    if (!review) {
-      throw new BadRequestException(`There is no review with id of ${id}`);
-    }
     return review;
   }
 
   async getAllAdoptReview(): Promise<AdoptReview[]> {
     const allReviews = await this.createQueryBuilder('review')
-      .leftJoinAndSelect('review.likes', 'likes')
-      .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
       .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
+      .leftJoinAndSelect('review.pictures', 'pictures')
+      .leftJoinAndSelect('review.likes', 'likes')
+      .leftJoinAndSelect('review.comments', 'comment')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.child', 'child')
+      .where('comment.parentId IS NULL')
       .getMany();
     return allReviews;
   }
@@ -120,7 +119,10 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
     adopteeUser: AdopteeUser,
     likePost: AdoptReview,
   ) {
-    const reviewLike = await this.create({ adopteeUser, likePost });
+    const reviewLike = await this.create({
+      adopteeUser,
+      likePost,
+    });
     return await this.save(reviewLike);
   }
 
@@ -130,8 +132,8 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
       .createQueryBuilder()
       .delete()
       .from(AdoptionReviewLike)
-      .where('adopteeUser = :userId', { userId })
-      .andWhere('likePost = :reviewId', { reviewId })
+      .where('userId = :userId', { userId })
+      .andWhere('reviewId = :reviewId', { reviewId })
       .execute();
     return result;
   }
@@ -140,7 +142,7 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
 @EntityRepository(Comment)
 export class AdoptReviewCommentRepository extends Repository<Comment> {
   async findOneCommentById(id: number) {
-    return this.findOne({ id });
+    return this.findOne({ id }, { relations: ['parent', 'child'] });
   }
 
   async createAdoptReviewComment(createInput: CreateCommentArgs) {
