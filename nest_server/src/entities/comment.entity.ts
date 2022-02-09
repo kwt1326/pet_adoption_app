@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreEntity } from './common/core.entity';
@@ -14,26 +14,35 @@ export class Comment extends CoreEntity {
     nullable: true,
     cascade: true,
   })
-  @JoinColumn({ name: 'parent_id' })
-  @Field(() => Comment, { nullable: true })
-  parent?: Comment; // 부모 댓글 pk (순환 참조)
+  @JoinColumn({ name: 'parentId' })
+  parent?: Comment | null; // 부모 댓글 pk (순환 참조)
 
-  @OneToMany(() => Comment, (comment) => comment.parent, { nullable: true })
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  parentId: number;
+
+  @OneToMany(() => Comment, (comment) => comment.parent, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => [Comment], { nullable: true })
   child?: Comment[];
 
   @Column()
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   writer: string; // 작성 유저의 닉네임
 
   @ManyToOne(() => AdoptReview, (post) => post.comments, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'post_id' })
-  @Field(() => AdoptReview, { nullable: true })
+  @JoinColumn({ name: 'postId' })
   post: AdoptReview; // 리뷰 pk
 
+  @Column()
+  @Field(() => Int, { nullable: true })
+  postId: number;
+
   @Column(ColumnTextType)
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   content: string;
 }

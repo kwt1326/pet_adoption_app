@@ -1,5 +1,12 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  RelationId,
+} from 'typeorm';
 import { AdoptReviewPicture } from './adopt-review-picture.entity';
 import { AdoptionReviewLike } from './adopt-review-like.entity';
 import { AdopteeUser } from './adoptee-user.entity';
@@ -13,10 +20,16 @@ import { Comment } from './comment.entity';
 @ObjectType()
 @Entity()
 export class AdoptReview extends CoreEntity {
-  @ManyToOne(() => AdopteeUser, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @ManyToOne(() => AdopteeUser, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'userId' })
   @Field(() => AdopteeUser, { nullable: true })
   adopteeUser: AdopteeUser;
+
+  @Field(() => Int, { nullable: true })
+  userId: number;
 
   @Column()
   @Field(() => String)
@@ -28,18 +41,25 @@ export class AdoptReview extends CoreEntity {
 
   @OneToMany(() => AdoptReviewPicture, (picture) => picture.adoptReview, {
     nullable: true,
+    eager: true,
   })
   @Field(() => [AdoptReviewPicture], { nullable: true })
   pictures?: AdoptReviewPicture[];
 
   @OneToMany(() => AdoptionReviewLike, (like) => like.likePost, {
     nullable: true,
+    eager: true,
   })
   @Field(() => [AdoptionReviewLike], { nullable: true })
   likes?: AdoptionReviewLike[];
 
+  @RelationId((review: AdoptReview) => review.likes)
+  @Field(() => [Int], { nullable: true })
+  likeIds?: number[];
+
   @OneToMany(() => Comment, (comment) => comment.post, {
     nullable: true,
+    eager: true,
   })
   @Field(() => [Comment], { nullable: true })
   comments?: Comment[];
