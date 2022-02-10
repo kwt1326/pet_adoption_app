@@ -182,4 +182,13 @@ export class AdoptReviewService {
       content,
     });
   }
+
+  async deleteAdoptReviewComment(id: number) {
+    const resOutput: DeleteRequestOutput = {
+      result: (
+        await this.adoptReviewCommentRepository.deleteAdoptReviewComment(id)
+      ).affected,
+    };
+    return resOutput;
+  }
 }

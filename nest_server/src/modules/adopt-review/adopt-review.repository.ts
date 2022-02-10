@@ -149,4 +149,14 @@ export class AdoptReviewCommentRepository extends Repository<Comment> {
     const comment = this.create(createInput);
     return this.save(comment);
   }
+
+  async deleteAdoptReviewComment(id: number): Promise<DeleteResult> {
+    const result = getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(Comment)
+      .where('id = :id', { id })
+      .execute();
+    return result;
+  }
 }

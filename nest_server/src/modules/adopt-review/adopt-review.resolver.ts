@@ -63,7 +63,7 @@ export class AdoptReviewResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
-  deleteAdopteReviewPicture(@Args('id') id: number) {
+  deleteAdoptReviewPicture(@Args('id') id: number) {
     return this.adoptReviewService.deleteAdoptReviewPicture(id);
   }
 
@@ -90,7 +90,12 @@ export class AdoptReviewResolver {
   }
 
   @Query(() => Comment)
-  async getOneReviewComment(@Args('id') id: number) {
+  async getOneReviewComment(@Args('id') id: number): Promise<Comment> {
     return await this.adoptReviewService.getOneReviewComment(id);
+  }
+
+  @Mutation(() => DeleteRequestOutput)
+  deleteAdoptReviewComment(@Args('id') id: number) {
+    return this.adoptReviewService.deleteAdoptReviewComment(id);
   }
 }
