@@ -9,7 +9,10 @@ import {
   AdoptionReviewLikeOutput,
 } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
-import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
+import {
+  UpdateAdoptReviewCommentInput,
+  UpdateAdoptReviewInput,
+} from './dtos/update-review.dto';
 import { Comment } from 'src/entities/comment.entity';
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { UseGuards } from '@nestjs/common';
@@ -97,5 +100,14 @@ export class AdoptReviewResolver {
   @Mutation(() => DeleteRequestOutput)
   deleteAdoptReviewComment(@Args('id') id: number) {
     return this.adoptReviewService.deleteAdoptReviewComment(id);
+  }
+
+  @Mutation(() => Comment)
+  updateAdoptReviewComment(
+    @Args('input') updateAdoptReviewCommentInput: UpdateAdoptReviewCommentInput,
+  ) {
+    return this.adoptReviewService.updateAdoptReviewComment(
+      updateAdoptReviewCommentInput,
+    );
   }
 }

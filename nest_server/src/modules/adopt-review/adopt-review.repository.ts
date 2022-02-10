@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { Comment } from 'src/entities/comment.entity';
+import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
 
 interface CreateReviewInput {
   title: string;
@@ -158,5 +159,13 @@ export class AdoptReviewCommentRepository extends Repository<Comment> {
       .where('id = :id', { id })
       .execute();
     return result;
+  }
+
+  async updateAdoptReviewComment(
+    input: UpdateAdoptReviewCommentInput,
+  ): Promise<Comment> {
+    const { id, content } = input;
+    const review = { ...(await this.findOneCommentById(id)), content };
+    return this.save(review);
   }
 }

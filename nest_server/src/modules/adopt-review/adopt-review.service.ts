@@ -20,7 +20,10 @@ import {
   LikeResult,
 } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
-import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
+import {
+  UpdateAdoptReviewCommentInput,
+  UpdateAdoptReviewInput,
+} from './dtos/update-review.dto';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { User } from 'src/entities/user.entity';
@@ -190,5 +193,13 @@ export class AdoptReviewService {
       ).affected,
     };
     return resOutput;
+  }
+
+  async updateAdoptReviewComment(
+    updateCommentInput: UpdateAdoptReviewCommentInput,
+  ) {
+    return await this.adoptReviewCommentRepository.updateAdoptReviewComment(
+      updateCommentInput,
+    );
   }
 }
