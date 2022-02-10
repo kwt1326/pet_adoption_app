@@ -167,11 +167,10 @@ export class UserService {
   }
 
   async getOneUser(id: number): Promise<AdoptUser | AdopteeUser> {
-    try {
-      return await this.adoptUserRepository.getOneAdoptUserById(id);
-    } catch {
-      return await this.adopteeUserRepository.getOneAdopteeUserById(id);
-    }
+    return (
+      (await this.adoptUserRepository.getOneAdoptUserById(id)) ??
+      (await this.adopteeUserRepository.getOneAdopteeUserById(id))
+    );
   }
 
   async deleteOneUser(id: number) {
