@@ -26,8 +26,11 @@ export class AdoptReviewResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptReview)
-  createAdoptReview(@Args('input') createReviewInput: CreateReviewInput) {
-    return this.adoptReviewService.createAdoptReview(createReviewInput);
+  createAdoptReview(
+    @AuthUser() user: User,
+    @Args('input') createReviewInput: CreateReviewInput,
+  ) {
+    return this.adoptReviewService.createAdoptReview(user, createReviewInput);
   }
 
   @Query(() => AdoptReview)

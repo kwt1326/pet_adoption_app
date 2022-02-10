@@ -26,7 +26,7 @@ import {
 } from './dtos/update-review.dto';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
 import { CreateCommentInput } from './dtos/create-comment.dto';
-import { User } from 'src/entities/user.entity';
+import { User, UserType } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { UserService } from '../user/user.service';
 
@@ -52,11 +52,15 @@ export class AdoptReviewService {
   ) {}
 
   async createAdoptReview(
+    user: User,
     createReviewInput: CreateReviewInput,
   ): Promise<AdoptReview> {
-    const { adopteeUserId: id, ...createInput } = createReviewInput;
+    if (!(user && user.userType === UserType.ADOPTEE)) {
+      throw new UnauthorizedException('게시물을 생성할 권한이 없습니다.');
+    }
+    const { ...createInput } = createReviewInput;
     const adopteeUser: AdopteeUser =
-      await this.adopteeUserRepository.getOneAdopteeUserById(id);
+      await this.adopteeUserRepository.getOneAdopteeUserById(user.id);
     return await this.adoptReviewRepository.createAndSaveReview(
       adopteeUser,
       createInput,
