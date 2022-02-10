@@ -101,16 +101,20 @@ export class AdoptReviewResolver {
   }
 
   @Mutation(() => DeleteRequestOutput)
-  deleteAdoptReviewComment(@Args('id') id: number) {
-    return this.adoptReviewService.deleteAdoptReviewComment(id);
+  @UseGuards(GqlAuthGuard)
+  deleteAdoptReviewComment(@AuthUser() user: User, @Args('id') id: number) {
+    return this.adoptReviewService.deleteAdoptReviewComment(user, id);
   }
 
   @Mutation(() => Comment)
+  @UseGuards(GqlAuthGuard)
   updateAdoptReviewComment(
+    @AuthUser() user: User,
     @Args('input') updateAdoptReviewCommentInput: UpdateAdoptReviewCommentInput,
   ) {
     return this.adoptReviewService.updateAdoptReviewComment(
       updateAdoptReviewCommentInput,
+      user,
     );
   }
 }

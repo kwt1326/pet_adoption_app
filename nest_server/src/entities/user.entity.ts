@@ -1,6 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/entities/common/core.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Comment } from './comment.entity';
 
 export enum UserType {
   ADOPT = 'ADOPT_USER',
@@ -26,4 +27,7 @@ export class User extends CoreEntity {
   @Column({ default: true })
   @Field(() => Boolean, { nullable: true })
   isAvailable: boolean;
+
+  @OneToMany(() => Comment, (comment) => comment.writer)
+  comments: Comment[];
 }

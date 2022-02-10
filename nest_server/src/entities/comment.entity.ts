@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
+import { User } from './user.entity';
 
 // 입양후기 댓글 - 모든 권한 작성 가능
 
@@ -28,9 +29,19 @@ export class Comment extends CoreEntity {
   @Field(() => [Comment], { nullable: true })
   child?: Comment[];
 
+  @ManyToOne(() => User, (writer) => writer.comments, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'writerId' })
+  writer: User;
+
+  @Column()
+  @Field(() => Int, { nullable: true })
+  writerId: number;
+
   @Column()
   @Field(() => String, { nullable: true })
-  writer: string; // 작성 유저의 닉네임
+  writerNickname: string; // 작성 유저의 닉네임
 
   @ManyToOne(() => AdoptReview, (post) => post.comments, {
     onDelete: 'CASCADE',

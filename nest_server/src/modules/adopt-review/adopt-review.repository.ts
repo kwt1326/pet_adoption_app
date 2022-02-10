@@ -13,6 +13,7 @@ import {
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { Comment } from 'src/entities/comment.entity';
 import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
+import { User } from 'src/entities/user.entity';
 
 interface CreateReviewInput {
   title: string;
@@ -31,7 +32,8 @@ interface CreatePictureInput {
 
 interface CreateCommentArgs {
   parent: Comment;
-  writer: string;
+  writer: User;
+  writerNickname: string;
   post: AdoptReview;
   content: string;
 }

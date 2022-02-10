@@ -180,17 +180,26 @@ export class AdoptReviewService {
     const parent: Comment = await this.exceptionHandlingOfParentComment(
       parentCommentId,
     );
-    const writer: string = (await this.userService.getOneUser(user.id))
+    const writerNickname: string = (await this.userService.getOneUser(user.id))
       .nickname;
     return await this.adoptReviewCommentRepository.createAdoptReviewComment({
       parent,
       post,
-      writer,
+      writer: user,
+      writerNickname,
       content,
     });
   }
 
-  async deleteAdoptReviewComment(id: number) {
+  async deleteAdoptReviewComment(
+    user: User,
+    id: number,
+  ): Promise<DeleteRequestOutput> {
+    const comment: Comment =
+      await this.adoptReviewCommentRepository.findOneCommentById(id);
+    if (comment.writerId !== user.id) {
+      throw new UnauthorizedException('해당 댓글을 삭제할 권한이 없습니다.');
+    }
     const resOutput: DeleteRequestOutput = {
       result: (
         await this.adoptReviewCommentRepository.deleteAdoptReviewComment(id)
@@ -201,7 +210,15 @@ export class AdoptReviewService {
 
   async updateAdoptReviewComment(
     updateCommentInput: UpdateAdoptReviewCommentInput,
+    user: User,
   ) {
+    const comment: Comment =
+      await this.adoptReviewCommentRepository.findOneCommentById(
+        updateCommentInput.id,
+      );
+    if (comment.writerId !== user.id) {
+      throw new UnauthorizedException('해당 댓글을 갱신할 권한이 없습니다.');
+    }
     return await this.adoptReviewCommentRepository.updateAdoptReviewComment(
       updateCommentInput,
     );
