@@ -7,27 +7,22 @@ import Cookies from "js-cookie";
 import Router from "next/router";
 import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
 
-const getToken = async () => {
-  const token = Cookies.get("with-pet-jwt");
-  const base64Payload = token.split(".")[1];
-  const payload = Buffer.from(base64Payload, "base64");
-  const userTokenInfo = JSON.parse(payload.toString());
-  const [getOneAdopteeUser] = useLazyQuery(GET_ONE_ADOPTEE_USER, {
-    variables: {
-      id: userTokenInfo.id,
-    },
-  });
-
-  if (userTokenInfo.userType === "ADOPTEE_USER") {
-    const response = await getOneAdopteeUser();
-    console.log(response);
-  } else if (userTokenInfo.userType === "ADOPT_USER") {
-  }
-  console.log(userTokenInfo);
-  return token;
-};
-
 const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
+  const userTokenInfo = {};
+  const getToken = () => {
+    let isToken = false;
+    const token = Cookies.get("with-pet-jwt");
+    if (token) {
+      isToken = true;
+      const base64Payload = token.split(".")[1];
+      const payload = Buffer.from(base64Payload, "base64");
+      userTokenInfo = JSON.parse(payload.toString());
+    } else {
+      isToken = false;
+    }
+    return isToken;
+  };
+
   const closeSidebar = () => {
     onOffSidebar(false);
   };
@@ -35,12 +30,6 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     Cookies.remove("with-pet-jwt");
     Router.push("/");
   };
-
-  // email: "hh";
-  // iat: 1644421528;
-  // id: 21;
-  // isAvailable: true;
-  // userType: "ADOPTEE_USER";
 
   const BeforeLogin = () => {
     return (
@@ -73,7 +62,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span>닉네임</span> 님 어서오세요.
+            <span>{userTokenInfo.nickname}</span> 님 어서오세요.
           </div>
           <IoCloseOutline onClick={closeSidebar} />
         </div>
