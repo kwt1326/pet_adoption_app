@@ -38,12 +38,10 @@ export class AuthService {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const { id, userType, isAvailable } = user;
-      console.log(user.userType === UserType.ADOPTEE);
       const { nickname } =
         user.userType === UserType.ADOPTEE
           ? await this.adopteeUserRepository.getOneAdopteeUserById(id)
           : await this.adoptUserRepository.getOneAdoptUserById(id);
-      console.log(nickname);
       const payload: Payload = { id, email, userType, nickname, isAvailable };
       const accessToken = await this.jwtService.sign(payload);
 
