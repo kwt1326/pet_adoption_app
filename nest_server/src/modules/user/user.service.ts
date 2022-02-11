@@ -166,13 +166,6 @@ export class UserService {
     return await this.adoptUserRepository.getAllAdoptUser();
   }
 
-  async getOneUser(id: number): Promise<AdoptUser | AdopteeUser> {
-    return (
-      (await this.adoptUserRepository.getOneAdoptUserById(id)) ??
-      (await this.adopteeUserRepository.getOneAdopteeUserById(id))
-    );
-  }
-
   async deleteOneUser(id: number) {
     const deleteResult: DeleteRequestOutput = {
       result: (await this.userRepository.deleteOneUserById(id)).affected,

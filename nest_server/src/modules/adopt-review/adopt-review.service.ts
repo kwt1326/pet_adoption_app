@@ -7,7 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AdoptReview } from 'src/entities/adopt-review.entity';
 import { AdopteeUser } from 'src/entities/adoptee-user.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
-import { AdopteeUserRepository } from '../user/user.repository';
+import {
+  AdopteeUserRepository,
+  AdoptUserRepository,
+} from '../user/user.repository';
 import {
   AdoptionReviewLikeRepository,
   AdoptReviewCommentRepository,
@@ -39,6 +42,9 @@ export class AdoptReviewService {
     @InjectRepository(AdopteeUserRepository)
     private readonly adopteeUserRepository: AdopteeUserRepository,
 
+    @InjectRepository(AdopteeUserRepository)
+    private readonly adoptUserRepository: AdoptUserRepository,
+
     @InjectRepository(AdoptReviewPictureRepository)
     private readonly adoptReviewPictureRepository: AdoptReviewPictureRepository,
 
@@ -47,8 +53,6 @@ export class AdoptReviewService {
 
     @InjectRepository(AdoptReviewCommentRepository)
     private readonly adoptReviewCommentRepository: AdoptReviewCommentRepository,
-
-    private readonly userService: UserService,
   ) {}
 
   async createAdoptReview(
@@ -180,8 +184,10 @@ export class AdoptReviewService {
     const parent: Comment = await this.exceptionHandlingOfParentComment(
       parentCommentId,
     );
-    const writerNickname: string = (await this.userService.getOneUser(user.id))
-      .nickname;
+    const { nickname: writerNickname } =
+      user.userType === UserType.ADOPTEE
+        ? await this.adopteeUserRepository.getOneAdopteeUserById(user.id)
+        : await this.adoptUserRepository.getOneAdoptUserById(user.id);
     return await this.adoptReviewCommentRepository.createAdoptReviewComment({
       parent,
       post,
