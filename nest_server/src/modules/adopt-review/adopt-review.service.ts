@@ -152,7 +152,7 @@ export class AdoptReviewService {
     return resOutput;
   }
 
-  async exceptionHandlingOfPost(postId: number) {
+  async exceptionHandingForGetPost(postId: number) {
     const post = await this.adoptReviewRepository.getOneAdoptReviewById(postId);
     if (!post) {
       throw new BadRequestException('존재하지 않는 게시물입니다.');
@@ -160,7 +160,7 @@ export class AdoptReviewService {
     return post;
   }
 
-  async exceptionHandlingOfParentComment(parentId: number) {
+  async exceptionHandlingForGetParent(parentId: number) {
     if (parentId) {
       const parentComment =
         await this.adoptReviewCommentRepository.findOneCommentById(parentId);
@@ -180,8 +180,8 @@ export class AdoptReviewService {
       throw new UnauthorizedException('로그인을 해주세요.');
     }
     const { parentCommentId, postId, content } = input;
-    const post: AdoptReview = await this.exceptionHandlingOfPost(postId);
-    const parent: Comment = await this.exceptionHandlingOfParentComment(
+    const post: AdoptReview = await this.exceptionHandingForGetPost(postId);
+    const parent: Comment = await this.exceptionHandlingForGetParent(
       parentCommentId,
     );
     const { nickname: writerNickname } =
