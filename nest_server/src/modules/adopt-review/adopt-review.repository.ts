@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { AdoptReviewPicture } from 'src/entities/adopt-review-picture.entity';
 import { AdoptionReviewLike } from 'src/entities/adopt-review-like.entity';
 import { AdoptReview } from 'src/entities/adopt-review.entity';
@@ -7,10 +6,8 @@ import {
   DeleteResult,
   EntityRepository,
   getConnection,
-  getManager,
   Repository,
 } from 'typeorm';
-import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 import { Comment } from 'src/entities/comment.entity';
 import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
 import { User } from 'src/entities/user.entity';
@@ -55,6 +52,7 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
       .leftJoinAndSelect('review.pictures', 'pictures')
       .leftJoinAndSelect('review.likes', 'likes')
       .leftJoinAndSelect('review.comments', 'comment')
+      .leftJoinAndSelect('likes.adopteeUser', 'likeUser')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.child', 'child')
       .where('comment.parentId IS NULL')
@@ -70,6 +68,7 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
       .leftJoinAndSelect('review.pictures', 'pictures')
       .leftJoinAndSelect('review.likes', 'likes')
       .leftJoinAndSelect('review.comments', 'comment')
+      .leftJoinAndSelect('likes.adopteeUser', 'likeUser')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.child', 'child')
       .where('comment.parentId IS NULL')
@@ -129,8 +128,7 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
     return await this.save(reviewLike);
   }
 
-  async deleteAdoptionReviewLike(input: AdoptionReviewLikeInput) {
-    const { userId, reviewId } = input;
+  async deleteAdoptionReviewLike(reviewId: number, userId: number) {
     const result = await getConnection()
       .createQueryBuilder()
       .delete()
@@ -164,10 +162,11 @@ export class AdoptReviewCommentRepository extends Repository<Comment> {
   }
 
   async updateAdoptReviewComment(
+    comment: Comment,
     input: UpdateAdoptReviewCommentInput,
   ): Promise<Comment> {
-    const { id, content } = input;
-    const review = { ...(await this.findOneCommentById(id)), content };
-    return this.save(review);
+    const { content } = input;
+    const changedComment = { ...comment, content };
+    return this.save(changedComment);
   }
 }
