@@ -7,30 +7,42 @@ import {
   DeleteResult,
   EntityRepository,
   getConnection,
+  getManager,
   Repository,
 } from 'typeorm';
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
+import { Comment } from 'src/entities/comment.entity';
+import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
+import { User } from 'src/entities/user.entity';
 
-interface createReviewInput {
+interface CreateReviewInput {
   title: string;
   content: string;
 }
 
-interface restOfUpdateInput {
+interface RestOfUpdateInput {
   title?: string;
   content?: string;
 }
 
-interface createPictureInput {
+interface CreatePictureInput {
   adoptReview: AdoptReview;
   uri: string;
+}
+
+interface CreateCommentArgs {
+  parent: Comment;
+  writer: User;
+  writerNickname: string;
+  post: AdoptReview;
+  content: string;
 }
 
 @EntityRepository(AdoptReview)
 export class AdoptReviewRepository extends Repository<AdoptReview> {
   async createAndSaveReview(
     adopteeUser: AdopteeUser,
-    createInput: createReviewInput,
+    createInput: CreateReviewInput,
   ): Promise<AdoptReview> {
     const adoptReview = await this.create({ adopteeUser, ...createInput });
     return await this.save(adoptReview);
@@ -38,32 +50,36 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
 
   async getOneAdoptReviewById(id: number): Promise<AdoptReview> {
     const review = await this.createQueryBuilder('review')
-      .leftJoinAndSelect('review.likes', 'likes')
-      .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
       .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
-      .where('review.id = :id', { id })
+      .leftJoinAndSelect('review.pictures', 'pictures')
+      .leftJoinAndSelect('review.likes', 'likes')
+      .leftJoinAndSelect('review.comments', 'comment')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.child', 'child')
+      .where('comment.parentId IS NULL')
+      .andWhere('review.id = :id', { id })
       .getOne();
-
-    if (!review) {
-      throw new BadRequestException(`There is no review with id of ${id}`);
-    }
     return review;
   }
 
   async getAllAdoptReview(): Promise<AdoptReview[]> {
     const allReviews = await this.createQueryBuilder('review')
-      .leftJoinAndSelect('review.likes', 'likes')
-      .leftJoinAndSelect('likes.adopteeUser', 'likeAdopteeUser')
       .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
+      .leftJoinAndSelect('review.pictures', 'pictures')
+      .leftJoinAndSelect('review.likes', 'likes')
+      .leftJoinAndSelect('review.comments', 'comment')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.child', 'child')
+      .where('comment.parentId IS NULL')
       .getMany();
     return allReviews;
   }
 
   async updateAdoptReview(
     review: AdoptReview,
-    updateInput: restOfUpdateInput,
+    updateInput: RestOfUpdateInput,
   ): Promise<AdoptReview> {
     const updatedReview: AdoptReview = { ...review, ...updateInput };
     return await this.save(updatedReview);
@@ -83,7 +99,7 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
 @EntityRepository(AdoptReviewPicture)
 export class AdoptReviewPictureRepository extends Repository<AdoptReviewPicture> {
   async createAdoptReviewPicture(
-    input: createPictureInput,
+    input: CreatePictureInput,
   ): Promise<AdoptReviewPicture> {
     const picture = await this.create({ ...input });
     return await this.save(picture);
@@ -106,7 +122,10 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
     adopteeUser: AdopteeUser,
     likePost: AdoptReview,
   ) {
-    const reviewLike = await this.create({ adopteeUser, likePost });
+    const reviewLike = await this.create({
+      adopteeUser,
+      likePost,
+    });
     return await this.save(reviewLike);
   }
 
@@ -116,9 +135,39 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
       .createQueryBuilder()
       .delete()
       .from(AdoptionReviewLike)
-      .where('adopteeUser = :userId', { userId })
-      .andWhere('likePost = :reviewId', { reviewId })
+      .where('userId = :userId', { userId })
+      .andWhere('reviewId = :reviewId', { reviewId })
       .execute();
     return result;
+  }
+}
+
+@EntityRepository(Comment)
+export class AdoptReviewCommentRepository extends Repository<Comment> {
+  async findOneCommentById(id: number) {
+    return this.findOne({ id }, { relations: ['parent', 'child'] });
+  }
+
+  async createAdoptReviewComment(createInput: CreateCommentArgs) {
+    const comment = this.create(createInput);
+    return this.save(comment);
+  }
+
+  async deleteAdoptReviewComment(id: number): Promise<DeleteResult> {
+    const result = getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(Comment)
+      .where('id = :id', { id })
+      .execute();
+    return result;
+  }
+
+  async updateAdoptReviewComment(
+    input: UpdateAdoptReviewCommentInput,
+  ): Promise<Comment> {
+    const { id, content } = input;
+    const review = { ...(await this.findOneCommentById(id)), content };
+    return this.save(review);
   }
 }

@@ -30,15 +30,15 @@ import {
 export class UserService {
   constructor(
     @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
+    private readonly userRepository: UserRepository,
 
     @InjectRepository(AdopteeUserRepository)
-    private adopteeUserRepository: AdopteeUserRepository,
+    private readonly adopteeUserRepository: AdopteeUserRepository,
 
     @InjectRepository(AdoptUserRepository)
-    private adoptUserRepository: AdoptUserRepository,
+    private readonly adoptUserRepository: AdoptUserRepository,
 
-    private authService: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   async checkDuplicateEmail(email: string): Promise<boolean> {
@@ -131,19 +131,19 @@ export class UserService {
   }
 
   async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
-    return this.adopteeUserRepository.getOneAdopteeUserById(id);
+    return await this.adopteeUserRepository.getOneAdopteeUserById(id);
   }
 
   async getAllAdopteeUser(): Promise<AdopteeUser[]> {
-    return this.adopteeUserRepository.getAllAdopteeUser();
+    return await this.adopteeUserRepository.getAllAdopteeUser();
   }
 
   async getOneAdoptUser(id: number): Promise<AdoptUser> {
-    return this.adoptUserRepository.getOneAdoptUserById(id);
+    return await this.adoptUserRepository.getOneAdoptUserById(id);
   }
 
   async getAllAdoptUser(): Promise<AdoptUser[]> {
-    return this.adoptUserRepository.getAllAdoptUser();
+    return await this.adoptUserRepository.getAllAdoptUser();
   }
 
   async deleteOneUser(id: number) {
