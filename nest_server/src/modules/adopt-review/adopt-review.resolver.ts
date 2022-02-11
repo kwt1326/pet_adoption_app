@@ -9,9 +9,16 @@ import {
   AdoptionReviewLikeOutput,
 } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
-import { UpdateAdoptReviewInput } from './dtos/update-review.dto';
+import {
+  UpdateAdoptReviewCommentInput,
+  UpdateAdoptReviewInput,
+} from './dtos/update-review.dto';
+import { Comment } from 'src/entities/comment.entity';
+import { CreateCommentInput } from './dtos/create-comment.dto';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
+import { AuthUser } from '../auth/decorators/auth.decorator';
+import { User } from 'src/entities/user.entity';
 
 @Resolver()
 export class AdoptReviewResolver {
@@ -19,8 +26,11 @@ export class AdoptReviewResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptReview)
-  createAdoptReview(@Args('input') createReviewInput: CreateReviewInput) {
-    return this.adoptReviewService.createAdoptReview(createReviewInput);
+  createAdoptReview(
+    @AuthUser() user: User,
+    @Args('input') createReviewInput: CreateReviewInput,
+  ) {
+    return this.adoptReviewService.createAdoptReview(user, createReviewInput);
   }
 
   @Query(() => AdoptReview)
@@ -59,7 +69,7 @@ export class AdoptReviewResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
-  deleteAdopteReviewPicture(@Args('id') id: number) {
+  deleteAdoptReviewPicture(@Args('id') id: number) {
     return this.adoptReviewService.deleteAdoptReviewPicture(id);
   }
 
@@ -70,6 +80,41 @@ export class AdoptReviewResolver {
   ) {
     return this.adoptReviewService.toggleAdoptionReviewLike(
       adoptionReviewLikeInput,
+    );
+  }
+
+  @Mutation(() => Comment)
+  @UseGuards(GqlAuthGuard)
+  async createAdoptReviewComment(
+    @AuthUser() user: User,
+    @Args('input') createCommentInput: CreateCommentInput,
+  ): Promise<Comment> {
+    return await this.adoptReviewService.createAdoptReviewComment(
+      createCommentInput,
+      user,
+    );
+  }
+
+  @Query(() => Comment)
+  async getOneReviewComment(@Args('id') id: number): Promise<Comment> {
+    return await this.adoptReviewService.getOneReviewComment(id);
+  }
+
+  @Mutation(() => DeleteRequestOutput)
+  @UseGuards(GqlAuthGuard)
+  deleteAdoptReviewComment(@AuthUser() user: User, @Args('id') id: number) {
+    return this.adoptReviewService.deleteAdoptReviewComment(user, id);
+  }
+
+  @Mutation(() => Comment)
+  @UseGuards(GqlAuthGuard)
+  updateAdoptReviewComment(
+    @AuthUser() user: User,
+    @Args('input') updateAdoptReviewCommentInput: UpdateAdoptReviewCommentInput,
+  ) {
+    return this.adoptReviewService.updateAdoptReviewComment(
+      updateAdoptReviewCommentInput,
+      user,
     );
   }
 }

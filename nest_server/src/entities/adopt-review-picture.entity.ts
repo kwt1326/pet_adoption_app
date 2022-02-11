@@ -1,5 +1,5 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreIdEntity } from './common/core.entity';
 import { ColumnTextType } from './database-data-type';
@@ -15,8 +15,12 @@ export class AdoptReviewPicture extends CoreIdEntity {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @Field(() => AdoptReview)
+  @JoinColumn({ name: 'reviewId' })
+  @Field(() => AdoptReview, { nullable: true })
   adoptReview: AdoptReview;
+
+  @Field(() => Int, { nullable: true })
+  reviewId: number;
 
   @Column(ColumnTextType)
   @Field(() => String)

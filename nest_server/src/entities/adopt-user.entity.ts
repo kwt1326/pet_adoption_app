@@ -9,7 +9,12 @@ import { ColumnTextType } from './database-data-type';
 @Entity()
 export class AdoptUser extends CoreDateEntity {
   // PK ref User.id
-  @OneToOne(() => User, { primary: true, cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => User, {
+    primary: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn({ name: 'userId' })
   @Field(() => User, { nullable: true })
   user: User;
