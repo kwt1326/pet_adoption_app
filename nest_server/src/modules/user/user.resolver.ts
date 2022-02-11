@@ -20,6 +20,7 @@ import {
 } from './dtos/check-duplicate-field.dto';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
+import { AuthUser } from '../auth/decorators/auth.decorator';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -57,23 +58,28 @@ export class UserResolver {
     return this.userService.getAllAdoptUser();
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
-  deleteOneUser(@Args('id') id: number) {
-    return this.userService.deleteOneUser(id);
+  deleteOneUser(@Args('id') id: number, @AuthUser() user: User) {
+    return this.userService.deleteOneUser(id, user);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdopteeUser)
   updateAdopteeUser(
     @Args('input') updateAdopteeUserInput: UpdateAdopteeUserInput,
+    @AuthUser() user: User,
   ) {
-    return this.userService.updateAdopteeUser(updateAdopteeUserInput);
+    return this.userService.updateAdopteeUser(updateAdopteeUserInput, user);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptUser)
-  updateAdoptUser(@Args('input') updateAdoptUserInput: UpdateAdoptUserInput) {
-    return this.userService.updateAdoptUser(updateAdoptUserInput);
+  updateAdoptUser(
+    @Args('input') updateAdoptUserInput: UpdateAdoptUserInput,
+    @AuthUser() user: User,
+  ) {
+    return this.userService.updateAdoptUser(updateAdoptUserInput, user);
   }
 
   @Mutation(() => CreateAccountOutput)

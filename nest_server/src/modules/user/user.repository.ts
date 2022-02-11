@@ -8,6 +8,10 @@ import {
   CreateAccountAdoptUserInput,
   CreateAccountUserInput,
 } from './dtos/create-account.dto';
+import {
+  UpdateAdopteeUserInput,
+  UpdateAdoptUserInput,
+} from './dtos/update-user.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -66,6 +70,18 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
     const adopteeUser = await this.findOne({ nickname });
     return adopteeUser;
   }
+
+  async updateAdopteeUser(
+    adopteeUser: AdopteeUser,
+    input: UpdateAdopteeUserInput,
+  ) {
+    const { user: userInput, ...adopteeInput } = input;
+    adopteeUser.user = { ...adopteeUser.user, ...userInput };
+    return await this.save({
+      ...adopteeUser,
+      ...adopteeInput,
+    });
+  }
 }
 
 @EntityRepository(AdoptUser)
@@ -83,10 +99,6 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
       .leftJoinAndSelect('adoptUser.user', 'user')
       .where('adoptUser.userId = :id', { id })
       .getOne();
-
-    if (!user) {
-      throw new BadRequestException(`The user with (id:${id}) isn't AdoptUser`);
-    }
     return user;
   }
 
@@ -100,5 +112,14 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
   async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {
     const adoptUser = await this.findOne({ nickname });
     return adoptUser;
+  }
+
+  async updateAdoptUser(adoptUser: AdoptUser, input: UpdateAdoptUserInput) {
+    const { user: userInput, ...adoptInput } = input;
+    adoptUser.user = { ...adoptUser.user, ...userInput };
+    return await this.save({
+      ...adoptUser,
+      ...adoptInput,
+    });
   }
 }

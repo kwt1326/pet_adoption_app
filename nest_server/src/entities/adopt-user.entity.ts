@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { CoreDateEntity } from 'src/entities/common/core.entity';
 import { User } from './user.entity';
 import { ColumnTextType } from './database-data-type';
@@ -21,6 +21,7 @@ export class AdoptUser extends CoreDateEntity {
 
   // PK ref User.id
   @PrimaryColumn()
+  @Field(() => Int, { nullable: true })
   userId: number;
 
   @Column({ nullable: false, unique: true })
