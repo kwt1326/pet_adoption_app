@@ -53,28 +53,10 @@ export class CreateAccountAdminUserInput extends IntersectionType(
 }
 
 @ObjectType()
-export class ErrorOutput {
-  @Field(() => Int, {
-    description: 'Error Status code number',
-  })
-  statusCode: number;
-
-  @Field(() => String, {
-    description: 'Error message',
-  })
-  message: string;
-}
-
-@ObjectType()
 export class CreateAccountOutput {
-  @Field(() => ErrorOutput, {
-    nullable: true,
-  })
-  error?: ErrorOutput;
-
   @Field(() => String, {
     nullable: true,
-    description: 'This is jwt-AccessToken',
+    description: '회원가입 성공 시, JWT Access Token이 발급됩니다.',
   })
-  data?: string;
+  token?: string;
 }

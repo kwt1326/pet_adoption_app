@@ -100,54 +100,34 @@ export class UserService {
   async createAdopteeAccount(
     createAccountInput: CreateAccountAdopteeUserInput,
   ): Promise<CreateAccountOutput> {
-    const result: CreateAccountOutput = {};
-    try {
-      const createAccountUserInput: CreateAccountUserInput = {
-        ...createAccountInput,
-        userType: UserType.ADOPTEE,
-      };
-      const user: User = await this.createUserAccount(createAccountUserInput);
-      await this.adopteeUserRepository.createAdopteeUser(
-        createAccountInput,
-        user,
-      );
-      const { email, password } = createAccountInput;
-      result.data = (
-        await this.authService.login({ email, password })
-      )?.result?.token;
-    } catch (error) {
-      result.error = {
-        statusCode: error.response.statusCode,
-        message: error.message,
-      };
-      console.error(error);
-    }
-    return result;
+    const createAccountUserInput: CreateAccountUserInput = {
+      ...createAccountInput,
+      userType: UserType.ADOPTEE,
+    };
+    const user: User = await this.createUserAccount(createAccountUserInput);
+    await this.adopteeUserRepository.createAdopteeUser(
+      createAccountInput,
+      user,
+    );
+    const { email, password } = createAccountInput;
+    const token = (await this.authService.login({ email, password }))?.result
+      ?.token;
+    return { token };
   }
 
   async createAdoptAccount(
     createAccountInput: CreateAccountAdoptUserInput,
   ): Promise<CreateAccountOutput> {
-    const result: CreateAccountOutput = {};
-    try {
-      const createAccountUserInput: CreateAccountUserInput = {
-        ...createAccountInput,
-        userType: UserType.ADOPT,
-      };
-      const user: User = await this.createUserAccount(createAccountUserInput);
-      await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
-      const { email, password } = createAccountInput;
-      result.data = (
-        await this.authService.login({ email, password })
-      )?.result?.token;
-    } catch (error) {
-      result.error = {
-        statusCode: error.response.statusCode,
-        message: error.message,
-      };
-      console.error(error);
-    }
-    return result;
+    const createAccountUserInput: CreateAccountUserInput = {
+      ...createAccountInput,
+      userType: UserType.ADOPT,
+    };
+    const user: User = await this.createUserAccount(createAccountUserInput);
+    await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
+    const { email, password } = createAccountInput;
+    const token = (await this.authService.login({ email, password }))?.result
+      ?.token;
+    return { token };
   }
 
   async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
