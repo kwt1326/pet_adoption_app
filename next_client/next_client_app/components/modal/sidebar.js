@@ -1,12 +1,33 @@
 import React from "react";
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import styles from "./sidebar.module.scss";
 import { IoCloseOutline } from "react-icons/io5";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import Router from "next/router";
+import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
+
+const getToken = async () => {
+  const token = Cookies.get("with-pet-jwt");
+  const base64Payload = token.split(".")[1];
+  const payload = Buffer.from(base64Payload, "base64");
+  const userTokenInfo = JSON.parse(payload.toString());
+  const [getOneAdopteeUser] = useLazyQuery(GET_ONE_ADOPTEE_USER, {
+    variables: {
+      id: userTokenInfo.id,
+    },
+  });
+
+  if (userTokenInfo.userType === "ADOPTEE_USER") {
+    const response = await getOneAdopteeUser();
+    console.log(response);
+  } else if (userTokenInfo.userType === "ADOPT_USER") {
+  }
+  console.log(userTokenInfo);
+  return token;
+};
 
 const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
-  let isCookie = Cookies.get();
   const closeSidebar = () => {
     onOffSidebar(false);
   };
@@ -14,6 +35,13 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     Cookies.remove("with-pet-jwt");
     Router.push("/");
   };
+
+  // email: "hh";
+  // iat: 1644421528;
+  // id: 21;
+  // isAvailable: true;
+  // userType: "ADOPTEE_USER";
+
   const BeforeLogin = () => {
     return (
       <div className={styles.userSection}>
@@ -61,7 +89,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     <div className={sidebarOnOff ? `${styles.modal} ${styles.openSidebar}` : styles.modal}>
       {sidebarOnOff ? (
         <section>
-          {isCookie["with-pet-jwt"] ? AfterLogin() : BeforeLogin()}
+          {getToken() ? AfterLogin() : BeforeLogin()}
           <ul className={styles.menuList}>
             <li>MENU</li>
             <li>
