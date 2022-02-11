@@ -4,10 +4,7 @@ import { AdoptReview } from '../../entities/adopt-review.entity';
 import { DeleteRequestOutput } from '../common/dtos/request-result.dto';
 import { AdoptReviewService } from './adopt-review.service';
 import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto';
-import {
-  AdoptionReviewLikeInput,
-  AdoptionReviewLikeOutput,
-} from './dtos/review-like.dto';
+import { AdoptionReviewLikeOutput } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import {
   UpdateAdoptReviewCommentInput,
@@ -47,40 +44,45 @@ export class AdoptReviewResolver {
   @Mutation(() => AdoptReview)
   updateAdoptReview(
     @Args('input') updateAdoptReviewInput: UpdateAdoptReviewInput,
+    @AuthUser() user: User,
   ) {
-    return this.adoptReviewService.updateAdoptReview(updateAdoptReviewInput);
+    return this.adoptReviewService.updateAdoptReview(
+      updateAdoptReviewInput,
+      user,
+    );
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
-  deleteAdoptReview(@Args('id') id: number) {
-    return this.adoptReviewService.deleteAdoptReview(id);
+  deleteAdoptReview(@Args('id') id: number, @AuthUser() user: User) {
+    return this.adoptReviewService.deleteAdoptReview(id, user);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptReviewPicture)
   createAdoptReviewPicture(
     @Args('input') createAdoptReviewPictureInput: CreateAdoptReviewPictureInput,
+    @AuthUser() user: User,
   ) {
     return this.adoptReviewService.createAdoptReviewPicture(
       createAdoptReviewPictureInput,
+      user,
     );
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
-  deleteAdoptReviewPicture(@Args('id') id: number) {
-    return this.adoptReviewService.deleteAdoptReviewPicture(id);
+  deleteAdoptReviewPicture(@Args('id') id: number, @AuthUser() user: User) {
+    return this.adoptReviewService.deleteAdoptReviewPicture(id, user);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AdoptionReviewLikeOutput)
   toggleAdoptionReviewLike(
-    @Args('input') adoptionReviewLikeInput: AdoptionReviewLikeInput,
+    @Args('reviewId') reviewId: number,
+    @AuthUser() user: User,
   ) {
-    return this.adoptReviewService.toggleAdoptionReviewLike(
-      adoptionReviewLikeInput,
-    );
+    return this.adoptReviewService.toggleAdoptionReviewLike(reviewId, user);
   }
 
   @Mutation(() => Comment)
@@ -93,11 +95,6 @@ export class AdoptReviewResolver {
       createCommentInput,
       user,
     );
-  }
-
-  @Query(() => Comment)
-  async getOneReviewComment(@Args('id') id: number): Promise<Comment> {
-    return await this.adoptReviewService.getOneReviewComment(id);
   }
 
   @Mutation(() => DeleteRequestOutput)
