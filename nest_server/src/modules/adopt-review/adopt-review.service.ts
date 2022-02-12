@@ -158,10 +158,10 @@ export class AdoptReviewService {
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
     if (this.isAlreadyInLikes(review, user.id)) {
-      await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike(
+      await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike({
         reviewId,
-        user.id,
-      );
+        userId: user.id,
+      });
       resOutput.result = LikeResult.DELETE;
     } else {
       const adopteeUser =

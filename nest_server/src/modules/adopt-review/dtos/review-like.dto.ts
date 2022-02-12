@@ -23,3 +23,8 @@ export class AdoptionReviewLikeOutput {
   @Field(() => LikeResult)
   result: LikeResult;
 }
+
+export class AdoptionReviewLikeInput {
+  userId: number;
+  reviewId: number;
+}

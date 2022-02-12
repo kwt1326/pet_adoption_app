@@ -11,6 +11,7 @@ import {
 import { Comment } from 'src/entities/comment.entity';
 import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
 import { User } from 'src/entities/user.entity';
+import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
 
 interface CreateReviewInput {
   title: string;
@@ -128,7 +129,8 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
     return await this.save(reviewLike);
   }
 
-  async deleteAdoptionReviewLike(reviewId: number, userId: number) {
+  async deleteAdoptionReviewLike(input: AdoptionReviewLikeInput) {
+    const { reviewId, userId } = input;
     const result = await getConnection()
       .createQueryBuilder()
       .delete()
