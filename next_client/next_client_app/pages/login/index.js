@@ -74,11 +74,6 @@ function login() {
           <div className={style.validText}>{errorText}</div>
           <button type="submit">로그인</button>
         </form>
-        <div className={style.search}>
-          <Link href="findPassword">
-            <a>비밀번호 찾기</a>
-          </Link>
-        </div>
         <div className={style.join}>
           <Link href={`signIn/personalSignIn`}>
             <a>개인 회원가입</a>
