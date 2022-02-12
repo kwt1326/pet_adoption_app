@@ -1,6 +1,6 @@
 import {
-  BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -65,11 +65,11 @@ export class AdoptReviewService {
       createInput,
     );
   }
-  async getReviewWithExceptionHandling(reviewId: number): Promise<AdoptReview> {
+  async getReviewWithCheckingNotFound(reviewId: number): Promise<AdoptReview> {
     const review: AdoptReview =
       await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
     if (!review) {
-      throw new BadRequestException('존재하지 않는 게시물입니다.');
+      throw new NotFoundException('존재하지 않는 게시물입니다.');
     }
     return review;
   }
@@ -78,7 +78,7 @@ export class AdoptReviewService {
     reviewId: number,
     userId,
   ): Promise<AdoptReview> {
-    const review = await this.getReviewWithExceptionHandling(reviewId);
+    const review = await this.getReviewWithCheckingNotFound(reviewId);
     if (review.userId !== userId) {
       console.log(review, userId);
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
@@ -87,7 +87,7 @@ export class AdoptReviewService {
   }
 
   async getOneAdoptReview(id: number): Promise<AdoptReview> {
-    return await this.getReviewWithExceptionHandling(id);
+    return await this.getReviewWithCheckingNotFound(id);
   }
 
   async getAllAdoptReview(): Promise<AdoptReview[]> {
@@ -153,7 +153,7 @@ export class AdoptReviewService {
     const resOutput: AdoptionReviewLikeOutput = {
       result: LikeResult.CREATE,
     };
-    const review = await this.getReviewWithExceptionHandling(reviewId);
+    const review = await this.getReviewWithCheckingNotFound(reviewId);
     if (user.userType !== UserType.ADOPTEE) {
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
@@ -174,18 +174,18 @@ export class AdoptReviewService {
     return resOutput;
   }
 
-  async getCommentWithExceptionHandling(commentId: number) {
+  async getCommentWithCheckingNotFound(commentId: number) {
     const comment = await this.adoptReviewCommentRepository.findOneCommentById(
       commentId,
     );
     if (!comment) {
-      throw new BadRequestException('댓글이 존재하지 않습니다.');
+      throw new NotFoundException('댓글이 존재하지 않습니다.');
     }
     return comment;
   }
 
   async getCommentWithVerifyingAuthority(commentId: number, userId: number) {
-    const comment = await this.getCommentWithExceptionHandling(commentId);
+    const comment = await this.getCommentWithCheckingNotFound(commentId);
     if (comment.writerId !== userId) {
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
@@ -197,9 +197,9 @@ export class AdoptReviewService {
     user: User,
   ): Promise<Comment> {
     const { parentCommentId, postId, content } = input;
-    const post: AdoptReview = await this.getReviewWithExceptionHandling(postId);
+    const post: AdoptReview = await this.getReviewWithCheckingNotFound(postId);
     const parent: Comment = parentCommentId
-      ? await this.getCommentWithExceptionHandling(parentCommentId)
+      ? await this.getCommentWithCheckingNotFound(parentCommentId)
       : null;
     const { nickname: writerNickname } =
       user.userType === UserType.ADOPTEE
