@@ -28,6 +28,7 @@ export class AdoptReview extends CoreEntity {
   @Field(() => AdopteeUser, { nullable: true })
   adopteeUser: AdopteeUser;
 
+  @Column()
   @Field(() => Int, { nullable: true })
   userId: number;
 
@@ -41,6 +42,7 @@ export class AdoptReview extends CoreEntity {
 
   @OneToMany(() => AdoptReviewPicture, (picture) => picture.adoptReview, {
     nullable: true,
+    cascade: true,
     eager: true,
   })
   @Field(() => [AdoptReviewPicture], { nullable: true })
@@ -48,6 +50,7 @@ export class AdoptReview extends CoreEntity {
 
   @OneToMany(() => AdoptionReviewLike, (like) => like.likePost, {
     nullable: true,
+    cascade: true,
     eager: true,
   })
   @Field(() => [AdoptionReviewLike], { nullable: true })
@@ -59,6 +62,7 @@ export class AdoptReview extends CoreEntity {
 
   @OneToMany(() => Comment, (comment) => comment.post, {
     nullable: true,
+    cascade: true,
     eager: true,
   })
   @Field(() => [Comment], { nullable: true })

@@ -16,6 +16,7 @@ export class AdoptionReviewLike extends CoreIdEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
+  @Field(() => AdopteeUser, { nullable: true })
   adopteeUser: AdopteeUser;
 
   @Column()
@@ -24,7 +25,6 @@ export class AdoptionReviewLike extends CoreIdEntity {
 
   @ManyToOne(() => AdoptReview, (review) => review.likes, {
     nullable: false,
-    cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'reviewId' })

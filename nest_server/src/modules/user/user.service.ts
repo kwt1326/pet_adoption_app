@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserType } from 'src/entities/user.entity';
 import {
@@ -130,8 +134,48 @@ export class UserService {
     return { token };
   }
 
+  async getAdopteeUserWithExceptionHandling(id: number): Promise<AdopteeUser> {
+    const adopteeUser = await this.adopteeUserRepository.getOneAdopteeUserById(
+      id,
+    );
+    if (!adopteeUser) {
+      throw new BadRequestException(`id:${id}인 개인유저는 존재하지 않습니다.`);
+    }
+    return adopteeUser;
+  }
+
+  async getAdoptUserWithExceptionHandling(id: number): Promise<AdoptUser> {
+    const adoptUser = await this.adoptUserRepository.getOneAdoptUserById(id);
+    if (!adoptUser) {
+      throw new BadRequestException(`id:${id}인 업체유저는 존재하지 않습니다.`);
+    }
+    return adoptUser;
+  }
+
+  async getAdopteeUserWithVerifyingAuthority(
+    targetId: number,
+    user: User,
+  ): Promise<AdopteeUser> {
+    const targetUser = await this.getAdopteeUserWithExceptionHandling(targetId);
+    if (targetUser.userId !== user.id) {
+      throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
+    }
+    return targetUser;
+  }
+
+  async getAdoptUserWithVerifyingAuthority(
+    targetId: number,
+    user: User,
+  ): Promise<AdoptUser> {
+    const targetUser = await this.getAdoptUserWithExceptionHandling(targetId);
+    if (targetUser.userId !== user.id) {
+      throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
+    }
+    return targetUser;
+  }
+
   async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
-    return await this.adopteeUserRepository.getOneAdopteeUserById(id);
+    return await this.getAdopteeUserWithExceptionHandling(id);
   }
 
   async getAllAdopteeUser(): Promise<AdopteeUser[]> {
@@ -139,53 +183,64 @@ export class UserService {
   }
 
   async getOneAdoptUser(id: number): Promise<AdoptUser> {
-    return await this.adoptUserRepository.getOneAdoptUserById(id);
+    return await this.getAdoptUserWithExceptionHandling(id);
   }
 
   async getAllAdoptUser(): Promise<AdoptUser[]> {
     return await this.adoptUserRepository.getAllAdoptUser();
   }
 
-  async deleteOneUser(id: number) {
+  async deleteOneUser(id: number, user: User) {
+    user.userType === UserType.ADOPTEE
+      ? await this.getAdopteeUserWithVerifyingAuthority(id, user)
+      : await this.getAdoptUserWithVerifyingAuthority(id, user);
     const deleteResult: DeleteRequestOutput = {
       result: (await this.userRepository.deleteOneUserById(id)).affected,
     };
-    if (deleteResult.result === 0) {
-      throw new BadRequestException(`There is no user with id of ${id}`);
-    }
     return deleteResult;
   }
 
-  async updateAdopteeUser(updateInput: UpdateAdopteeUserInput) {
-    const { id, user: userInput, ...adopteeInput } = updateInput;
+  async updateAdopteeUser(updateInput: UpdateAdopteeUserInput, user: User) {
+    const { id } = updateInput;
     const adopteeUser: AdopteeUser =
-      await this.adopteeUserRepository.getOneAdopteeUserById(id);
+      await this.getAdopteeUserWithVerifyingAuthority(id, user);
 
-    if (userInput?.password) {
-      userInput.password = await this.hashingPassword(userInput.password);
+    if (updateInput.user?.password) {
+      updateInput.user.password = await this.hashingPassword(
+        updateInput.user.password,
+      );
     }
-    adopteeUser.user = { ...adopteeUser.user, ...userInput };
-    const updatedUser: AdopteeUser = await this.adopteeUserRepository.save({
-      ...adopteeUser,
-      ...adopteeInput,
-    });
-    return updatedUser;
+    if (
+      updateInput?.nickname &&
+      (await this.checkDuplicateNickname(updateInput?.nickname))
+    ) {
+      throw new BadRequestException('이미 존재하는 닉네임입니다.');
+    }
+    return this.adopteeUserRepository.updateAdopteeUser(
+      adopteeUser,
+      updateInput,
+    );
   }
 
-  async updateAdoptUser(updateInput: UpdateAdoptUserInput) {
-    const { id, user: userInput, ...adoptInput } = updateInput;
-    const adoptUser: AdoptUser =
-      await this.adoptUserRepository.getOneAdoptUserById(id);
+  async updateAdoptUser(updateInput: UpdateAdoptUserInput, user: User) {
+    const { id } = updateInput;
+    const adoptUser: AdoptUser = await this.getAdoptUserWithVerifyingAuthority(
+      id,
+      user,
+    );
 
-    if (userInput?.password) {
-      userInput.password = await this.hashingPassword(userInput.password);
+    if (updateInput.user?.password) {
+      updateInput.user.password = await this.hashingPassword(
+        updateInput.user.password,
+      );
     }
-    adoptUser.user = { ...adoptUser.user, ...userInput };
-    const updatedUser: AdoptUser = await this.adoptUserRepository.save({
-      ...adoptUser,
-      ...adoptInput,
-    });
-    return updatedUser;
+    if (
+      updateInput?.nickname &&
+      (await this.checkDuplicateNickname(updateInput?.nickname))
+    ) {
+      throw new BadRequestException('이미 존재하는 닉네임입니다.');
+    }
+    return this.adoptUserRepository.updateAdoptUser(adoptUser, updateInput);
   }
 
   async findAdoptUser(user: User) {

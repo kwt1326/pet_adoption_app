@@ -1,6 +1,6 @@
 import {
-  BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,11 +17,7 @@ import {
   AdoptReviewPictureRepository,
   AdoptReviewRepository,
 } from './adopt-review.repository';
-import {
-  AdoptionReviewLikeInput,
-  AdoptionReviewLikeOutput,
-  LikeResult,
-} from './dtos/review-like.dto';
+import { AdoptionReviewLikeOutput, LikeResult } from './dtos/review-like.dto';
 import { CreateReviewInput } from './dtos/create-review.dto';
 import {
   UpdateAdoptReviewCommentInput,
@@ -31,7 +27,6 @@ import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto'
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { User, UserType } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AdoptReviewService {
@@ -70,13 +65,29 @@ export class AdoptReviewService {
       createInput,
     );
   }
+  async getReviewWithCheckingNotFound(reviewId: number): Promise<AdoptReview> {
+    const review: AdoptReview =
+      await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
+    if (!review) {
+      throw new NotFoundException('존재하지 않는 게시물입니다.');
+    }
+    return review;
+  }
 
-  async getOneReviewComment(id: number): Promise<Comment> {
-    return await this.adoptReviewCommentRepository.findOneCommentById(id);
+  async getReviewWithVerifyingAuthority(
+    reviewId: number,
+    userId,
+  ): Promise<AdoptReview> {
+    const review = await this.getReviewWithCheckingNotFound(reviewId);
+    if (review.userId !== userId) {
+      console.log(review, userId);
+      throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
+    }
+    return review;
   }
 
   async getOneAdoptReview(id: number): Promise<AdoptReview> {
-    return await this.adoptReviewRepository.getOneAdoptReviewById(id);
+    return await this.getReviewWithCheckingNotFound(id);
   }
 
   async getAllAdoptReview(): Promise<AdoptReview[]> {
@@ -85,36 +96,44 @@ export class AdoptReviewService {
 
   async updateAdoptReview(
     updateReviewInput: UpdateAdoptReviewInput,
+    user: User,
   ): Promise<AdoptReview> {
     const { id, ...restOfUpdateInput } = updateReviewInput;
-    const review = await this.adoptReviewRepository.getOneAdoptReviewById(id);
+    const review = await this.getReviewWithVerifyingAuthority(id, user.id);
     return await this.adoptReviewRepository.updateAdoptReview(
       review,
       restOfUpdateInput,
     );
   }
 
-  async deleteAdoptReview(id: number): Promise<DeleteRequestOutput> {
+  async deleteAdoptReview(
+    id: number,
+    user: User,
+  ): Promise<DeleteRequestOutput> {
+    await this.getReviewWithVerifyingAuthority(id, user.id);
     const deleteResult: DeleteRequestOutput = {
       result: (await this.adoptReviewRepository.deleteOneUserById(id)).affected,
     };
-    if (deleteResult.result === 0) {
-      throw new BadRequestException(`There is no review with id of ${id}`);
-    }
     return deleteResult;
   }
 
-  async createAdoptReviewPicture(input: CreateAdoptReviewPictureInput) {
+  async createAdoptReviewPicture(
+    input: CreateAdoptReviewPictureInput,
+    user: User,
+  ) {
     const { reviewId, uri } = input;
-    const adoptReview: AdoptReview =
-      await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
+    const adoptReview: AdoptReview = await this.getReviewWithVerifyingAuthority(
+      reviewId,
+      user.id,
+    );
     return await this.adoptReviewPictureRepository.createAdoptReviewPicture({
       adoptReview,
       uri,
     });
   }
 
-  async deleteAdoptReviewPicture(id: number) {
+  async deleteAdoptReviewPicture(id: number, user: User) {
+    await this.getReviewWithVerifyingAuthority(id, user.id);
     const resOutput: DeleteRequestOutput = {
       result: (
         await this.adoptReviewPictureRepository.deleteAdoptReviewPicture(id)
@@ -128,62 +147,60 @@ export class AdoptReviewService {
   }
 
   async toggleAdoptionReviewLike(
-    input: AdoptionReviewLikeInput,
+    reviewId: number,
+    user: User,
   ): Promise<AdoptionReviewLikeOutput> {
-    const { userId, reviewId } = input;
     const resOutput: AdoptionReviewLikeOutput = {
       result: LikeResult.CREATE,
     };
-    const review = await this.adoptReviewRepository.getOneAdoptReviewById(
-      reviewId,
-    );
-    if (this.isAlreadyInLikes(review, userId)) {
-      await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike(input);
+    const review = await this.getReviewWithCheckingNotFound(reviewId);
+    if (user.userType !== UserType.ADOPTEE) {
+      throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
+    }
+    if (this.isAlreadyInLikes(review, user.id)) {
+      await this.adoptionReviewLikeRepository.deleteAdoptionReviewLike({
+        reviewId,
+        userId: user.id,
+      });
       resOutput.result = LikeResult.DELETE;
     } else {
-      const user = await this.adopteeUserRepository.getOneAdopteeUserById(
-        userId,
-      );
+      const adopteeUser =
+        await this.adopteeUserRepository.getOneAdopteeUserById(user.id);
       await this.adoptionReviewLikeRepository.createAdoptionReviewLike(
-        user,
+        adopteeUser,
         review,
       );
     }
     return resOutput;
   }
 
-  async exceptionHandingForGetPost(postId: number) {
-    const post = await this.adoptReviewRepository.getOneAdoptReviewById(postId);
-    if (!post) {
-      throw new BadRequestException('존재하지 않는 게시물입니다.');
+  async getCommentWithCheckingNotFound(commentId: number) {
+    const comment = await this.adoptReviewCommentRepository.findOneCommentById(
+      commentId,
+    );
+    if (!comment) {
+      throw new NotFoundException('댓글이 존재하지 않습니다.');
     }
-    return post;
+    return comment;
   }
 
-  async exceptionHandlingForGetParent(parentId: number) {
-    if (parentId) {
-      const parentComment =
-        await this.adoptReviewCommentRepository.findOneCommentById(parentId);
-      if (!parentComment) {
-        throw new BadRequestException('댓글이 존재하지 않습니다.');
-      }
-      return parentComment;
+  async getCommentWithVerifyingAuthority(commentId: number, userId: number) {
+    const comment = await this.getCommentWithCheckingNotFound(commentId);
+    if (comment.writerId !== userId) {
+      throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
-    return null;
+    return comment;
   }
 
   async createAdoptReviewComment(
     input: CreateCommentInput,
     user: User,
   ): Promise<Comment> {
-    if (!user) {
-      throw new UnauthorizedException('로그인을 해주세요.');
-    }
     const { parentCommentId, postId, content } = input;
-    const post: AdoptReview = await this.exceptionHandingForGetPost(postId);
-    const parent: Comment = await this.exceptionHandlingForGetParent(
-      parentCommentId,
-    );
+    const post: AdoptReview = await this.getReviewWithCheckingNotFound(postId);
+    const parent: Comment = parentCommentId
+      ? await this.getCommentWithCheckingNotFound(parentCommentId)
+      : null;
     const { nickname: writerNickname } =
       user.userType === UserType.ADOPTEE
         ? await this.adopteeUserRepository.getOneAdopteeUserById(user.id)
@@ -201,11 +218,7 @@ export class AdoptReviewService {
     user: User,
     id: number,
   ): Promise<DeleteRequestOutput> {
-    const comment: Comment =
-      await this.adoptReviewCommentRepository.findOneCommentById(id);
-    if (comment.writerId !== user.id) {
-      throw new UnauthorizedException('해당 댓글을 삭제할 권한이 없습니다.');
-    }
+    await this.getCommentWithVerifyingAuthority(id, user.id);
     const resOutput: DeleteRequestOutput = {
       result: (
         await this.adoptReviewCommentRepository.deleteAdoptReviewComment(id)
@@ -218,14 +231,13 @@ export class AdoptReviewService {
     updateCommentInput: UpdateAdoptReviewCommentInput,
     user: User,
   ) {
-    const comment: Comment =
-      await this.adoptReviewCommentRepository.findOneCommentById(
-        updateCommentInput.id,
-      );
-    if (comment.writerId !== user.id) {
-      throw new UnauthorizedException('해당 댓글을 갱신할 권한이 없습니다.');
-    }
+    const { id: commentId } = updateCommentInput;
+    const comment: Comment = await this.getCommentWithVerifyingAuthority(
+      commentId,
+      user.id,
+    );
     return await this.adoptReviewCommentRepository.updateAdoptReviewComment(
+      comment,
       updateCommentInput,
     );
   }

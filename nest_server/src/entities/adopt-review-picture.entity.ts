@@ -12,13 +12,13 @@ import { ColumnTextType } from './database-data-type';
 export class AdoptReviewPicture extends CoreIdEntity {
   @ManyToOne(() => AdoptReview, (adoptReview) => adoptReview.pictures, {
     nullable: false,
-    cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'reviewId' })
   @Field(() => AdoptReview, { nullable: true })
   adoptReview: AdoptReview;
 
+  @Column()
   @Field(() => Int, { nullable: true })
   reviewId: number;
 
