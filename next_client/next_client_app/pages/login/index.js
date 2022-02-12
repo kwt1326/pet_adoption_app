@@ -8,7 +8,6 @@ import style from "./login.module.scss";
 import Router from "next/router";
 import SignInput from "../../components/signInput";
 
-
 function login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +47,6 @@ function login() {
       } else {
         setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
-
     }
   };
 
@@ -76,9 +74,6 @@ function login() {
           <div className={style.validText}>{errorText}</div>
           <button type="submit">로그인</button>
         </form>
-        <div className={style.search}>
-          <div>비밀번호 찾기</div>
-        </div>
         <div className={style.join}>
           <Link href={`signIn/personalSignIn`}>
             <a>개인 회원가입</a>

@@ -1,12 +1,28 @@
 import React from "react";
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import styles from "./sidebar.module.scss";
 import { IoCloseOutline } from "react-icons/io5";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import Router from "next/router";
+import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
 
 const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
-  let isCookie = Cookies.get();
+  const userTokenInfo = {};
+  const getToken = () => {
+    let isToken = false;
+    const token = Cookies.get("with-pet-jwt");
+    if (token) {
+      isToken = true;
+      const base64Payload = token.split(".")[1];
+      const payload = Buffer.from(base64Payload, "base64");
+      userTokenInfo = JSON.parse(payload.toString());
+    } else {
+      isToken = false;
+    }
+    return isToken;
+  };
+
   const closeSidebar = () => {
     onOffSidebar(false);
   };
@@ -14,6 +30,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     Cookies.remove("with-pet-jwt");
     Router.push("/");
   };
+
   const BeforeLogin = () => {
     return (
       <div className={styles.userSection}>
@@ -45,7 +62,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span>닉네임</span> 님 어서오세요.
+            <span>{userTokenInfo.nickname}</span> 님 어서오세요.
           </div>
           <IoCloseOutline onClick={closeSidebar} />
         </div>
@@ -61,7 +78,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     <div className={sidebarOnOff ? `${styles.modal} ${styles.openSidebar}` : styles.modal}>
       {sidebarOnOff ? (
         <section>
-          {isCookie["with-pet-jwt"] ? AfterLogin() : BeforeLogin()}
+          {getToken() ? AfterLogin() : BeforeLogin()}
           <ul className={styles.menuList}>
             <li>MENU</li>
             <li>
