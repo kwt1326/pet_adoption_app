@@ -31,7 +31,6 @@ function signIn({ router: { query } }) {
   const [addressError, setAddressError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
 
-  // const
   const [checkDuplicateQuery1] = useLazyQuery(CHECK_DUPLICATE, {
     variables: {
       input: {
@@ -79,12 +78,13 @@ function signIn({ router: { query } }) {
   };
   const passwordEqual = () => {
     let validated = true;
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
     if (password !== "" && confirmPassword !== "") {
       if (password !== confirmPassword) {
         setPasswordError("비밀번호가 동일하지 않습니다.");
         setConfirmPasswordError("비밀번호가 동일하지 않습니다.");
         validated = false;
-      } else if (password === confirmPassword) {
+      } else if (password === confirmPassword && passwordReg.test(password)) {
         setPasswordError("");
         setConfirmPasswordError("");
       }
@@ -93,6 +93,7 @@ function signIn({ router: { query } }) {
   };
   const validateForm = async () => {
     let validated = true;
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
     if (!email) {
       setEmailError("이메일을 입력하세요");
       validated = false;
@@ -103,7 +104,12 @@ function signIn({ router: { query } }) {
       setPasswordError("비밀번호를 입력하세요");
       validated = false;
     } else {
-      setPasswordError("");
+      if (passwordReg.test(password)) {
+        setPasswordError("");
+      } else {
+        setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
+        validated = false
+      }
     }
 
     if (!confirmPassword) {
@@ -155,15 +161,7 @@ function signIn({ router: { query } }) {
     }
     return validated;
   };
-  const [testInput, setTestInput] = useState("");
-  const testChange = (e) => {
-    console.log(e.target.value);
-    const reg = /^[0-9\b -]{0,13}$/;
-    if (reg.test(e.target.value)) {
-      setTestInput(e.target.value);
-    }
-    console.log(testInput);
-  };
+
   useEffect(() => {
     if (phoneNumber.length === 10) {
       setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"));
@@ -280,7 +278,6 @@ function signIn({ router: { query } }) {
             type="text"
           />
         </div>
-        <input type="text" onChange={testChange} value={testInput}></input>
       </div>
     );
   };
