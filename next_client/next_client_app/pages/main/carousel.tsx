@@ -1,6 +1,8 @@
 import { useQuery, gql } from "@apollo/client";
-import React, { Component } from "react";
+import React from "react";
 import Slider from "react-slick";
+import styles from "../../styles/Main.module.scss";
+import Link from "next/link";
 
 export default function SimpleSlider() {
   const BANNER_QUERY = gql`
@@ -11,6 +13,7 @@ export default function SimpleSlider() {
           detailContent
         }
         thumbnailUri
+        id
       }
     }
   `;
@@ -31,16 +34,24 @@ export default function SimpleSlider() {
     ),
   };
   return (
-    <div>
-      <Slider {...settings}>
+    <React.Fragment>
+      <Slider {...settings} className={styles.eventBanner}>
         {data?.getBanners?.map((element) => {
           return (
-            <div style={{ height: "100px" }}>
-              <img src={element.thumbnailUri} style={{ height: "100px" }} />
-            </div>
+            <Link
+              href={{
+                pathname: `event/${element.id}`,
+                query: { id: element.id },
+              }}
+              key={element.id}
+            >
+              <div>
+                <img src={element.thumbnailUri} style={{ height: "150px", width: "100%" }} />
+              </div>
+            </Link>
           );
         })}
       </Slider>
-    </div>
+    </React.Fragment>
   );
 }

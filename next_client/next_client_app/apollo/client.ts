@@ -3,13 +3,28 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
 // import { WebSocketLink } from "@apollo/client/link/ws";
 import cookies from 'js-cookie';
+import { deviceLogin } from "../utils/nativeInterfaceUtil";
 
 const token = cookies.get(process.env.JWT_KEY)
 
 export const isLoggedVar = makeVar(Boolean(token));
 export const tokenVar = makeVar(token);
 
-const uri = process.env.NODE_ENV === "production" ? "" : "http://localhost:8090/graphql";
+const userAgent = typeof navigator === 'undefined' ? 'noUserAgentSSR' : navigator.userAgent
+
+const isAndroid = () => /Android/i.test(userAgent);
+const isIOS = () => /iPhone|iPad|iPod/i.test(userAgent);
+const isOpera = () => /Opera Mini/i.test(userAgent);
+const isWindows = () => /IEMobile/i.test(userAgent);
+const isSSR = () => /noUserAgentSSR/i.test(userAgent);
+const isMobile = () => Boolean(isAndroid() || isIOS() || isOpera() || isWindows())
+const isDesktop = () => Boolean(!isMobile() && !isSSR())
+
+const localHost = isAndroid() ? '172.30.1.5' : 'localhost';
+
+const uri = process.env.NODE_ENV === "production" ?
+  "" :
+  `http://${localHost}:8090/graphql`;
 
 const httpLink = createHttpLink({ uri });
 
@@ -23,12 +38,17 @@ const httpLink = createHttpLink({ uri });
 //   }
 // });
 
-const authLink = setContext((_, { headers }) => ({
-  headers: {
-    ...headers,
-    "x-jwt": tokenVar() || '',
+const authLink = setContext((_, { headers }) => {
+  if (isAndroid()) {
+    deviceLogin(token);
   }
-}))
+  return {
+    headers: {
+      ...headers,
+      "x-jwt": tokenVar() || '',
+    }
+  }
+})
 
 const splitLink = split(
   ({ query }) => {
@@ -43,6 +63,7 @@ const splitLink = split(
 )
 
 const client = new ApolloClient({
+  ssrMode: true,
   link: splitLink,
   cache: new InMemoryCache({
     typePolicies: {

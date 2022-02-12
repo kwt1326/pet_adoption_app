@@ -13,6 +13,7 @@ import { User, UserType } from '../../../entities/user.entity';
 
 export interface CreateAccountUserInput {
   email: string;
+  nickname?: string;
   password: string;
   userType: UserType;
 }
@@ -20,8 +21,11 @@ export interface CreateAccountUserInput {
 @InputType()
 export class CreateAccountAdopteeUserInput extends IntersectionType(
   PickType(AdopteeUser, ['nickname'] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
+}
 
 @InputType()
 export class CreateAccountAdoptUserInput extends IntersectionType(
@@ -33,39 +37,26 @@ export class CreateAccountAdoptUserInput extends IntersectionType(
     'isAuthenticated',
     'authenticatedAt',
   ] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
+}
 
 @InputType()
 export class CreateAccountAdminUserInput extends IntersectionType(
   PickType(AdopteeUser, ['nickname'] as const),
-  PickType(User, ['email', 'password'] as const),
-) {}
-
-
-@ObjectType()
-export class ErrorOutput {
-  @Field(() => Int, {
-    description: 'Error Status code number'
-  })
-  statusCode: number;
-
-  @Field(() => String, {
-    description: 'Error message'
-  })
-  message: string;
+  PickType(User, ['email'] as const),
+) {
+  @Field(() => String)
+  password: string;
 }
 
 @ObjectType()
 export class CreateAccountOutput {
-  @Field(() => ErrorOutput, {
-    nullable: true,
-  })
-  error?: ErrorOutput;
-
   @Field(() => String, {
     nullable: true,
-    description: 'This is jwt-AccessToken'
+    description: '회원가입 성공 시, JWT Access Token이 발급됩니다.',
   })
-  data?: string;
+  token?: string;
 }

@@ -1,7 +1,7 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { AdoptReview } from './adopt-review.entity';
 import { AdopteeUser } from './adoptee-user.entity';
-import { AdoptionPost } from './adoption-post.entity';
 import { CoreIdEntity } from './common/core.entity';
 
 // '좋아요(하트)' 테이블 - 입양자만 사용
@@ -9,14 +9,28 @@ import { CoreIdEntity } from './common/core.entity';
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
+@Unique(['adopteeUser', 'likePost'])
 export class AdoptionReviewLike extends CoreIdEntity {
-  @ManyToOne(() => AdopteeUser)
-  @JoinColumn()
-  @Field(() => AdopteeUser)
+  @ManyToOne(() => AdopteeUser, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userId' })
+  @Field(() => AdopteeUser, { nullable: true })
   adopteeUser: AdopteeUser;
 
-  @ManyToOne(() => AdoptionPost)
-  @JoinColumn()
-  @Field(() => AdoptionPost)
-  likePost: AdoptionPost;
+  @Column()
+  @Field(() => Int, { nullable: true })
+  userId: number;
+
+  @ManyToOne(() => AdoptReview, (review) => review.likes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'reviewId' })
+  likePost: AdoptReview;
+
+  @Column()
+  @Field(() => Int, { nullable: true })
+  reviewId: number;
 }

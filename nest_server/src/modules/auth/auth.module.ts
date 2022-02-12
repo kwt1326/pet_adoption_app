@@ -3,7 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserRepository } from 'src/modules/user/user.repository';
+import {
+  AdopteeUserRepository,
+  AdoptUserRepository,
+  UserRepository,
+} from 'src/modules/user/user.repository';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtService } from './jwt.service';
@@ -21,7 +25,11 @@ import { JwtStrategy } from './jwt.strategy';
         },
       }),
     }),
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([
+      UserRepository,
+      AdopteeUserRepository,
+      AdoptUserRepository,
+    ]),
   ],
   providers: [AuthResolver, AuthService, JwtStrategy, JwtService],
   exports: [AuthService],

@@ -1,7 +1,8 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AdoptReview } from './adopt-review.entity';
 import { CoreIdEntity } from './common/core.entity';
+import { ColumnTextType } from './database-data-type';
 
 // 입양후기 이미지 테이블
 
@@ -9,12 +10,19 @@ import { CoreIdEntity } from './common/core.entity';
 @ObjectType()
 @Entity()
 export class AdoptReviewPicture extends CoreIdEntity {
-  @ManyToOne(() => AdoptReview)
-  @JoinColumn()
-  @Field(() => AdoptReview)
+  @ManyToOne(() => AdoptReview, (adoptReview) => adoptReview.pictures, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'reviewId' })
+  @Field(() => AdoptReview, { nullable: true })
   adoptReview: AdoptReview;
 
-  @Column('text')
+  @Column()
+  @Field(() => Int, { nullable: true })
+  reviewId: number;
+
+  @Column(ColumnTextType)
   @Field(() => String)
   uri: string;
 }
