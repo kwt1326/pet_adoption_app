@@ -32,3 +32,11 @@ export const CORP_SIGN_UP_QUERY = gql`
     }
   }
 `;
+
+export const CHECK_DUPLICATE = gql`
+  query checkDuplicateField($input: CheckDuplicateFieldInput!) {
+    checkDuplicateField(input: $input) {
+      result
+    }
+  }
+`;

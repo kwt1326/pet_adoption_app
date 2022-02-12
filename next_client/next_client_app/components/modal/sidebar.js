@@ -45,11 +45,23 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
         <div className={styles.info}>
           <span>회원가입 후 다양한 서비스를 이용해보세요</span>
           <div>
-            <Link href="signIn/personalSignIn">
+            <Link
+              href={{
+                pathname: "signIn",
+                query: { type: "개인" },
+                as: "/signIn",
+              }}
+            >
               <a>개인 회원가입</a>
             </Link>
             <span>/</span>
-            <Link href="signIn/corpSignIn">
+            <Link
+              href={{
+                pathname: "signIn",
+                query: { type: "업체" },
+                as: "/signIn",
+              }}
+            >
               <a>업체 회원가입</a>
             </Link>
           </div>

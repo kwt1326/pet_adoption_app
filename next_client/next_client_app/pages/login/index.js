@@ -75,11 +75,23 @@ function login() {
           <button type="submit">로그인</button>
         </form>
         <div className={style.join}>
-          <Link href={`signIn/personalSignIn`}>
+          <Link
+            href={{
+              pathname: "signIn",
+              query: { type: "개인" },
+              as: "/signIn",
+            }}
+          >
             <a>개인 회원가입</a>
           </Link>
           <span> / </span>
-          <Link href="signIn/corpSignIn">
+          <Link
+            href={{
+              pathname: "signIn",
+              query: { type: "업체" },
+              as: "/signIn",
+            }}
+          >
             <a>업체 회원가입</a>
           </Link>
         </div>
