@@ -6,7 +6,7 @@ import Header from "../../components/Header/index";
 import { LOGIN_QUERY } from "../../quries/authQuery";
 import style from "./login.module.scss";
 import Router from "next/router";
-import SignInput from "../../components/signInput";
+import SignInput from "../../components/SignInput";
 
 function login() {
   const [email, setEmail] = useState("");

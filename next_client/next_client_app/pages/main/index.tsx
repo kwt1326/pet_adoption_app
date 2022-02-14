@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useLazyQuery } from "@apollo/client";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
+
 import Carousel from "./carousel";
 import Header from "../../components/Header/index";
 import PetListItem from "../../components/PetList/PetListItem";
+import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
+
 import petstyles from "../../components/PetList/PetList.module.scss";
 import styles from "../../styles/Main.module.scss";
-import Link from "next/link";
-import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
-import { useLazyQuery } from "@apollo/client";
-import cookie from "js-cookie";
 
 const Main = () => {
   const [petList, setPetlist] = useState([]);
@@ -28,7 +29,6 @@ const Main = () => {
         },
       });
 
-      console.log(result.error.message);
       const prevData = petList || [];
       const curData = result.data?.getPosts || [];
 
@@ -54,11 +54,11 @@ const Main = () => {
 
   return (
     <div>
-      <Header />
+      <Header children={undefined} rightBtn={undefined} />
       <Carousel />
       <ul className={styles.nav}>
         <li>
-          <Link href="puppyadopt">
+          <Link href="/post/list/all">
             <a>
               <div>
                 <FaDog />
@@ -68,7 +68,7 @@ const Main = () => {
           </Link>
         </li>
         <li>
-          <Link href="catAdopt">
+          <Link href="/post/list/all">
             <a>
               <div>
                 <FaCat />
@@ -78,7 +78,7 @@ const Main = () => {
           </Link>
         </li>
         <li>
-          <Link href="adoptReview">
+          <Link href="/reviews">
             <a>
               <div>
                 <FaListAlt />
@@ -88,7 +88,7 @@ const Main = () => {
           </Link>
         </li>
         <li>
-          <Link href="authagency">
+          <Link href="/authagency">
             <a>
               <div>
                 <FaBuilding />
@@ -102,14 +102,14 @@ const Main = () => {
         <h4>최신 강아지 분양글</h4>
         <div className={petstyles.PetList}>{list && list.map((petitem, i) => <PetListItem petitem={petitem} key={i}></PetListItem>)}</div>
         <div className={styles.btnBox}>
-          <button onClick={() => router.push("./puppyadopt")}>더 많은 강아지 보러가기 &#62;</button>
+          <button onClick={() => router.push("/post/list/all")}>더 많은 강아지 보러가기 &#62;</button>
         </div>
         <h4>최신 고양이 분양글</h4>
         <div className={petstyles.PetList}>{list && list.map((petitem, i) => <PetListItem petitem={petitem} key={i}></PetListItem>)}</div>
         <div className={styles.btnBox}>
-          <button onClick={() => router.push("./puppyadopt")}>더 많은 고양이 보러가기 &#62;</button>
+          <button onClick={() => router.push("/post/list/all")}>더 많은 고양이 보러가기 &#62;</button>
         </div>
-        <button onClick={() => router.push("./testUpload")}>테스트 페이지 입장</button>
+        <button onClick={() => router.push("/testUpload")}>테스트 페이지 입장</button>
       </div>
     </div>
   );

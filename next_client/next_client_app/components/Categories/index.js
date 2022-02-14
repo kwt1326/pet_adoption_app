@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "./Categories.module.scss";
 import Link from "next/link";
+import styles from "./Categories.module.scss";
 
 const categories = [
   {
     name: "all",
     text: "전체",
-    link: "",
+    link: "all",
   },
   {
     name: "petshop",
@@ -20,17 +20,16 @@ const categories = [
   },
 ];
 
-function Categories({ category, onSelect }) {
+function Categories({ category }) {
   return (
     <div className={styles.CategoryBlock}>
       {categories.map((c, index) => (
-        <Link href={`/puppyadopt/${c.link}`} key={index}>
+        <Link href={`/post/list/${c.link}`} key={index}>
           <div
             className={`${styles.CategoryItem} ${
               category === c.name ? `${styles.active}` : ""
             }`}
             key={c.name}
-            onClick={() => onSelect(c.name)}
           >
             <a>{c.text}</a>
           </div>
