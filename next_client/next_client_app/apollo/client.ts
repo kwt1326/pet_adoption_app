@@ -65,6 +65,11 @@ const splitLink = split(
 const client = new ApolloClient({
   ssrMode: true,
   link: splitLink,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network'
+    }
+  },
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
@@ -79,6 +84,14 @@ const client = new ApolloClient({
               return tokenVar();
             },
           },
+          getPosts: {
+            keyArgs: false,
+            merge(existing = [], incoming, { args: { getPostsArgs } }) {
+              let _existing = existing;
+              if (getPostsArgs?.page === 1) _existing = [];
+              return [..._existing, ...incoming];
+            }
+          }
         },
       },
     },

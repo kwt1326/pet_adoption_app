@@ -10,7 +10,7 @@ export const GET_ADOPTION_POST_LIST = gql`
 `;
 
 export const GET_ADOPTION_POST_LIST2 = gql`
-query getPosts($input: GetAdoptionPostArgs!) {
+query getPosts($input: GetAdoptionPostsArgs!) {
   getPosts(getPostsArgs: $input) {
     title
     content

@@ -1,5 +1,14 @@
-.PetList {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-content: space-evenly;
+.container {
+  .pet_list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-evenly;
+  }
+
+  .div_intersection_observer {
+    width: 100%;
+    min-height: 20px;
+    background-color: white;
+    border: none;
+  }
 }

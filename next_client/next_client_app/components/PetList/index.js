@@ -1,48 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useLazyQuery } from "@apollo/client";
+import React, { useEffect, useState, useCallback } from "react";
+import { useQuery } from "@apollo/client";
 import PetListItem from "./PetListItem";
 import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
 
 import style from "./PetList.module.scss";
 
 function PetList({ category }) {
+  const [mount, setMount] = useState(false);
   const [page, setPage] = useState(1);
   const [pageEndRef, setPageEndRef] = useState(null);
-  const [petList, setPetList] = useState([]);
   const [isStartObserve, setStartObserve] = useState(false);
 
-  const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(
-    GET_ADOPTION_POST_LIST2
-  );
+  const getIsProfit = useCallback(() => category === "all" ? undefined : category === "petshop", [category])
 
-  const fetchData = async () => {
-    try {
-      const isProfit =
-        category === "all" ? undefined : category === "petshop" ? true : false;
-      const result = await getPostsQuery({
-        variables: {
-          input: {
-            isProfit: isProfit,
-            page: page,
-          },
-        },
-      });
-      const prevData = petList || [];
-      const curData = result.data?.getPosts || [];
+  const inputData = useCallback(() => ({
+    variables: {
+      input: {
+        isProfit: getIsProfit(),
+        page,
+      },
+    },
+  }), [category, page])
 
-      if (petList) {
-        const newData = petList;
-        setPetList(newData.concat(curData));
-      } else {
-        setPetList(curData);
-      }
-    } catch (e) {
-      console.error(e);
+  const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST2, inputData());
+  
+  const getListMore = async () => {
+    const result = await fetchMore(inputData())
+    if (result?.error) {
+      console.error(result.error)
+      alert(result.error.message)
     }
-  };
+  }
 
   useEffect(() => {
-    if (pageEndRef && !isStartObserve) {
+    if (mount && pageEndRef && !isStartObserve) {
       try {
         const observer = new IntersectionObserver(
           (entries) => {
@@ -61,34 +52,43 @@ function PetList({ category }) {
   }, [pageEndRef]);
 
   useEffect(() => {
-    fetchData(page);
-  }, []);
-
-  useEffect(() => {
-    setPage(1);
+    if (mount) {
+      setPage(1);
+      getListMore();
+    }
   }, [category]);
 
   useEffect(() => {
-    fetchData(page);
+    if (mount) {
+      getListMore();
+    }
   }, [page]);
+
+  useEffect(() => {
+    setMount(true);
+  }, []);
 
   const loadMore = () => setPage((prev) => prev + 1);
 
-  if (petList) {
+  if (data?.getPosts) {
+    const petList = data?.getPosts;
     return (
-      <section>
-        <div className={style.PetList}>
+      <section className={style.container}>
+        <div className={style.pet_list}>
           {petList.map((petitem, i) => (
             <PetListItem petitem={petitem} key={i}></PetListItem>
           ))}
         </div>
-        <button onClick={loadMore} ref={setPageEndRef}>
-          <span>loadmore...</span>
-        </button>
+        <div
+          className={style.div_intersection_observer}
+          ref={setPageEndRef}
+        >
+          {loading && <span>loading...</span>}
+        </div>
       </section>
     )
   }
-  return null;
+  return null
 }
 
 export default PetList;

@@ -1,27 +1,27 @@
 import React, { useState } from "react";
-import styles from "./header.module.scss";
-import { FaHome, FaChevronLeft } from "react-icons/fa";
 import Link from "next/link";
-import Sidebar from "../../components/modal/sidebar.js";
+import { FaHome, FaChevronLeft } from "react-icons/fa";
 
-const Header = ({ children }) => {
+import Sidebar from "../../components/Modal/sidebar.js";
+import styles from "./header.module.scss";
+
+const Header = (props: { children, rightBtn }) => {
   const [sidebarOnOff, setSidebarOnOff] = useState(false);
-  const onOffSidebar = () => {
-    setSidebarOnOff(!sidebarOnOff);
-  };
+  
+  const onOffSidebar = () => setSidebarOnOff(!sidebarOnOff);
 
   return (
     <div>
       <div className={styles.header}>
         <div className={styles.left}>
-          {children && (
+          {props?.children && (
             <Link href="/">
               <a>
                 <FaChevronLeft />
               </a>
             </Link>
           )}
-          {!children && (
+          {!props?.children && (
             <div className={styles.hamberger} onClick={onOffSidebar}>
               <span></span>
               <span></span>
@@ -30,13 +30,28 @@ const Header = ({ children }) => {
           )}
         </div>
         <Sidebar sidebarOnOff={sidebarOnOff} onOffSidebar={onOffSidebar} />
-        {children && <div className={styles.title}> {children} </div>}
-        {!children && (
+        {props?.children && (
+          <div className={styles.title}>{props?.children}</div>
+        )}
+        {!props?.children && (
           <div className={styles.logo}>
-            <img src="images/logo.png"></img>
+            <img src="/images/logo.png"></img>
           </div>
         )}
-        {!children && <FaHome size="1.8em" color="#555" className={styles.homeIcon} />}
+        {props?.rightBtn && (
+          <button className={styles.right_btn} onClick={props?.rightBtn?.func}>{props?.rightBtn?.text}</button>
+        )}
+        {!props?.children && (
+          <Link href={'/'}>
+            <a>
+              <FaHome
+                size="1.8em"
+                color="#555"
+                className={styles.homeIcon}
+              />
+            </a>
+          </Link>
+        )}
       </div>
       <div></div>
       <div></div>
