@@ -80,7 +80,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
     <div className={sidebarOnOff ? `${styles.modal} ${styles.openSidebar}` : styles.modal}>
       {sidebarOnOff ? (
         <section>
-          {userInfo ? AfterLogin() : BeforeLogin()}
+          {userInfo ? <AfterLogin /> : <BeforeLogin />}
           <ul className={styles.menuList}>
             <li>MENU</li>
             {userInfo?.userType === 'ADOPT_USER' && (
