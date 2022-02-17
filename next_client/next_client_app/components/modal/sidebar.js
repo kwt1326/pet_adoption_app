@@ -11,7 +11,7 @@ import { useUserInfo } from "../../hooks/user";
 
 const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
   const userInfo = useUserInfo();
-  
+
   const closeSidebar = () => {
     onOffSidebar(false);
   };
@@ -63,13 +63,17 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span>{userInfo?.nickname || '사용자'}</span>
+            <span>{userInfo?.nickname || "사용자"}</span>
             <span> 님 어서오세요.</span>
           </div>
           <IoCloseOutline onClick={closeSidebar} />
         </div>
         <ul className={styles.afterInfo}>
-          <li>마이페이지</li>
+          <li>
+            <Link href="myPage">
+              <a>마이페이지</a>
+            </Link>
+          </li>
           <li>찜리스트</li>
           <li onClick={logout}>로그아웃</li>
         </ul>
@@ -83,7 +87,7 @@ const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
           {userInfo ? <AfterLogin /> : <BeforeLogin />}
           <ul className={styles.menuList}>
             <li>MENU</li>
-            {userInfo?.userType === 'ADOPT_USER' && (
+            {userInfo?.userType === "ADOPT_USER" && (
               <li>
                 작성하기
                 <ul>
