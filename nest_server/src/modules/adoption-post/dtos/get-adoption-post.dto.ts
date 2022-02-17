@@ -1,10 +1,14 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { AdoptionPost } from 'src/entities/adoption-post.entity';
+import { PetType } from 'src/entities/pets.entity';
 
 @InputType()
 export class GetAdoptionPostsArgs {
   @Field(() => Boolean, { nullable: true })
   isProfit: boolean;
+
+  @Field(() => String, { nullable: true })
+  petType: PetType;
 
   @Field(() => Number, { nullable: true, defaultValue: 1 })
   page: number;

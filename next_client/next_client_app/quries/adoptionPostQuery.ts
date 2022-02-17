@@ -1,19 +1,11 @@
 import { gql } from '@apollo/client';
 
 export const GET_ADOPTION_POST_LIST = gql`
-  query getPosts($input: GetAdoptionPostArgs!) {
-    getPosts(getPostsArgs: $input) {
-      result
-    	statusCode
-    }
-  }
-`;
-
-export const GET_ADOPTION_POST_LIST2 = gql`
 query getPosts($input: GetAdoptionPostsArgs!) {
   getPosts(getPostsArgs: $input) {
     title
     content
+    isLiked
     writter {
       nickname
       companyName
@@ -46,6 +38,9 @@ query getPosts($input: GetAdoptionPostsArgs!) {
       neutered
       characteristic
       othersInfo
+      pictures {
+        uri
+      }
     }
   }
 }`;

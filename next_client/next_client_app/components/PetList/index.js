@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import PetListItem from "./PetListItem";
-import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
+import { GET_ADOPTION_POST_LIST } from "../../quries/adoptionPostQuery";
 
 import style from "./PetList.module.scss";
 
@@ -22,7 +22,7 @@ function PetList({ category }) {
     },
   }), [category, page])
 
-  const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST2, inputData());
+  const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST, inputData());
   
   const getListMore = async () => {
     const result = await fetchMore(inputData())

@@ -7,7 +7,7 @@ import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 import Carousel from "./carousel";
 import Header from "../../components/Header/index";
 import PetListItem from "../../components/PetList/PetListItem";
-import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
+import { GET_ADOPTION_POST_LIST } from "../../quries/adoptionPostQuery";
 
 import petstyles from "../../components/PetList/PetList.module.scss";
 import styles from "../../styles/Main.module.scss";
@@ -16,7 +16,7 @@ const Main = () => {
   const [petList, setPetlist] = useState([]);
   const [list, setList] = useState([]);
   const router = useRouter();
-  const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(GET_ADOPTION_POST_LIST2);
+  const [getPostsQuery, { loading, error, previousData, data }] = useLazyQuery(GET_ADOPTION_POST_LIST);
 
   const fetchData = async () => {
     try {

@@ -1,0 +1,8 @@
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+[[redirects]]
+  from = "/"
+  to = "https://api.mysearch.com"
+  status = 200
+  force = true
+  signed = "API_SIGNATURE_TOKEN_PLACEHOLDER"
