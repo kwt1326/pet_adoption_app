@@ -2,10 +2,11 @@ import { ApolloClient, createHttpLink, InMemoryCache, makeVar, split } from "@ap
 import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
 // import { WebSocketLink } from "@apollo/client/link/ws";
-import cookies from 'js-cookie';
+import Cookie from 'universal-cookie';
+
 import { deviceLogin } from "../utils/nativeInterfaceUtil";
 
-const token = cookies.get(process.env.JWT_KEY)
+const token = (new Cookie()).get(process.env.JWT_KEY)
 
 export const isLoggedVar = makeVar(Boolean(token));
 export const tokenVar = makeVar(token);
@@ -89,6 +90,7 @@ const client = new ApolloClient({
             merge(existing = [], incoming, { args: { getPostsArgs } }) {
               let _existing = existing;
               if (getPostsArgs?.page === 1) _existing = [];
+              console.log(_existing,incoming)
               return [..._existing, ...incoming];
             }
           }

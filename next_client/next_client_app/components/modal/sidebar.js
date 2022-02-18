@@ -1,23 +1,22 @@
 import React from "react";
-import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import styles from "./sidebar.module.scss";
-import { IoCloseOutline } from "react-icons/io5";
 import Link from "next/link";
-import Cookies from "js-cookie";
-import Router from "next/router";
-import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
+import { IoCloseOutline } from "react-icons/io5";
 
 import { useUserInfo } from "../../hooks/user";
+import { localLogout } from '../../utils/authUtil';
+import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
+import styles from "./sidebar.module.scss";
 
-const Sidebar = ({ sidebarOnOff, onOffSidebar }) => {
+
+const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
   const userInfo = useUserInfo();
   
   const closeSidebar = () => {
     onOffSidebar(false);
   };
   const logout = () => {
-    Cookies.remove("with-pet-jwt");
-    Router.push("/");
+    localLogout();
+    router.replace('/');
   };
 
   const BeforeLogin = () => {

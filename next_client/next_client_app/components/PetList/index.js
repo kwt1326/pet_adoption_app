@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import PetListItem from "./PetListItem";
-import { GET_ADOPTION_POST_LIST2 } from "../../quries/adoptionPostQuery";
+import { GET_ADOPTION_POST_LIST, TOGGLE_LIKE_MUTATION } from "../../quries/adoptionPostQuery";
 
 import style from "./PetList.module.scss";
 
@@ -13,7 +13,7 @@ function PetList({ category }) {
 
   const getIsProfit = useCallback(() => category === "all" ? undefined : category === "petshop", [category])
 
-  const inputData = useCallback(() => ({
+  const getPostInputData = useCallback(() => ({
     variables: {
       input: {
         isProfit: getIsProfit(),
@@ -22,10 +22,28 @@ function PetList({ category }) {
     },
   }), [category, page])
 
-  const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST2, inputData());
+  const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST, getPostInputData());
+  const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
   
+  const toggleLikeMutation = async (postId) => {
+    const result = await toggleLike({
+      variables: {
+        input: {
+          postId
+        }
+      }
+    })
+    if (result?.errors) {
+      console.error(result.errors);
+      alert(result.errors);
+      return;
+    }
+    setPage(1);
+    window.scrollTo(0,0);
+  }
+
   const getListMore = async () => {
-    const result = await fetchMore(inputData())
+    const result = await fetchMore(getPostInputData())
     if (result?.error) {
       console.error(result.error)
       alert(result.error.message)
@@ -76,7 +94,11 @@ function PetList({ category }) {
       <section className={style.container}>
         <div className={style.pet_list}>
           {petList.map((petitem, i) => (
-            <PetListItem petitem={petitem} key={i}></PetListItem>
+            <PetListItem
+              key={i}
+              petitem={petitem}
+              toggleLikeMutation={toggleLikeMutation}
+            />
           ))}
         </div>
         <div
