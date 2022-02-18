@@ -12,9 +12,10 @@
 }
 
 .pet_item_container {
+  width: 100%;
   padding: 10px;
-  display: table;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
 
   .pet_item_price {
     color: red;
@@ -28,7 +29,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 5px;
+    margin-bottom: 10px;
     
     .pet_item_image_wrap {
       display: flex;

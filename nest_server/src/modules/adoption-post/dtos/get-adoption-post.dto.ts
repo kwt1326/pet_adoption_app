@@ -22,3 +22,12 @@ export class GetAdoptionPostsOutput extends AdoptionPost {
   @Field(() => Boolean)
   isLiked: boolean;
 }
+
+@ObjectType()
+export class GetRecentlyAdoptionPostsOutput {
+  @Field(() => [GetAdoptionPostsOutput])
+  dog: GetAdoptionPostsOutput[];
+
+  @Field(() => [GetAdoptionPostsOutput])
+  cat: GetAdoptionPostsOutput[];
+}

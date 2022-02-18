@@ -1,57 +1,85 @@
 import { gql } from '@apollo/client';
 
-export const GET_ADOPTION_POST_LIST = gql`
-query getPosts($input: GetAdoptionPostsArgs!) {
-  getPosts(getPostsArgs: $input) {
-    title
-    content
-    isLiked
-    writter {
-      nickname
-      companyName
-      address
-      phoneNumber
-      pageUri
-      isAuthenticated
-      isProfit
-      authenticatedAt
-    }
-    pet {
-      registrant {
-        nickname
-        companyName
-        address
-        phoneNumber
-        pageUri
-        isAuthenticated
-        isProfit
-        authenticatedAt
+export const GET_RECENTLY_ADOPTION_POST_LIST = gql`
+  query getRecentlyPosts {
+    getRecentlyPosts {
+      dog {
+        id
+        title
+        isLiked
+        createdAt
+        writter {
+          isProfit
+        }
+        pet {
+          breed
+          price
+          isGenderMale
+          pictures {
+            uri
+          }  
+        }
       }
-      name
-      breed
-      type
-      price
-      age
-      weight
-      isGenderMale
-      vaccinated
-      neutered
-      characteristic
-      othersInfo
-      pictures {
-        uri
+      cat {
+        id
+        title
+        content
+        isLiked
+        createdAt
+        writter {
+          isProfit
+        }
+        pet {
+          breed
+          price
+          isGenderMale
+          createdAt
+          pictures {
+            uri
+          }  
+        }
       }
     }
   }
-}`;
+`
 
-
+export const GET_ADOPTION_POST_LIST = gql`
+  query getPosts($input: GetAdoptionPostsArgs!) {
+    getPosts(getPostsArgs: $input) {
+      id
+      title
+      isLiked
+      createdAt
+      writter {
+        isProfit
+      }
+      pet {
+        breed
+        price
+        isGenderMale
+        createdAt
+        pictures {
+          uri
+        }  
+      }
+    }
+  }
+`;
 
 export const CREATE_POST_MUTATION = gql`
-mutation createAdoptionPost($input: CreateAdoptionPostArgs!) {
-  createAdoptionPost(postArgs: $input) {
-    result
-    id
- }
-}
+  mutation createAdoptionPost($input: CreateAdoptionPostArgs!) {
+    createAdoptionPost(postArgs: $input) {
+      result
+      id
+    }
+  }
+`;
+
+export const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleAdoptionPostLike($input: ToggleAdoptionPostLikeArgs!) {
+    toggleAdoptionPostLike(likeArgs: $input) {
+      result
+      type
+    }
+  }
 `;

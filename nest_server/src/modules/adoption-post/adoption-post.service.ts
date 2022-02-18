@@ -13,6 +13,7 @@ import {
 import {
   GetAdoptionPostsArgs,
   GetAdoptionPostsOutput,
+  GetRecentlyAdoptionPostsOutput,
 } from './dtos/get-adoption-post.dto';
 import { PetPicture } from 'src/entities/pet-picture.entity';
 import { AdoptionPostLike } from 'src/entities/adoption-post-like.entity';
@@ -128,6 +129,47 @@ export class AdoptionPostService {
         post.likes.find((like) => like.adoptee.userId === user.id),
       ),
     }));
+  }
+
+  async getRecentlyAdoptionPosts(
+    user: User,
+  ): Promise<GetRecentlyAdoptionPostsOutput> {
+    const checkLiked = (post: AdoptionPost) => ({
+      ...post,
+      isLiked: Boolean(
+        post.likes.find((like) => like.adoptee.userId === user.id),
+      ),
+    });
+
+    const queryBuilder: SelectQueryBuilder<AdoptionPost> =
+      this.adoptionPostRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.writter', 'writter')
+        .leftJoinAndSelect('post.pet', 'pet')
+        .leftJoinAndSelect('post.likes', 'likes')
+        .leftJoinAndSelect('likes.adoptee', 'adoptee')
+        .leftJoinAndSelect('pet.pictures', 'pictures');
+
+    const queryResultDog = (
+      await queryBuilder
+        .where('pet.type = :type', { type: PetType.DOG })
+        .take(6)
+        .orderBy('post.id', 'DESC')
+        .getMany()
+    ).map(checkLiked);
+
+    const queryResultCat = (
+      await queryBuilder
+        .where('pet.type = :type', { type: PetType.CAT })
+        .take(6)
+        .orderBy('post.id', 'DESC')
+        .getMany()
+    ).map(checkLiked);
+
+    return {
+      dog: queryResultDog,
+      cat: queryResultCat,
+    };
   }
 
   async createAdoptionPostLike(

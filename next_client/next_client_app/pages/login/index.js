@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { withRouter } from "next/router";
 import Link from "next/link";
-import cookie from "js-cookie";
-import Header from "../../components/Header/index";
-import { LOGIN_QUERY } from "../../quries/authQuery";
-import style from "./login.module.scss";
-import Router from "next/router";
-import SignInput from "../../components/SignInput";
+import { useLazyQuery } from "@apollo/client";
 
-function login() {
+import Header from "../../components/Header/index";
+import SignInput from "../../components/SignInput";
+import { LOGIN_QUERY } from "../../quries/authQuery";
+import { localLogin } from '../../utils/authUtil';
+import style from "./login.module.scss";
+
+function login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isCookie, setIsCookie] = useState("");
@@ -39,11 +40,9 @@ function login() {
       const response = await loginQuery();
       const responseData = response?.data?.login;
       if (responseData) {
-        cookie.set(process.env.JWT_KEY, responseData.result.token);
-      }
-      if (response?.data?.login?.statusCode === 200) {
+        localLogin(responseData.result.token);
         setIsCookie(responseData.result.token);
-        Router.push("/");
+        props.router.push('/');
       } else {
         setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
@@ -100,4 +99,4 @@ function login() {
   );
 }
 
-export default login;
+export default withRouter(login);

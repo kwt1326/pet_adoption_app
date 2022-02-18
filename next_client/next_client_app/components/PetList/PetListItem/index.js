@@ -4,7 +4,7 @@ import { AiFillHeart } from 'react-icons/ai';
 import { comma } from "../../../helpers/comma";
 import styles from "./PetListItem.module.scss";
 
-function PetListItem({ petitem }) {
+function PetListItem({ petitem, toggleLikeMutation }) {
   const pet = petitem?.pet;
   const writter = petitem?.writter;
   
@@ -20,6 +20,18 @@ function PetListItem({ petitem }) {
   const createdAt = dayjs(petitem?.createdAt).format('YYYY/MM/DD');
   const description = `${boneAt}개월 / ${gender} / ${petBreed}`;
 
+  const Badges = () => (
+    <Fragment>
+      {isProfit ?
+        <div className={styles.badge_shop}>{'펫샵'}</div> :
+        <div className={styles.badge_not_shop}>{'보호소'}</div>
+      }
+      <div className={styles.like_box} onClick={() => toggleLikeMutation(petitem?.id)}>
+        <AiFillHeart size={15} color={isLiked ? '#ff6f8b' : 'gray'} />
+      </div>
+    </Fragment>
+  )
+
   const PetImage = () => (
     <div className={styles.pet_item_image}>
       <div className={styles.pet_item_image_wrap}>
@@ -27,17 +39,13 @@ function PetListItem({ petitem }) {
           isExistPicture ? (
             <Fragment>
               <img className={styles.pet_image} src={src} alt="pet_thumbnail_img" />
-              {
-                isProfit ?
-                <div className={styles.badge_shop}>{'펫샵'}</div> :
-                <div className={styles.badge_not_shop}>{'보호소'}</div>
-              }
-              <div className={styles.like_box} onClick={() => 'like clicked'}>
-                <AiFillHeart size={15} color={isLiked ? '#ff6f8b' : 'gray'} />
-              </div>
+              <Badges />
             </Fragment>
           ) : (
-            <img className={styles.pet_no_image} src="/images/no_image.svg" alt="no_image" />
+            <Fragment>
+              <img className={styles.pet_no_image} src="/images/no_image.svg" alt="no_image" />
+              <Badges />
+            </Fragment>
           )
         }
       </div>
