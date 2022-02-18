@@ -48,16 +48,27 @@ export const GET_ADOPTION_POST_LIST = gql`
     getPosts(getPostsArgs: $input) {
       id
       title
+      content
       isLiked
       createdAt
       writter {
         isProfit
+        companyName
+        phoneNumber
+        address
       }
       pet {
+        name
+        age
         breed
         price
         isGenderMale
         createdAt
+        vaccinated
+        weight
+        neutered
+        characteristic
+        othersInfo
         pictures {
           uri
         }  

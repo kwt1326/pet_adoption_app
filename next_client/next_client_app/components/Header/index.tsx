@@ -49,7 +49,7 @@ const Header = (props: Partial<{
         )}
         {props?.rightBtn && (
           <button className={styles.right_btn} onClick={props?.rightBtn?.func}>{props?.rightBtn?.text}</button>
-        )}
+)}
         {!props?.children && (
           <Link href={'/'}>
             <a>

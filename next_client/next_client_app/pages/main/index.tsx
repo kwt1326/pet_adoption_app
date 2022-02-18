@@ -1,4 +1,4 @@
-import React from "react";
+import React , { Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
@@ -52,7 +52,7 @@ function Main() {
   }
 
   return (
-    <div>
+    <Fragment>
       <Header children={undefined} rightBtn={undefined} />
       <Carousel />
       <ul className={styles.nav}>
@@ -110,7 +110,7 @@ function Main() {
         </div>
         <button onClick={() => router.push("/testUpload")}>테스트 페이지 입장</button>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

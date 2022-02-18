@@ -3,13 +3,15 @@ import Axios from "axios";
 import { useMutation } from "@apollo/client";
 import { Image } from "cloudinary-react";
 
-import Header from "../../components/Header";
-import { CREATE_POST_MUTATION } from "../../quries/adoptionPostQuery";
-import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../constants/config";
+import Header from "../../../components/Header";
+import { CREATE_POST_MUTATION } from "../../../quries/adoptionPostQuery";
+import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../../constants/config";
 
 import style from "./writePost.module.scss";
 
 function WritePost(props) {
+  const [file, setFile] = useState(null);
+  const [filename, setFileName] = useState(null);
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
@@ -25,7 +27,6 @@ function WritePost(props) {
     characteristic: "",
     othersInfo: "",
   });
-  const [image, setImage] = useState("");
   const {
     title,
     content,
@@ -77,6 +78,7 @@ function WritePost(props) {
           neutered: inputs.neutered == "1" ? true : false,
           characteristic: inputs.characteristic,
           othersInfo: inputs.othersInfo,
+          uri: filename,
         },
       },
     });
@@ -86,10 +88,13 @@ function WritePost(props) {
   const uploadImage = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", process.env.CLOUD_NAME);
+    formData.append("file", file);
+    formData.append("upload_preset", process.env.PRESET_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
       console.log(response);
+      const requestData = response.data;
+      //      const fileName = requestData.secure_url; // TEST: https://res.cloudinary.com/duzqh6xr0/image/upload/v1643722889/vazvgydltxgzmxgrejud.png
+      setFileName(requestData.secure_url);
     });
   };
   return (
@@ -308,7 +313,7 @@ function WritePost(props) {
               <input
                 type="file"
                 onChange={(e) => {
-                  setImage(e.target.files[0]);
+                  setFile(e.target.files[0]);
                 }}
               ></input>
               <button onClick={uploadImage}> 사진 업로드 </button>
@@ -317,7 +322,7 @@ function WritePost(props) {
                   <Image
                     className={style.pictureitem}
                     cloudName={process.env.CLOUD_NAME}
-                    src={`https://res.cloudinary.com/${process.env.PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
+                    src={filename}
                   ></Image>
                 </div>
               </div>
