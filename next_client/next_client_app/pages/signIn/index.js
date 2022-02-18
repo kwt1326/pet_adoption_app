@@ -57,7 +57,7 @@ function signIn({ router: { query } }) {
       if (state === true) {
         setEmailError("이미 가입된 이메일입니다.");
       } else {
-        setEmailError("가입 가능한 이메일입니다");
+        setEmailError(" 이메일입니다");
       }
     }
     return state;
@@ -107,7 +107,9 @@ function signIn({ router: { query } }) {
       if (passwordReg.test(password)) {
         setPasswordError("");
       } else {
-        setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
+        setPasswordError(
+          "최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요"
+        );
         validated = false;
       }
     }
@@ -167,8 +169,12 @@ function signIn({ router: { query } }) {
       setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"));
     }
     if (phoneNumber.length === 11) {
-      console.log(phoneNumber)
-      setPhoneNumber(phoneNumber.replace(/-/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3"));
+      console.log(phoneNumber);
+      setPhoneNumber(
+        phoneNumber
+          .replace(/-/g, "")
+          .replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3")
+      );
     }
   }, [phoneNumber]);
   const [signUpQuery] = useMutation(SIGN_UP_QUERY);
@@ -209,9 +215,9 @@ function signIn({ router: { query } }) {
     }
   };
   const numValid = (value) => {
-    const num = value.replace(/[^0-9]/g, '')
-    setPhoneNumber(num)
-  }
+    const num = value.replace(/[^0-9]/g, "");
+    setPhoneNumber(num);
+  };
   const renderCompany = () => {
     return (
       <div className={style.inputArea}>
@@ -265,7 +271,7 @@ function signIn({ router: { query } }) {
           <SignInput
             value={phoneNumber}
             onChange={(e) => {
-              numValid(e.target.value)
+              numValid(e.target.value);
             }}
             placeholder="전화번호를 입력하세요"
             type="text"
@@ -286,7 +292,6 @@ function signIn({ router: { query } }) {
       </div>
     );
   };
-
 
   return (
     <div>

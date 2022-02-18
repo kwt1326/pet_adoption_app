@@ -1,0 +1,36 @@
+.container {
+  padding: 20px;
+
+  .title {
+    border-bottom: 1px solid;
+    input {
+      font-size: 20px;
+      border: none;
+      padding: 5px;
+    }
+  }
+  .review {
+    padding: 20px;
+    input {
+      width: 100%;
+
+      border: none;
+      height: 500px;
+    }
+  }
+  .pictureList {
+    display: flex;
+    .pictureWrapper {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-right: 10px;
+      .pictureitem {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

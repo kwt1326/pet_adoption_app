@@ -1,4 +1,4 @@
-import React from "react";
+import React , { Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
@@ -39,11 +39,17 @@ function Main() {
       return (
         <div className={styles.list_container}>
           {getRecentlyPosts && getRecentlyPosts[props.type].map((petitem, i) => (
+             <Link
+             href={{
+               pathname: `/post/detail/${petitem.id}`,
+             }}
+             key={i}
+           ><div>
             <PetListItem
               key={i}
               petitem={petitem}
               toggleLikeMutation={toggleLikeMutation}
-            />
+            /></div></Link>
           ))}
         </div>
       )
@@ -52,7 +58,7 @@ function Main() {
   }
 
   return (
-    <div>
+    <Fragment>
       <Header children={undefined} rightBtn={undefined} />
       <Carousel />
       <ul className={styles.nav}>
@@ -110,7 +116,7 @@ function Main() {
         </div>
       </div>
       <div className={styles.spacing_box} />
-    </div>
+    </Fragment>
   );
 };
 

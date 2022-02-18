@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useLazyQuery } from "@apollo/client";
 
 import Header from "../../components/Header";
-import SignInput from '../../components/SignInput';
+import SignInput from "../../components/SignInput";
 import { LOGIN_QUERY } from "../../quries/authQuery";
-import { localLogin } from '../../utils/authUtil';
+import { localLogin } from "../../utils/authUtil";
 import style from "./login.module.scss";
 
 function login(props) {
@@ -39,11 +39,10 @@ function login(props) {
     if (validateForm()) {
       const response = await loginQuery();
       const responseData = response?.data?.login;
-      console.log(response)
       if (responseData) {
         localLogin(responseData.result.token);
         setIsCookie(responseData.result.token);
-        props.router.push('/');
+        props.router.push("/");
       } else {
         setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
