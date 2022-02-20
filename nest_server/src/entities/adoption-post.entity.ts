@@ -34,7 +34,7 @@ export class AdoptionPost extends CoreEntity {
   title: string;
 
   @Column(ColumnTextType)
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   content: string;
 
   @OneToMany(() => AdoptionPostLike, (like) => like.likePost)

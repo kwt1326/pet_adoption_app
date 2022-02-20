@@ -4,8 +4,17 @@ import { FaHome, FaChevronLeft } from "react-icons/fa";
 
 import Sidebar from "../../components/Modal/sidebar.js";
 import styles from "./header.module.scss";
+import { useRouter } from "next/router";
 
-const Header = (props: { children, rightBtn }) => {
+const Header = (props: Partial<{
+  children: React.ReactNode,
+  rightBtn: {
+    func: React.MouseEventHandler<HTMLButtonElement>;
+    text: string;
+  }
+}>) => {
+  const router = useRouter();
+
   const [sidebarOnOff, setSidebarOnOff] = useState(false);
   
   const onOffSidebar = () => setSidebarOnOff(!sidebarOnOff);
@@ -29,7 +38,7 @@ const Header = (props: { children, rightBtn }) => {
             </div>
           )}
         </div>
-        <Sidebar sidebarOnOff={sidebarOnOff} onOffSidebar={onOffSidebar} />
+        <Sidebar router={router} sidebarOnOff={sidebarOnOff} onOffSidebar={onOffSidebar} />
         {props?.children && (
           <div className={styles.title}>{props?.children}</div>
         )}

@@ -1,8 +1,11 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import { ApolloProvider } from "@apollo/client";
+import client from '../apollo/client';
+import { useUserInfo } from "../hooks/user";
+import styles from "../styles/Home.module.scss";
 import Main from "./main";
 
-export default function Home() {
+function Home() {
   return (
     <div className={styles.container}>
       <Head>
@@ -11,8 +14,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Main />
+        <ApolloProvider client={client}>
+          <Main />
+        </ApolloProvider>
       </main>
     </div>
   );
 }
+
+export async function getServerSideProps(ctx) {
+  const userInfo = useUserInfo({ ctx });
+  console.log(userInfo);
+  return {
+    props: {},
+  }
+  // return {
+  //   redirect: {
+  //     permanent: false,
+  //     destination: "/login",
+  //   },
+  //   props: {},
+  // }
+}
+
+export default Home;

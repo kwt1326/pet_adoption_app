@@ -1,7 +1,7 @@
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pets } from 'src/entities/pets.entity';
+import { Pets, PetType } from 'src/entities/pets.entity';
 import { AdoptUser } from 'src/entities/adopt-user.entity';
 import { AdoptionPost } from 'src/entities/adoption-post.entity';
 import {
@@ -13,6 +13,7 @@ import {
 import {
   GetAdoptionPostsArgs,
   GetAdoptionPostsOutput,
+  GetRecentlyAdoptionPostsOutput,
 } from './dtos/get-adoption-post.dto';
 import { PetPicture } from 'src/entities/pet-picture.entity';
 import { AdoptionPostLike } from 'src/entities/adoption-post-like.entity';
@@ -95,29 +96,32 @@ export class AdoptionPostService {
     user: User,
     args: GetAdoptionPostsArgs,
   ): Promise<GetAdoptionPostsOutput[]> {
-    const queryResult =
-      typeof args.isProfit !== 'undefined'
-        ? await this.adoptionPostRepository
-            .createQueryBuilder('post')
-            .leftJoinAndSelect('post.writter', 'writter')
-            .leftJoinAndSelect('post.pet', 'pet')
-            .leftJoinAndSelect('post.likes', 'likes')
-            .leftJoinAndSelect('likes.adoptee', 'adoptee')
-            .leftJoinAndSelect('pet.pictures', 'pictures')
-            .skip(20 * (args.page - 1))
-            .take(20)
-            .where('writter.isProfit = :isProfit', { isProfit: args.isProfit })
-            .getMany()
-        : await this.adoptionPostRepository
-            .createQueryBuilder('post')
-            .leftJoinAndSelect('post.writter', 'writter')
-            .leftJoinAndSelect('post.pet', 'pet')
-            .leftJoinAndSelect('post.likes', 'likes')
-            .leftJoinAndSelect('likes.adoptee', 'adoptee')
-            .leftJoinAndSelect('pet.pictures', 'pictures')
-            .skip(20 * (args.page - 1))
-            .take(20)
-            .getMany();
+    let queryBuilder: SelectQueryBuilder<AdoptionPost> =
+      this.adoptionPostRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.writter', 'writter')
+        .leftJoinAndSelect('post.pet', 'pet')
+        .leftJoinAndSelect('post.likes', 'likes')
+        .leftJoinAndSelect('likes.adoptee', 'adoptee')
+        .leftJoinAndSelect('pet.pictures', 'pictures');
+
+    if (typeof args.isProfit !== 'undefined') {
+      queryBuilder = queryBuilder.where('writter.isProfit = :isProfit', {
+        isProfit: args.isProfit,
+      });
+    }
+
+    if (typeof args.petType !== 'undefined') {
+      queryBuilder = queryBuilder.where('pet.type = :type', {
+        type: args.petType,
+      });
+    }
+
+    const queryResult = await queryBuilder
+      .skip(20 * (args.page - 1))
+      .take(20)
+      .orderBy('post.id', 'DESC')
+      .getMany();
 
     return queryResult?.map((post: AdoptionPost) => ({
       ...post,
@@ -125,6 +129,47 @@ export class AdoptionPostService {
         post.likes.find((like) => like.adoptee.userId === user.id),
       ),
     }));
+  }
+
+  async getRecentlyAdoptionPosts(
+    user: User,
+  ): Promise<GetRecentlyAdoptionPostsOutput> {
+    const checkLiked = (post: AdoptionPost) => ({
+      ...post,
+      isLiked: Boolean(
+        post.likes.find((like) => like.adoptee.userId === user.id),
+      ),
+    });
+
+    const queryBuilder: SelectQueryBuilder<AdoptionPost> =
+      this.adoptionPostRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.writter', 'writter')
+        .leftJoinAndSelect('post.pet', 'pet')
+        .leftJoinAndSelect('post.likes', 'likes')
+        .leftJoinAndSelect('likes.adoptee', 'adoptee')
+        .leftJoinAndSelect('pet.pictures', 'pictures');
+
+    const queryResultDog = (
+      await queryBuilder
+        .where('pet.type = :type', { type: PetType.DOG })
+        .take(6)
+        .orderBy('post.id', 'DESC')
+        .getMany()
+    ).map(checkLiked);
+
+    const queryResultCat = (
+      await queryBuilder
+        .where('pet.type = :type', { type: PetType.CAT })
+        .take(6)
+        .orderBy('post.id', 'DESC')
+        .getMany()
+    ).map(checkLiked);
+
+    return {
+      dog: queryResultDog,
+      cat: queryResultCat,
+    };
   }
 
   async createAdoptionPostLike(

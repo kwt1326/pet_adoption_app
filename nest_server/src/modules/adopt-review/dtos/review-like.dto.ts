@@ -3,6 +3,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 export enum LikeResult {
   CREATE,
   DELETE,
+  FAIL,
 }
 
 registerEnumType(LikeResult, {
