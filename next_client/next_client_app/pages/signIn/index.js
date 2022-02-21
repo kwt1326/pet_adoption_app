@@ -65,12 +65,13 @@ function signIn({ router: { query } }) {
   const checkDuplicateNickname = async () => {
     const response = await checkDuplicateQuery1();
     let state = response?.data?.checkDuplicateField?.result;
+    let nicknameReg = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]){0,6}$/;
     if (!nickname) {
       setNicknameError("닉네임을 입력하세요");
     } else {
-      if (state === true) {
+      if (state) {
         setNicknameError("이미 등록된 닉네임입니다.");
-      } else {
+      } else if (!state && nicknameReg.test(nickname)) {
         setNicknameError("등록 가능한 닉네임입니다");
       }
     }
@@ -78,7 +79,7 @@ function signIn({ router: { query } }) {
   };
   const passwordEqual = () => {
     let validated = true;
-    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (password !== "" && confirmPassword !== "") {
       if (password !== confirmPassword) {
         setPasswordError("비밀번호가 동일하지 않습니다.");
@@ -93,13 +94,14 @@ function signIn({ router: { query } }) {
   };
   const validateForm = async () => {
     let validated = true;
-    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
     if (!email) {
       setEmailError("이메일을 입력하세요");
       validated = false;
     } else {
       setEmailError("");
     }
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!password) {
       setPasswordError("비밀번호를 입력하세요");
       validated = false;
@@ -108,7 +110,7 @@ function signIn({ router: { query } }) {
         setPasswordError("");
       } else {
         setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
-        validated = false
+        validated = false;
       }
     }
 
@@ -118,12 +120,19 @@ function signIn({ router: { query } }) {
     } else {
       setConfirmPasswordError("");
     }
+    let nicknameReg = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]){0,6}$/;
 
     if (!nickname) {
       setNicknameError("닉네임을 입력하세요");
       validated = false;
     } else {
-      setNicknameError("");
+      console.log(nicknameReg.test(nickname));
+      if (nicknameReg.test(nickname)) {
+        setNicknameError("");
+      } else {
+        setNicknameError("닉네임은 8글자 이하의 한글,영문,숫자만 가능합니다.");
+        validated = false;
+      }
     }
 
     if (signInType === "업체") {
@@ -140,12 +149,16 @@ function signIn({ router: { query } }) {
       } else {
         setAddressError("");
       }
-
+      const phoneReg = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
       if (!phoneNumber) {
         setPhoneNumberError("전화번호를 입력하세요");
         validated = false;
       } else {
-        setPhoneNumberError("");
+        if (phoneReg.test(phoneNumber)) {
+          setPhoneNumberError("");
+        } else {
+          setPhoneNumberError("sdf");
+        }
       }
     }
     if (!passwordEqual()) {
