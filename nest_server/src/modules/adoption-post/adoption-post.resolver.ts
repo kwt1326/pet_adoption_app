@@ -4,6 +4,7 @@ import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
 import {
   GetAdoptionPostsArgs,
   GetAdoptionPostsOutput,
+  GetRecentlyAdoptionPostsOutput,
 } from './dtos/get-adoption-post.dto';
 import {
   CreateAdoptionPostArgs,
@@ -45,6 +46,14 @@ export class AdoptionPostResolver {
     }
   }
 
+  @Query(() => GetRecentlyAdoptionPostsOutput)
+  @UseGuards(GqlAuthGuard)
+  async getRecentlyPosts(
+    @AuthUser() user: User,
+  ): Promise<GetRecentlyAdoptionPostsOutput> {
+    return await this.adoptionPostService.getRecentlyAdoptionPosts(user);
+  }
+
   @Query(() => [GetAdoptionPostsOutput])
   @UseGuards(GqlAuthGuard)
   async getPosts(
@@ -78,6 +87,6 @@ export class AdoptionPostResolver {
         );
       }
     }
-    return { result: false, type: undefined };
+    return { result: false, type: LikeResult.FAIL };
   }
 }

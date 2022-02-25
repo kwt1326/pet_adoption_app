@@ -1,7 +1,7 @@
 import { useQuery, gql } from "@apollo/client";
 import React from "react";
 import Slider from "react-slick";
-import styles from "../../styles/Main.module.scss";
+import styles from "./Main.module.scss";
 import Link from "next/link";
 
 export default function SimpleSlider() {

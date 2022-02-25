@@ -7,14 +7,7 @@
 }
 .inputArea {
   width: 280px;
-  input {
-    width: 100%;
-    height: 45px;
-    border: 1px solid #ccc;
-    margin-top: 10px;
-    border-radius: 2px;
-    padding: 0 15px;
-  }
+
   button {
     width: 100%;
     height: 45px;
@@ -33,6 +26,7 @@
   margin: 10px 0;
 }
 .join {
+  padding-top: 20px;
   color: #444;
 }
 .validText {

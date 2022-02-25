@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { withRouter } from "next/router";
 import Link from "next/link";
-import cookie from "js-cookie";
+import { useLazyQuery } from "@apollo/client";
+
 import Header from "../../components/Header/index";
+import SignInput from "../../components/SignInput";
 import { LOGIN_QUERY } from "../../quries/authQuery";
+import { localLogin } from '../../utils/authUtil';
 import style from "./login.module.scss";
-import Router from "next/router";
-import SignInput from "../../components/signInput";
 
-
-function login() {
+function login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isCookie, setIsCookie] = useState("");
@@ -40,15 +40,12 @@ function login() {
       const response = await loginQuery();
       const responseData = response?.data?.login;
       if (responseData) {
-        cookie.set(process.env.JWT_KEY, responseData.result.token);
-      }
-      if (response?.data?.login?.statusCode === 200) {
+        localLogin(responseData.result.token);
         setIsCookie(responseData.result.token);
-        Router.push("/");
+        props.router.push('/main');
       } else {
         setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
-
     }
   };
 
@@ -76,15 +73,24 @@ function login() {
           <div className={style.validText}>{errorText}</div>
           <button type="submit">로그인</button>
         </form>
-        <div className={style.search}>
-          <div>비밀번호 찾기</div>
-        </div>
         <div className={style.join}>
-          <Link href={`signIn/personalSignIn`}>
+          <Link
+            href={{
+              pathname: "signIn",
+              query: { type: "개인" },
+              as: "/signIn",
+            }}
+          >
             <a>개인 회원가입</a>
           </Link>
           <span> / </span>
-          <Link href="signIn/corpSignIn">
+          <Link
+            href={{
+              pathname: "signIn",
+              query: { type: "업체" },
+              as: "/signIn",
+            }}
+          >
             <a>업체 회원가입</a>
           </Link>
         </div>
@@ -93,4 +99,4 @@ function login() {
   );
 }
 
-export default login;
+export default withRouter(login);

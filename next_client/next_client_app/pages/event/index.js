@@ -23,13 +23,7 @@ export default function Event() {
       <div className={styles.container}>
         {data?.getBanners?.map((element) => {
           return (
-            <Link
-              href={{
-                pathname: `event/${element.id}`,
-                query: { id: element.id },
-              }}
-              key={element.id}
-            >
+            <Link href={`event/${element.id}`} key={element.id}>
               <div className={styles.bannerBox} key={element.id}>
                 <img src={element.thumbnailUri} />
               </div>

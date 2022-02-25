@@ -38,27 +38,27 @@ export class Pets extends CoreEntity {
   registrant: AdoptUser;
 
   @Column({ nullable: false })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   name: string; // 애완동물 이름
 
   @Column({ nullable: false })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   breed: string; // 품종 (품종은 종이 너무많아 텍스트로 입력)
 
   @Column({ nullable: false })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   type: PetType; // 강아지 / 고양이
 
   @Column({ default: 0 })
-  @Field(() => Number)
+  @Field(() => Number, { nullable: true })
   price: number; // 분양가
 
   @Column({ default: 0 })
-  @Field(() => Number)
+  @Field(() => Number, { nullable: true })
   age: number; // 나이
 
   @Column({ default: 0 })
-  @Field(() => Number)
+  @Field(() => Number, { nullable: true })
   weight: number; // 몸무게
 
   @Column({ nullable: false })

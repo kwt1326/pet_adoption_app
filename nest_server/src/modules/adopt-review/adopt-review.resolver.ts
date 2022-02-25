@@ -16,6 +16,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
 import { AuthUser } from '../auth/decorators/auth.decorator';
 import { User } from 'src/entities/user.entity';
+import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
 
 @Resolver()
 export class AdoptReviewResolver {
@@ -36,8 +37,10 @@ export class AdoptReviewResolver {
   }
 
   @Query(() => [AdoptReview])
-  getAllAdoptReview() {
-    return this.adoptReviewService.getAllAdoptReview();
+  getAdoptReviews(
+    @Args('getAdoptReviewsArgs') getAdoptReviewsArgs: GetAdoptReviewsArgs,
+  ) {
+    return this.adoptReviewService.getAdoptReviews(getAdoptReviewsArgs);
   }
 
   @UseGuards(GqlAuthGuard)
