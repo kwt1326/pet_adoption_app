@@ -23,18 +23,19 @@ function Home() {
 }
 
 export async function getServerSideProps(ctx) {
-  const userInfo = useUserInfo({ ctx });
-  console.log(userInfo);
+  const userInfo = useUserInfo(ctx);
+  if (!userInfo) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+      props: {},
+    }
+  }
   return {
     props: {},
   }
-  // return {
-  //   redirect: {
-  //     permanent: false,
-  //     destination: "/login",
-  //   },
-  //   props: {},
-  // }
 }
 
 export default Home;
