@@ -319,7 +319,7 @@ function Register(props) {
                   <Image
                     className={styles.pictureitem}
                     cloudName={process.env.CLOUD_NAME}
-                    src={`https://res.cloudinary.com/${PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
+                    src={`https://res.cloudinary.com/${process.env.PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
                   ></Image>
                 </div>
               </div>
