@@ -27,6 +27,7 @@ import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto'
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { User, UserType } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
+import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
 
 @Injectable()
 export class AdoptReviewService {
@@ -90,8 +91,12 @@ export class AdoptReviewService {
     return await this.getReviewWithCheckingNotFound(id);
   }
 
-  async getAllAdoptReview(): Promise<AdoptReview[]> {
-    return await this.adoptReviewRepository.getAllAdoptReview();
+  async getAdoptReviews(
+    getAdoptReviewsArgs: GetAdoptReviewsArgs,
+  ): Promise<AdoptReview[]> {
+    return await this.adoptReviewRepository.getAdoptReviews(
+      getAdoptReviewsArgs,
+    );
   }
 
   async updateAdoptReview(

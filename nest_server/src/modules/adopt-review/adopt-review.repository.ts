@@ -12,6 +12,7 @@ import { Comment } from 'src/entities/comment.entity';
 import { UpdateAdoptReviewCommentInput } from './dtos/update-review.dto';
 import { User } from 'src/entities/user.entity';
 import { AdoptionReviewLikeInput } from './dtos/review-like.dto';
+import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
 
 interface CreateReviewInput {
   title: string;
@@ -62,8 +63,11 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
     return review;
   }
 
-  async getAllAdoptReview(): Promise<AdoptReview[]> {
-    const allReviews = await this.createQueryBuilder('review')
+  async getAdoptReviews(
+    getAdoptReviewsArgs: GetAdoptReviewsArgs,
+  ): Promise<AdoptReview[]> {
+    const { page } = getAdoptReviewsArgs;
+    const reviews = await this.createQueryBuilder('review')
       .leftJoinAndSelect('review.adopteeUser', 'adopteeUser')
       .leftJoinAndSelect('adopteeUser.user', 'user')
       .leftJoinAndSelect('review.pictures', 'pictures')
@@ -73,8 +77,11 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.child', 'child')
       .where('comment.parentId IS NULL')
+      .skip(6 * (page - 1))
+      .take(6)
+      .orderBy('review.id', 'DESC')
       .getMany();
-    return allReviews;
+    return reviews;
   }
 
   async updateAdoptReview(
