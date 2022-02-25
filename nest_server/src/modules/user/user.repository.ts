@@ -8,6 +8,7 @@ import {
   CreateAccountAdoptUserInput,
   CreateAccountUserInput,
 } from './dtos/create-account.dto';
+import { GetAdoptUsersArgs } from './dtos/get-adopt-users.dto';
 import {
   UpdateAdopteeUserInput,
   UpdateAdoptUserInput,
@@ -102,11 +103,18 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
     return user;
   }
 
-  async getAllAdoptUser(): Promise<AdoptUser[]> {
-    const allUsers = await this.createQueryBuilder('adoptUser')
+  async getAuthenticatedAdoptUsers(
+    getAdoptUsersArgs: GetAdoptUsersArgs,
+  ): Promise<AdoptUser[]> {
+    const { page } = getAdoptUsersArgs;
+    const users = await this.createQueryBuilder('adoptUser')
       .leftJoinAndSelect('adoptUser.user', 'user')
+      .where('adoptUser.isAuthenticated = true')
+      .skip(10 * (page - 1))
+      .take(10)
+      .orderBy('adoptUser.userId', 'DESC')
       .getMany();
-    return allUsers;
+    return users;
   }
 
   async findOneAdoptUserByNickname(nickname: string): Promise<AdoptUser> {

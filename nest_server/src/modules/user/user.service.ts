@@ -29,6 +29,7 @@ import {
   CheckDuplicateFieldInput,
   CheckDuplicateFieldOutput,
 } from './dtos/check-duplicate-field.dto';
+import { GetAdoptUsersArgs } from './dtos/get-adopt-users.dto';
 
 @Injectable()
 export class UserService {
@@ -186,8 +187,12 @@ export class UserService {
     return await this.getAdoptUserWithExceptionHandling(id);
   }
 
-  async getAllAdoptUser(): Promise<AdoptUser[]> {
-    return await this.adoptUserRepository.getAllAdoptUser();
+  async getAuthenticatedAdoptUsers(
+    getAdoptUsersArgs: GetAdoptUsersArgs,
+  ): Promise<AdoptUser[]> {
+    return await this.adoptUserRepository.getAuthenticatedAdoptUsers(
+      getAdoptUsersArgs,
+    );
   }
 
   async deleteOneUser(id: number, user: User) {
