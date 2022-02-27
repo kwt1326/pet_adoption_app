@@ -24,7 +24,7 @@ const isDesktop = () => Boolean(!isMobile() && !isSSR())
 const localHost = isAndroid() ? '172.30.1.5' : 'localhost';
 
 const uri = process.env.NODE_ENV === "production" ?
-  "" :
+  'https://withpet-api.hminnn.xyz/graphql' :
   `http://${localHost}:8090/graphql`;
 
 const httpLink = createHttpLink({ uri });

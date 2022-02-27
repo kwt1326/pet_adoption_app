@@ -1,5 +1,5 @@
 import React from "react";
-import AgencyListItem from "../../components/AgencyListItem";
+import AgencyListItem from "../../components/Agencylist/AgencyListItem";
 import styles from "./authAgencyProfile.module.scss";
 import Header from "../../components/Header/index";
 const temp = {

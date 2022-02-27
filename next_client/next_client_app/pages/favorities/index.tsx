@@ -8,7 +8,12 @@ const Favorities: React.FC<{ router: NextRouter }> = (props) => {
   return (
     <Fragment>
       <Header children={'찜리스트'} rightBtn={undefined} />
-      <PetShopLayout category={query.type} notUseTab likedOnly />
+      <PetShopLayout
+        category={query.type}
+        petType={undefined}
+        notUseTab
+        likedOnly
+      />
     </Fragment>
   );
 }
