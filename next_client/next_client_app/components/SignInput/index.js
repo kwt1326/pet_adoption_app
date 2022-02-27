@@ -1,5 +1,5 @@
 import React from "react";
-import style from "./singInput.module.scss";
+import style from "./SingInput.module.scss";
 
 function SignInput({ value, onChange, placeholder, type, errorText }) {
   return (
