@@ -42,7 +42,7 @@ function login(props) {
       if (responseData) {
         localLogin(responseData.result.token);
         setIsCookie(responseData.result.token);
-        props.router.push('/main');
+        props.router.push('/');
       } else {
         setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
       }
