@@ -5,6 +5,9 @@ import { PetType } from 'src/entities/pets.entity';
 @InputType()
 export class GetAdoptionPostsArgs {
   @Field(() => Boolean, { nullable: true })
+  isLiked: boolean;
+
+  @Field(() => Boolean, { nullable: true })
   isProfit: boolean;
 
   @Field(() => String, { nullable: true })

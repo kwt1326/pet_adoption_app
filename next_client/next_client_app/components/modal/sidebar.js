@@ -69,7 +69,11 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
         </div>
         <ul className={styles.afterInfo}>
           <li>마이페이지</li>
-          <li>찜리스트</li>
+          <li>
+            <Link href="/favorities">
+              <a>찜리스트</a>
+            </Link>
+          </li>
           <li onClick={logout}>로그아웃</li>
         </ul>
       </div>
@@ -98,12 +102,12 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
               분양받기
               <ul>
                 <li>
-                  <Link href="/post/list/all">
+                  <Link href="/post/list/dog">
                     <a>강아지 분양받기</a>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/post/list/all">
+                  <Link href="/post/list/cat">
                     <a>고양이 분양받기</a>
                   </Link>
                 </li>

@@ -90,7 +90,6 @@ const client = new ApolloClient({
             merge(existing = [], incoming, { args: { getPostsArgs } }) {
               let _existing = existing;
               if (getPostsArgs?.page === 1) _existing = [];
-              console.log(_existing,incoming)
               return [..._existing, ...incoming];
             }
           }
