@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./singInput.module.scss";
 
-function signInput({ value, onChange, placeholder, type, errorText }) {
+function SignInput({ value, onChange, placeholder, type, errorText }) {
   return (
     <div className={style.container}>
       <input value={value} onChange={onChange} placeholder={placeholder} type={type} className={style.inputContent}></input>
@@ -9,4 +9,4 @@ function signInput({ value, onChange, placeholder, type, errorText }) {
     </div>
   );
 }
-export default signInput;
+export default SignInput;
