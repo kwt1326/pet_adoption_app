@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
 import styles from "./Categories.module.scss";
 
 const categories = [
@@ -21,13 +23,21 @@ const categories = [
 ];
 
 function Categories({ category }) {
+  const router = useRouter();
+  const _category = category || 'all';
+  let pathname = router.pathname;
+  pathname = pathname.replace('[type]', router.query.type)
+
   return (
     <div className={styles.CategoryBlock}>
       {categories.map((c, index) => (
-        <Link href={`/post/list/${c.link}`} key={index}>
+        <Link
+          href={`${pathname}?category=${c.link}`}
+          key={index}
+        >
           <div
             className={`${styles.CategoryItem} ${
-              category === c.name ? `${styles.active}` : ""
+              _category === c.name ? `${styles.active}` : ""
             }`}
             key={c.name}
           >
