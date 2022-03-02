@@ -3,28 +3,20 @@ import style from "./mypage.module.scss";
 import Header from "../../components/Header/index";
 import Link from "next/link";
 import { FaFile, FaBoxOpen, FaAngleRight } from "react-icons/fa";
-
 import { useUserInfo } from "../../hooks/user";
 
 const myPage = () => {
-  // const userInfo = useUserInfo();
-  // const email = userInfo.email;
-  // setTimeout(() => {
-  //   {
-  //     const userInfo = useUserInfo();
-  //     const email = userInfo.email;
-  //     console.log(email);
-  //   }
-  // }, 1000);
+  const userInfo = useUserInfo();
+
   return (
     <div>
       <Header children={"마이페이지"} />
       <div className={style.container}>
         <div className={style.userInfo}>
           <div>
-            <span className={style.nickname}>{}as아</span> 님, 안녕하세요!
+            <span className={style.nickname}>{userInfo?.nickname || "사용자"}</span> 님, 안녕하세요!
           </div>
-          <span className={style.email}>{}dd</span>
+          <span className={style.email}>{userInfo?.email || "이메일"}</span>
         </div>
         <ul className={style.list}>
           <Link href="personalInfo">
