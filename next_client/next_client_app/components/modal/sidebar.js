@@ -3,10 +3,9 @@ import Link from "next/link";
 import { IoCloseOutline } from "react-icons/io5";
 
 import { useUserInfo } from "../../hooks/user";
-import { localLogout } from '../../utils/authUtil';
+import { localLogout } from "../../utils/authUtil";
 import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
 import styles from "./sidebar.module.scss";
-
 
 const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
   const userInfo = useUserInfo();
@@ -16,7 +15,7 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
   };
   const logout = () => {
     localLogout();
-    router.replace('/');
+    router.replace("/");
   };
 
   const BeforeLogin = () => {
@@ -68,12 +67,14 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
           <IoCloseOutline onClick={closeSidebar} />
         </div>
         <ul className={styles.afterInfo}>
+          <Link href="myPage">
+            <a>마이페이지</a>
+          </Link>
           <li>
-            <Link href="myPage">
-              <a>마이페이지</a>
+            <Link href="/favorities">
+              <a>찜리스트</a>
             </Link>
           </li>
-          <li>찜리스트</li>
           <li onClick={logout}>로그아웃</li>
         </ul>
       </div>
@@ -102,12 +103,12 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
               분양받기
               <ul>
                 <li>
-                  <Link href="/post/list/all">
+                  <Link href="/post/list/dog">
                     <a>강아지 분양받기</a>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/post/list/all">
+                  <Link href="/post/list/cat">
                     <a>고양이 분양받기</a>
                   </Link>
                 </li>

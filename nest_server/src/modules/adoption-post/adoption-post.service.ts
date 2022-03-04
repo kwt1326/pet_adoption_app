@@ -112,16 +112,28 @@ export class AdoptionPostService {
     }
 
     if (typeof args.petType !== 'undefined') {
-      queryBuilder = queryBuilder.where('pet.type = :type', {
-        type: args.petType,
-      });
+      if (args.isProfit) {
+        queryBuilder = queryBuilder.andWhere('pet.type = :type', {
+          type: args.petType,
+        });
+      } else {
+        queryBuilder = queryBuilder.where('pet.type = :type', {
+          type: args.petType,
+        });
+      }
     }
 
-    const queryResult = await queryBuilder
+    let queryResult = await queryBuilder
       .skip(20 * (args.page - 1))
       .take(20)
       .orderBy('post.id', 'DESC')
       .getMany();
+
+    if (args.isLiked) {
+      queryResult = queryResult?.filter((post: AdoptionPost) =>
+        Boolean(post.likes.find((like) => like.adoptee.userId === user.id)),
+      );
+    }
 
     return queryResult?.map((post: AdoptionPost) => ({
       ...post,

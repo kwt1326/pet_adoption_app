@@ -24,7 +24,7 @@ const isDesktop = () => Boolean(!isMobile() && !isSSR())
 const localHost = isAndroid() ? '172.30.1.5' : 'localhost';
 
 const uri = process.env.NODE_ENV === "production" ?
-  "" :
+  'https://withpet-api.hminnn.xyz/graphql' :
   `http://${localHost}:8090/graphql`;
 
 const httpLink = createHttpLink({ uri });
@@ -90,7 +90,6 @@ const client = new ApolloClient({
             merge(existing = [], incoming, { args: { getPostsArgs } }) {
               let _existing = existing;
               if (getPostsArgs?.page === 1) _existing = [];
-              console.log(_existing,incoming)
               return [..._existing, ...incoming];
             }
           }

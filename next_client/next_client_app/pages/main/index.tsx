@@ -57,7 +57,7 @@ function Main() {
       <Carousel />
       <ul className={styles.nav}>
         <li>
-          <Link href="/post/list/all">
+          <Link href="/post/list/dog">
             <a>
               <div>
                 <FaDog />
@@ -67,7 +67,7 @@ function Main() {
           </Link>
         </li>
         <li>
-          <Link href="/post/list/all">
+          <Link href="/post/list/cat">
             <a>
               <div>
                 <FaCat />
@@ -101,15 +101,15 @@ function Main() {
         <h4>최신 강아지 분양글</h4>
         <RecentlyPetList type="dog" />
         <div className={styles.btnBox}>
-          <button onClick={() => router.push("/post/list/all")}>더 많은 강아지 보러가기 &#62;</button>
+          <button onClick={() => router.push("/post/list/dog")}>더 많은 강아지 보러가기 &#62;</button>
         </div>
         <h4>최신 고양이 분양글</h4>
         <RecentlyPetList type="cat" />
         <div className={styles.btnBox}>
-          <button onClick={() => router.push("/post/list/all")}>더 많은 고양이 보러가기 &#62;</button>
+          <button onClick={() => router.push("/post/list/cat")}>더 많은 고양이 보러가기 &#62;</button>
         </div>
-        <button onClick={() => router.push("/testUpload")}>테스트 페이지 입장</button>
       </div>
+      <div className={styles.spacing_box} />
     </div>
   );
 };

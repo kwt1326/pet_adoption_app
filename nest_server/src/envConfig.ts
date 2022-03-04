@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'prod') {
   const oracledb = require('oracledb');
 
   oracledb.initOracleClient({
-    libDir: '../../oracle_client/instantclient_19_8', // wallet path at the instance
+    libDir: '../../oracle_client/instantclient_21_5', // wallet path at the instance
   });
 }
 

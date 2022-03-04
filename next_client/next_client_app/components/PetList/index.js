@@ -5,8 +5,7 @@ import { GET_ADOPTION_POST_LIST, TOGGLE_LIKE_MUTATION } from "../../quries/adopt
 
 import style from "./PetList.module.scss";
 
-function PetList({ category }) {
-  const [mount, setMount] = useState(false);
+function PetList({ petType, category, likedOnly }) {
   const [page, setPage] = useState(1);
   const [pageEndRef, setPageEndRef] = useState(null);
   const [isStartObserve, setStartObserve] = useState(false);
@@ -18,13 +17,15 @@ function PetList({ category }) {
       input: {
         isProfit: getIsProfit(),
         page,
+        petType,
+        isLiked: likedOnly
       },
     },
-  }), [category, page])
+  }), [petType, category, likedOnly, page])
 
   const { loading, data, fetchMore } = useQuery(GET_ADOPTION_POST_LIST, getPostInputData());
   const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
-  
+
   const toggleLikeMutation = async (postId) => {
     const result = await toggleLike({
       variables: {
@@ -39,7 +40,7 @@ function PetList({ category }) {
       return;
     }
     setPage(1);
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
   const getListMore = async () => {
@@ -51,7 +52,7 @@ function PetList({ category }) {
   }
 
   useEffect(() => {
-    if (mount && pageEndRef && !isStartObserve) {
+    if (pageEndRef && !isStartObserve) {
       try {
         const observer = new IntersectionObserver(
           (entries) => {
@@ -70,21 +71,13 @@ function PetList({ category }) {
   }, [pageEndRef]);
 
   useEffect(() => {
-    if (mount) {
-      setPage(1);
-      getListMore();
-    }
-  }, [category]);
+    setPage(1);
+    getListMore();
+  }, [petType, category, likedOnly]);
 
   useEffect(() => {
-    if (mount) {
-      getListMore();
-    }
+    getListMore();
   }, [page]);
-
-  useEffect(() => {
-    setMount(true);
-  }, []);
 
   const loadMore = () => setPage((prev) => prev + 1);
 

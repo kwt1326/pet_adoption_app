@@ -2,11 +2,15 @@ import React, { Fragment } from "react";
 import Categories from "../Categories";
 import PetList from "../PetList";
 
-function PetShopLayout({ category }) {
+function PetShopLayout({ petType, category, notUseTab, likedOnly }) {
   return (
     <Fragment>
-      <Categories category={category} />
-      <PetList category={category} />
+      {!notUseTab && <Categories category={category} />}
+      <PetList
+        petType={petType}
+        category={category}
+        likedOnly={likedOnly}
+      />
     </Fragment>
   );
 }

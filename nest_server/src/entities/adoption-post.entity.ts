@@ -40,4 +40,5 @@ export class AdoptionPost extends CoreEntity {
   @OneToMany(() => AdoptionPostLike, (like) => like.likePost)
   @Field(() => [AdoptionPostLike], { nullable: true })
   likes: AdoptionPostLike[];
+  isLiked: any;
 }
