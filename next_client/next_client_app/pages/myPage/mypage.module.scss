@@ -1,0 +1,32 @@
+.container {
+  background-color: #eee;
+  height: calc(100vh - 62px);
+}
+.userInfo {
+  background-color: #fff;
+  padding: 20px 10px;
+}
+.nickname {
+  font-size: 18px;
+  font-weight: 600;
+}
+.email {
+  color: #888;
+  font-size: 14px;
+}
+.list {
+  margin-top: 10px;
+  li {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 15px 5px;
+    border-bottom: 3px solid #eee;
+  }
+  svg {
+    color: #666;
+  }
+  .icon {
+    margin-right: 15px;
+  }
+}

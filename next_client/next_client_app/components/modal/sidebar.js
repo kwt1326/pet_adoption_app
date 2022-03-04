@@ -3,20 +3,19 @@ import Link from "next/link";
 import { IoCloseOutline } from "react-icons/io5";
 
 import { useUserInfo } from "../../hooks/user";
-import { localLogout } from '../../utils/authUtil';
+import { localLogout } from "../../utils/authUtil";
 import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
 import styles from "./sidebar.module.scss";
 
-
 const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
   const userInfo = useUserInfo();
-  
+
   const closeSidebar = () => {
     onOffSidebar(false);
   };
   const logout = () => {
     localLogout();
-    router.replace('/');
+    router.replace("/");
   };
 
   const BeforeLogin = () => {
@@ -62,13 +61,17 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span>{userInfo?.nickname || '사용자'}</span>
+            <span>{userInfo?.nickname || "사용자"}</span>
             <span> 님 어서오세요.</span>
           </div>
           <IoCloseOutline onClick={closeSidebar} />
         </div>
         <ul className={styles.afterInfo}>
-          <li>마이페이지</li>
+          <li>
+            <Link href="myPage">
+              <a>마이페이지</a>
+            </Link>
+          </li>
           <li>
             <Link href="/favorities">
               <a>찜리스트</a>
@@ -86,7 +89,7 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
           {userInfo ? <AfterLogin /> : <BeforeLogin />}
           <ul className={styles.menuList}>
             <li>MENU</li>
-            {userInfo?.userType === 'ADOPT_USER' && (
+            {userInfo?.userType === "ADOPT_USER" && (
               <li>
                 작성하기
                 <ul>
