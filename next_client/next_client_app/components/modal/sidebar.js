@@ -61,7 +61,7 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span>{userInfo?.nickname || "사용자"}</span>
+            <span className={styles.nickname}>{userInfo?.nickname || "사용자"}</span>
             <span> 님 어서오세요.</span>
           </div>
           <IoCloseOutline onClick={closeSidebar} />

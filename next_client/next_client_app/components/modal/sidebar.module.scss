@@ -20,9 +20,11 @@
       .login {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 5px;
         padding: 15px 15px 0;
         .loginText {
+          display: flex;
           font-size: 14px;
         }
         span {
@@ -87,6 +89,13 @@
 .modal.openSidebar {
   display: flex;
   animation: sidebar-bg-show 0.1s;
+}
+.nickname {
+  display: inline-block;
+  text-overflow: ellipsis;
+  max-width: 110px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 @keyframes sidebar-show {
