@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { concat, useMutation } from "@apollo/client";
 import style from "./personalInfo.module.scss";
 import Header from "../../components/Header/index";
-import { DELETE_ONE_USER } from "../../quries/userQuery";
+import { DELETE_ONE_USER, ADOPTEE_USER, ADOPT_USER } from "../../quries/userQuery";
 import { useUserInfo } from "../../hooks/user";
 import { localLogout } from "../../utils/authUtil";
 import Router from "next/router";
@@ -11,8 +11,14 @@ const personalInfo = () => {
   const userInfo = useUserInfo();
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditNickname, setIsEditNickname] = useState(false);
+  const [nickname, setNickname] = useState(userInfo?.nickname);
+  const [password, setPassword] = useState("");
 
   const [deleteOneUserQuery] = useMutation(DELETE_ONE_USER);
+  const [adopteeUserQuery] = useMutation(ADOPTEE_USER);
+  const [adoptUserQuery] = useMutation(ADOPT_USER);
+
+  //유저삭제
   const removeUser = async () => {
     const id = userInfo.id;
     const response = await deleteOneUserQuery({
@@ -23,6 +29,8 @@ const personalInfo = () => {
     localLogout();
     Router.push("/");
   };
+
+  //수정 엘리먼트
   const editElement = (type) => {
     const whatType = () => {
       if (type === "password") {
@@ -33,7 +41,16 @@ const personalInfo = () => {
     };
     return (
       <>
-        <input value={type === "nickname" ? userInfo?.nickname : null}></input>
+        <input
+          value={type === "nickname" ? nickname : password}
+          onChange={(e) => {
+            if (type === "nickname") {
+              setNickname(e.target.value);
+            } else {
+              setPassword(e.target.value);
+            }
+          }}
+        ></input>
         <button
           className={style.btn}
           onClick={() => {
@@ -45,14 +62,47 @@ const personalInfo = () => {
       </>
     );
   };
-
-  const editPassword = () => {
+  //패스워드 수정 시
+  const editPassword = async () => {
     setIsEditPassword(false);
-    //수정쿼리삽입
+    if (userInfo?.userType === "ADOPTEE_USER") {
+      const response = await adopteeUserQuery({
+        variables: {
+          userId: parseFloat(userInfo?.id),
+          nickname: nickname,
+        },
+      });
+      console.log(response);
+    } else if (userInfo?.userType === "ADOPT_USER") {
+      const response = await adoptUserQuery({
+        variables: {
+          userId: parseFloat(userInfo?.id),
+          nickname: nickname,
+        },
+      });
+      console.log(response);
+    }
   };
-  const editNickname = () => {
+  // 닉네임 수정 시
+  const editNickname = async () => {
     setIsEditNickname(false);
-    //수정쿼리삽입
+    if (userInfo?.userType === "ADOPTEE_USER") {
+      const response = await adopteeUserQuery({
+        variables: {
+          userId: parseFloat(userInfo?.id),
+          nickname: nickname,
+        },
+      });
+      console.log(response);
+    } else if (userInfo?.userType === "ADOPT_USER") {
+      const response = await adoptUserQuery({
+        variables: {
+          userId: parseFloat(userInfo?.id),
+          nickname: nickname,
+        },
+      });
+      console.log(response);
+    }
   };
   return (
     <div>

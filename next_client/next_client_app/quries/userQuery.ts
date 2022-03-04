@@ -7,3 +7,25 @@ export const DELETE_ONE_USER = gql`
     }
   }
 `;
+
+export const ADOPTEE_USER = gql`
+  mutation adopteeUser($input: UpdateAdopteeUserInput!) {
+    adopteeUser(input: $input) {
+      user {
+        email
+      }
+      userId
+    }
+  }
+`;
+
+export const ADOPT_USER = gql`
+  mutation adopteeUser($input: UpdateAdoptUserInput!) {
+    adopteeUser(input: $input) {
+      user {
+        email
+      }
+      userId
+    }
+  }
+`;
