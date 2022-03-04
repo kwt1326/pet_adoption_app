@@ -8,24 +8,26 @@ export const DELETE_ONE_USER = gql`
   }
 `;
 
-export const ADOPTEE_USER = gql`
-  mutation adopteeUser($input: UpdateAdopteeUserInput!) {
-    adopteeUser(input: $input) {
+export const UPDATE_ADOPTEE_USER = gql`
+  mutation updateAdopteeUser($input: UpdateAdopteeUserInput!) {
+    updateAdopteeUser(input: $input) {
       user {
         email
       }
       userId
+      nickname
     }
   }
 `;
 
-export const ADOPT_USER = gql`
-  mutation adopteeUser($input: UpdateAdoptUserInput!) {
-    adopteeUser(input: $input) {
+export const UPDATE_ADOPT_USER = gql`
+  mutation updateAdoptUser($input: UpdateAdoptUserInput!) {
+    updateAdoptUser(input: $input) {
       user {
         email
       }
       userId
+      nickname
     }
   }
 `;

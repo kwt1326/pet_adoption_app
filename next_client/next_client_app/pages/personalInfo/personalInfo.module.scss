@@ -13,11 +13,11 @@
   }
   .content {
     padding: 15px 5px;
-    li {
+    & > li {
       display: flex;
       height: 45px;
       line-height: 45px;
-      span {
+      & > span {
         &:first-child {
           color: #888;
           width: 80px;
@@ -59,4 +59,9 @@
   font-size: 14px;
   border: none;
   border-radius: 3px;
+}
+.warnText {
+  font-size: 12px;
+  color: crimson;
+  line-height: initial;
 }

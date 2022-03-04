@@ -31,7 +31,7 @@ function signIn({ router: { query } }) {
   const [addressError, setAddressError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
 
-  const [checkDuplicateQuery1] = useLazyQuery(CHECK_DUPLICATE, {
+  const [checkDuplicateNicknameQuery] = useLazyQuery(CHECK_DUPLICATE, {
     variables: {
       input: {
         nickname: nickname,
@@ -39,7 +39,7 @@ function signIn({ router: { query } }) {
     },
     fetchPolicy: "no-cache",
   });
-  const [checkDuplicateQuery2] = useLazyQuery(CHECK_DUPLICATE, {
+  const [checkDuplicateEmailQuery] = useLazyQuery(CHECK_DUPLICATE, {
     variables: {
       input: {
         email: email,
@@ -49,7 +49,7 @@ function signIn({ router: { query } }) {
   });
 
   const checkDuplicateEmail = async () => {
-    const response = await checkDuplicateQuery2();
+    const response = await checkDuplicateEmailQuery();
     let state = response?.data?.checkDuplicateField?.result;
     if (!email) {
       setEmailError("이메일을 입력하세요");
@@ -63,7 +63,7 @@ function signIn({ router: { query } }) {
     return state;
   };
   const checkDuplicateNickname = async () => {
-    const response = await checkDuplicateQuery1();
+    const response = await checkDuplicateNicknameQuery();
     let state = response?.data?.checkDuplicateField?.result;
     if (!nickname) {
       setNicknameError("닉네임을 입력하세요");
@@ -78,7 +78,7 @@ function signIn({ router: { query } }) {
   };
   const passwordEqual = () => {
     let validated = true;
-    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (password !== "" && confirmPassword !== "") {
       if (password !== confirmPassword) {
         setPasswordError("비밀번호가 동일하지 않습니다.");
@@ -93,7 +93,7 @@ function signIn({ router: { query } }) {
   };
   const validateForm = async () => {
     let validated = true;
-    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!email) {
       setEmailError("이메일을 입력하세요");
       validated = false;
@@ -108,7 +108,7 @@ function signIn({ router: { query } }) {
         setPasswordError("");
       } else {
         setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
-        validated = false
+        validated = false;
       }
     }
 

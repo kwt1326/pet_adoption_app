@@ -67,9 +67,11 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
           <IoCloseOutline onClick={closeSidebar} />
         </div>
         <ul className={styles.afterInfo}>
-          <Link href="myPage">
-            <a>마이페이지</a>
-          </Link>
+          <li>
+            <Link href="myPage">
+              <a>마이페이지</a>
+            </Link>
+          </li>
           <li>
             <Link href="/favorities">
               <a>찜리스트</a>

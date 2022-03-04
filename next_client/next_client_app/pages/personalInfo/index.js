@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { concat, useMutation } from "@apollo/client";
 import style from "./personalInfo.module.scss";
 import Header from "../../components/Header/index";
-import { DELETE_ONE_USER, ADOPTEE_USER, ADOPT_USER } from "../../quries/userQuery";
+import { DELETE_ONE_USER, UPDATE_ADOPTEE_USER, UPDATE_ADOPT_USER } from "../../quries/userQuery";
 import { useUserInfo } from "../../hooks/user";
 import { localLogout } from "../../utils/authUtil";
 import Router from "next/router";
@@ -13,10 +13,11 @@ const personalInfo = () => {
   const [isEditNickname, setIsEditNickname] = useState(false);
   const [nickname, setNickname] = useState(userInfo?.nickname);
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [deleteOneUserQuery] = useMutation(DELETE_ONE_USER);
-  const [adopteeUserQuery] = useMutation(ADOPTEE_USER);
-  const [adoptUserQuery] = useMutation(ADOPT_USER);
+  const [updateAdopteeUserQuery] = useMutation(UPDATE_ADOPTEE_USER);
+  const [updateAdoptUserQuery] = useMutation(UPDATE_ADOPT_USER);
 
   //유저삭제
   const removeUser = async () => {
@@ -50,6 +51,7 @@ const personalInfo = () => {
               setPassword(e.target.value);
             }
           }}
+          type={type === "password" ? "password" : null}
         ></input>
         <button
           className={style.btn}
@@ -62,48 +64,64 @@ const personalInfo = () => {
       </>
     );
   };
-  //패스워드 수정 시
-  const editPassword = async () => {
-    setIsEditPassword(false);
-    if (userInfo?.userType === "ADOPTEE_USER") {
-      const response = await adopteeUserQuery({
-        variables: {
-          userId: parseFloat(userInfo?.id),
-          nickname: nickname,
-        },
-      });
-      console.log(response);
-    } else if (userInfo?.userType === "ADOPT_USER") {
-      const response = await adoptUserQuery({
-        variables: {
-          userId: parseFloat(userInfo?.id),
-          nickname: nickname,
-        },
-      });
-      console.log(response);
-    }
-  };
   // 닉네임 수정 시
   const editNickname = async () => {
     setIsEditNickname(false);
     if (userInfo?.userType === "ADOPTEE_USER") {
-      const response = await adopteeUserQuery({
+      const response = await updateAdopteeUserQuery({
         variables: {
-          userId: parseFloat(userInfo?.id),
-          nickname: nickname,
+          input: {
+            id: parseFloat(userInfo?.id),
+            nickname: nickname,
+          },
         },
       });
-      console.log(response);
     } else if (userInfo?.userType === "ADOPT_USER") {
-      const response = await adoptUserQuery({
+      const response = await updateAdoptUserQuery({
         variables: {
-          userId: parseFloat(userInfo?.id),
-          nickname: nickname,
+          input: {
+            id: parseFloat(userInfo?.id),
+            nickname: nickname,
+          },
         },
       });
-      console.log(response);
     }
   };
+  //패스워드 수정 시
+  const editPassword = async () => {
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (passwordReg.test(password)) {
+      setPasswordError("");
+      setIsEditPassword(false);
+      if (userInfo?.userType === "ADOPTEE_USER") {
+        const response = await updateAdopteeUserQuery({
+          variables: {
+            input: {
+              id: parseFloat(userInfo?.id),
+              user: {
+                password: password,
+              },
+            },
+          },
+        });
+      } else if (userInfo?.userType === "ADOPT_USER") {
+        const response = await updateAdoptUserQuery({
+          variables: {
+            input: {
+              id: parseFloat(userInfo?.id),
+              user: {
+                password: password,
+              },
+            },
+          },
+        });
+      }
+      setPassword("");
+    } else {
+      setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
+    }
+  };
+
   return (
     <div>
       <Header children={"개인정보 수정"} />
@@ -118,7 +136,22 @@ const personalInfo = () => {
             <li>
               <span>닉네임</span>
               {isEditNickname ? (
-                editElement("nickname")
+                <div>
+                  <input
+                    value={nickname}
+                    onChange={(e) => {
+                      setNickname(e.target.value);
+                    }}
+                  ></input>
+                  <button
+                    className={style.btn}
+                    onClick={() => {
+                      editNickname();
+                    }}
+                  >
+                    확인
+                  </button>
+                </div>
               ) : (
                 <div>
                   <span>{userInfo?.nickname}</span>
@@ -141,7 +174,26 @@ const personalInfo = () => {
             <li>
               <span>비밀번호</span>
               {isEditPassword ? (
-                editElement("password")
+                <>
+                  <div>
+                    <input
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                      type="password"
+                    ></input>
+                    <button
+                      className={style.btn}
+                      onClick={() => {
+                        editPassword();
+                      }}
+                    >
+                      확인
+                    </button>
+                    <div className={style.warnText}>{passwordError}</div>
+                  </div>
+                </>
               ) : (
                 <button
                   className={style.btn}
