@@ -7,4 +7,7 @@ export class CreateReviewInput {
 
   @Field(() => String)
   content: string;
+
+  @Field(() => [String], { nullable: true })
+  uris: string[];
 }
