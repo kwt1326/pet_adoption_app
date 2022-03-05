@@ -62,18 +62,6 @@ export class AdoptReviewResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => AdoptReviewPicture)
-  createAdoptReviewPicture(
-    @Args('input') createAdoptReviewPictureInput: CreateAdoptReviewPictureInput,
-    @AuthUser() user: User,
-  ) {
-    return this.adoptReviewService.createAdoptReviewPicture(
-      createAdoptReviewPictureInput,
-      user,
-    );
-  }
-
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => DeleteRequestOutput)
   deleteAdoptReviewPicture(@Args('id') id: number, @AuthUser() user: User) {
     return this.adoptReviewService.deleteAdoptReviewPicture(id, user);

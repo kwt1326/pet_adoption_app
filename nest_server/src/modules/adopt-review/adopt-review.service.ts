@@ -58,14 +58,30 @@ export class AdoptReviewService {
     if (!(user && user.userType === UserType.ADOPTEE)) {
       throw new UnauthorizedException('게시물을 생성할 권한이 없습니다.');
     }
-    const { ...createInput } = createReviewInput;
+    const { uris, ...createInput } = createReviewInput;
     const adopteeUser: AdopteeUser =
       await this.adopteeUserRepository.getOneAdopteeUserById(user.id);
-    return await this.adoptReviewRepository.createAndSaveReview(
-      adopteeUser,
-      createInput,
-    );
+    const adoptReview: AdoptReview =
+      await this.adoptReviewRepository.createAndSaveReview(
+        adopteeUser,
+        createInput,
+      );
+    await this.createAdoptReviewPictures(adoptReview, uris);
+    return adoptReview;
   }
+
+  async createAdoptReviewPictures(
+    adoptReview: AdoptReview,
+    uris: string[],
+  ): Promise<void> {
+    uris.forEach(async (uri) => {
+      await this.adoptReviewPictureRepository.createAdoptReviewPicture({
+        adoptReview,
+        uri,
+      });
+    });
+  }
+
   async getReviewWithCheckingNotFound(reviewId: number): Promise<AdoptReview> {
     const review: AdoptReview =
       await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
@@ -120,21 +136,6 @@ export class AdoptReviewService {
       result: (await this.adoptReviewRepository.deleteOneUserById(id)).affected,
     };
     return deleteResult;
-  }
-
-  async createAdoptReviewPicture(
-    input: CreateAdoptReviewPictureInput,
-    user: User,
-  ) {
-    const { reviewId, uri } = input;
-    const adoptReview: AdoptReview = await this.getReviewWithVerifyingAuthority(
-      reviewId,
-      user.id,
-    );
-    return await this.adoptReviewPictureRepository.createAdoptReviewPicture({
-      adoptReview,
-      uri,
-    });
   }
 
   async deleteAdoptReviewPicture(id: number, user: User) {
