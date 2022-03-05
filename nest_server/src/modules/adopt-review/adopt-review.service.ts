@@ -74,12 +74,14 @@ export class AdoptReviewService {
     adoptReview: AdoptReview,
     uris: string[],
   ): Promise<void> {
-    uris.forEach(async (uri) => {
-      await this.adoptReviewPictureRepository.createAdoptReviewPicture({
-        adoptReview,
-        uri,
+    if (uris) {
+      uris.forEach(async (uri) => {
+        await this.adoptReviewPictureRepository.createAdoptReviewPicture({
+          adoptReview,
+          uri,
+        });
       });
-    });
+    }
   }
 
   async getReviewWithCheckingNotFound(reviewId: number): Promise<AdoptReview> {
@@ -119,12 +121,23 @@ export class AdoptReviewService {
     updateReviewInput: UpdateAdoptReviewInput,
     user: User,
   ): Promise<AdoptReview> {
-    const { id, ...restOfUpdateInput } = updateReviewInput;
+    const { id, uris, ...restOfUpdateInput } = updateReviewInput;
     const review = await this.getReviewWithVerifyingAuthority(id, user.id);
+    await this.updateAdoptReviewPictures(review, uris);
     return await this.adoptReviewRepository.updateAdoptReview(
       review,
       restOfUpdateInput,
     );
+  }
+
+  async updateAdoptReviewPictures(
+    review: AdoptReview,
+    uris: string[],
+  ): Promise<void> {
+    const filteredUris = uris.filter(
+      (uri) => !review.pictures.map((picture) => picture.uri).includes(uri),
+    );
+    await this.createAdoptReviewPictures(review, filteredUris);
   }
 
   async deleteAdoptReview(
