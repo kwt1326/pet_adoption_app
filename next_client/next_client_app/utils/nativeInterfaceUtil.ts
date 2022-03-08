@@ -1,3 +1,8 @@
 export function deviceLogin(jwt: string): void {
-  return IAndroid.onLogin(jwt);
+  if (typeof window !== 'undefined') {
+    // @ts-ignore
+    return window.ReactNativeWebView.postMessage(
+      JSON.stringify({ token: jwt })
+    );
+  }
 }

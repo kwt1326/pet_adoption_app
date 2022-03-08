@@ -277,7 +277,6 @@ function WritePost(props) {
                     <input
                       onChange={onChange}
                       name="characteristic"
-                      onChange={onChange}
                       value={characteristic}
                     ></input>
                   </td>
@@ -318,7 +317,7 @@ function WritePost(props) {
                     className={style.pictureitem}
                     cloudName={process.env.CLOUD_NAME}
                     src={`https://res.cloudinary.com/${process.env.PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
-                  ></Image>
+                  />
                 </div>
               </div>
             </div>
