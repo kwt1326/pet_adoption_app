@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaChevronLeft } from "react-icons/fa";
 
-import Sidebar from "../../components/Modal/sidebar.js";
+import Sidebar from "../SideBar";
 import styles from "./header.module.scss";
 import { useRouter } from "next/router";
 

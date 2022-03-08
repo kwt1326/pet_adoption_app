@@ -3,8 +3,8 @@ import { withRouter } from "next/router";
 import Link from "next/link";
 import { useLazyQuery } from "@apollo/client";
 
-import Header from "../../components/Header/index";
-import SignInput from "../../components/SignInput";
+import Header from "../../components/Header";
+import SignInput from '../../components/SignInput';
 import { LOGIN_QUERY } from "../../quries/authQuery";
 import { localLogin } from '../../utils/authUtil';
 import style from "./login.module.scss";

@@ -5,9 +5,9 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { CORP_SIGN_UP_QUERY } from "../../quries/authQuery";
 import { SIGN_UP_QUERY } from "../../quries/authQuery";
 import { CHECK_DUPLICATE } from "../../quries/authQuery";
+import SignInput from "../../components/SignInput";
+import Header from "../../components/Header";
 import style from "./signIn.module.scss";
-import Header from "../../components/Header/index";
-import SignInput from "../../components/signInput";
 
 function signIn({ router: { query } }) {
   const signInType = query.type;
