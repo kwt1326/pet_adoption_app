@@ -50,6 +50,10 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<key>NSCameraUsageDescription</key>
+	<string>애완동물 촬영을 위해 카메라 사용 권한이 필요합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>애완동물 사진등록을 위해 사진 및 비디오 접근 권한이 필요합니다.</string>
 	<false/>
 </dict>
 </plist>
