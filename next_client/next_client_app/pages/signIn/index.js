@@ -266,7 +266,6 @@ function signIn({ router: { query } }) {
             value={phoneNumber}
             onChange={(e) => {
               numValid(e.target.value)
-              // setPhoneNumber(e.target.value);
             }}
             placeholder="전화번호를 입력하세요"
             type="text"
