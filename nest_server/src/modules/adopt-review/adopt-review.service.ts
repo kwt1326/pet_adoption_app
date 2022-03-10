@@ -99,7 +99,6 @@ export class AdoptReviewService {
   ): Promise<AdoptReview> {
     const review = await this.getReviewWithCheckingNotFound(reviewId);
     if (review.userId !== userId) {
-      console.log(review, userId);
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
     return review;
