@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./SingInput.module.scss";
 
-function SignInput({ value, onChange, placeholder, type, errorText, maxLength, onkeypress }) {
+function SignInput({ value, onChange, placeholder, type, errorText, maxLength }) {
   return (
     <div className={style.container}>
       <input value={value} onChange={onChange} placeholder={placeholder} type={type} maxLength={maxLength} className={style.inputContent} ></input>
