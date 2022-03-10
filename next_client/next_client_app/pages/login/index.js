@@ -39,6 +39,7 @@ function login(props) {
     if (validateForm()) {
       const response = await loginQuery();
       const responseData = response?.data?.login;
+      console.log(response)
       if (responseData) {
         localLogin(responseData.result.token);
         setIsCookie(responseData.result.token);

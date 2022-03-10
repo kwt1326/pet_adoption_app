@@ -21,13 +21,12 @@ function MainWebView() {
   };
 
   const _onMessage = async (event: NativeSyntheticEvent<WebViewMessage>) => {
-    console.log(event.nativeEvent);
     const { data } = event.nativeEvent;
     await saveToken(data);
-    const items = await getItem();
-    if (items) {
-      console.log('TEST', JSON.parse(items));
-    }
+    // const items = await getItem();
+    // if (items) {
+    //   console.log('TEST', JSON.parse(items));
+    // }
   };
 
   const platformProps = Platform.select({

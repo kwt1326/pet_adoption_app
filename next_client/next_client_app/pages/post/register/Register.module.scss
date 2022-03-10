@@ -1,25 +1,45 @@
-.formstyle {
+@mixin btn_default() {
+  color: #ffffff;
+  width: 100%;
+  height: 60px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0f13ff;
+}
+
+.form_style {
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 20px;
+
+  label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    > input[type="checkbox"] {
+      margin-right: 5px;
+    }
+  }
+
   .title {
     width: 100%;
     border-bottom: 1px solid;
     input {
+      padding-bottom: 10px;
       border: none;
     }
     margin: 10px;
   }
-  .tablestyle {
+  .table_style {
     width: 100%;
     table {
       .name {
-        padding-left: 20px;
-
+        padding-left: 15px;
         width: 30%;
       }
       width: 100%;
@@ -32,7 +52,8 @@
       }
       .dogorcat {
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-start;
+
         input {
           width: 20px;
           height: 20px;
@@ -41,7 +62,7 @@
       }
       .gender {
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-start;
         input {
           width: 20px;
           height: 20px;
@@ -50,7 +71,7 @@
       }
       .vaccinated {
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-start;
         input {
           width: 20px;
           height: 20px;
@@ -59,7 +80,7 @@
       }
       .neutered {
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-start;
         input {
           width: 20px;
           height: 20px;
@@ -69,27 +90,33 @@
     }
   }
   .content {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
+    padding-top: 15px;
 
     .name {
-      padding-bottom: 10px;
+      padding-bottom: 15px;
       font-weight: bold;
     }
     input {
       width: 100%;
       height: 200px;
-      border: none;
+      border: 1px solid #bcbcbc;
+      border-radius: 10px;
     }
   }
   .picture {
-    padding-top: 10px;
+    padding-top: 15px;
     padding-bottom: 10px;
-    padding-left: 20px;
+
+    .input_file_button {
+      width: 100%;
+      color: #bcbcbc;
+      padding: 15px;
+      margin-bottom: 5px;
+      border: 1px solid #bcbcbc;
+    }
 
     .name {
-      padding-bottom: 10px;
+      padding-bottom: 15px;
       font-weight: bold;
     }
     input {
@@ -98,19 +125,45 @@
       border: none;
     }
     .pictureWrapper {
+      position: relative;
+      overflow-x: auto;
       display: flex;
+      flex-wrap: nowrap;
       flex-direction: row;
+
+      .picture_wrapper_inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
       .pictureChoice {
         width: 100px;
         height: 100px;
         border: 1px solid #aaa;
         border-radius: 5px;
         margin: 10px;
+        margin-left: 0;
+
         .pictureitem {
           width: 100%;
           height: 100%;
         }
       }
     }
+  }
+
+  .input_check_wrap {
+    margin-right: 15px;
+  }
+
+  .upload_btn {
+    @include btn_default();
+    height: 40px;
+    width: 50%;
+  }
+
+  .submit_btn {
+    @include btn_default();
   }
 }
