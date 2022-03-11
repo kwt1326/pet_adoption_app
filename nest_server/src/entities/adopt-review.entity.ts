@@ -56,10 +56,6 @@ export class AdoptReview extends CoreEntity {
   @Field(() => [AdoptionReviewLike], { nullable: true })
   likes?: AdoptionReviewLike[];
 
-  @RelationId((review: AdoptReview) => review.likes)
-  @Field(() => [Int], { nullable: true })
-  likeIds?: number[];
-
   @OneToMany(() => Comment, (comment) => comment.post, {
     nullable: true,
     cascade: true,
