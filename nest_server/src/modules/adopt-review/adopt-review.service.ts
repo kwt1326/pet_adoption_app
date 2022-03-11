@@ -27,7 +27,10 @@ import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto'
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { User, UserType } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
-import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
+import {
+  GetAdoptReviewOutput,
+  GetAdoptReviewsArgs,
+} from './dtos/get-adopt-reviews.dto';
 
 @Injectable()
 export class AdoptReviewService {
@@ -99,22 +102,52 @@ export class AdoptReviewService {
   ): Promise<AdoptReview> {
     const review = await this.getReviewWithCheckingNotFound(reviewId);
     if (review.userId !== userId) {
-      console.log(review, userId);
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
     return review;
   }
 
-  async getOneAdoptReview(id: number): Promise<AdoptReview> {
-    return await this.getReviewWithCheckingNotFound(id);
+  async getOneAdoptReview(
+    id: number,
+    user: User,
+  ): Promise<GetAdoptReviewOutput> {
+    const review = await this.getReviewWithCheckingNotFound(id);
+    return this.getAdoptReviewWithIsLiked(review, user.id);
   }
 
   async getAdoptReviews(
     getAdoptReviewsArgs: GetAdoptReviewsArgs,
-  ): Promise<AdoptReview[]> {
-    return await this.adoptReviewRepository.getAdoptReviews(
+    user: User,
+  ): Promise<GetAdoptReviewOutput[]> {
+    const reviews = await this.adoptReviewRepository.getAdoptReviews(
       getAdoptReviewsArgs,
     );
+    const reviewsWithIsLiked: GetAdoptReviewOutput[] =
+      this.getAdoptReviewsWithIsLiked(reviews, user.id);
+    return reviewsWithIsLiked;
+  }
+
+  getAdoptReviewsWithIsLiked(
+    reviews: AdoptReview[],
+    userId: number,
+  ): GetAdoptReviewOutput[] {
+    return reviews.map((review) =>
+      this.getAdoptReviewWithIsLiked(review, userId),
+    );
+  }
+
+  getAdoptReviewWithIsLiked(
+    review: AdoptReview,
+    userId: number,
+  ): GetAdoptReviewOutput {
+    return {
+      ...review,
+      isLiked: this.isAlreadyInLikes(review, userId),
+    };
+  }
+
+  isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
+    return review.likes.some((like) => like.userId === userId);
   }
 
   async updateAdoptReview(
@@ -159,10 +192,6 @@ export class AdoptReviewService {
       ).affected,
     };
     return resOutput;
-  }
-
-  isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
-    return review.likes.some((like) => like.userId === userId);
   }
 
   async toggleAdoptionReviewLike(
