@@ -336,17 +336,16 @@ function Register() {
               />
               <div className={styles.pictureWrapper}>
                 <div className={styles.picture_wrapper_inner}>
-
+                  {uploadedImgs?.map((url: string) => (
+                    <div className={styles.pictureChoice}>
+                      <Image
+                        className={styles.pictureitem}
+                        cloudName={process.env.CLOUD_NAME}
+                        src={url}
+                      />
+                    </div>
+                  ))}
                 </div>
-                {uploadedImgs?.map((url: string) => (
-                  <div className={styles.pictureChoice}>
-                    <Image
-                      className={styles.pictureitem}
-                      cloudName={process.env.CLOUD_NAME}
-                      src={url}
-                    />
-                  </div>
-                ))}
               </div>
             </div>
             <button className={styles.submit_btn} onClick={writePostFunc}>제출하기</button>
