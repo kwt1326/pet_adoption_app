@@ -25,9 +25,9 @@
       }
       input {
         align-items: flex-end;
-        width: calc(100% - 80px);
+        width: calc(100% - 90px);
         height: 100%;
-        margin-right: 10px;
+        // margin-right: 10px;
         border: 1px solid #ccc;
         margin-bottom: 10px;
         border-radius: 2px;
@@ -52,7 +52,7 @@
   border-radius: 3px;
 }
 .btn {
-  margin-left: 10px;
+  margin-left: 5px;
   height: 100%;
   color: #fff;
   background-color: #888;
