@@ -5,7 +5,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useUserInfo } from "../../hooks/user";
 import { localLogout } from "../../utils/authUtil";
 import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
-import styles from "./sidebar.module.scss";
+import styles from "./SideBar.module.scss";
 
 const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
   const userInfo = useUserInfo();

@@ -5,9 +5,9 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { CORP_SIGN_UP_QUERY } from "../../quries/authQuery";
 import { SIGN_UP_QUERY } from "../../quries/authQuery";
 import { CHECK_DUPLICATE } from "../../quries/authQuery";
+import SignInput from "../../components/SignInput";
+import Header from "../../components/Header";
 import style from "./signIn.module.scss";
-import Header from "../../components/Header/index";
-import SignInput from "../../components/signInput";
 
 function signIn({ router: { query } }) {
   const signInType = query.type;
@@ -166,8 +166,9 @@ function signIn({ router: { query } }) {
     if (phoneNumber.length === 10) {
       setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"));
     }
-    if (phoneNumber.length === 13) {
-      sethoneNumber(phoneNumber.replace(/-/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3"));
+    if (phoneNumber.length === 11) {
+      console.log(phoneNumber)
+      setPhoneNumber(phoneNumber.replace(/-/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3"));
     }
   }, [phoneNumber]);
   const [signUpQuery] = useMutation(SIGN_UP_QUERY);
@@ -207,7 +208,10 @@ function signIn({ router: { query } }) {
       }
     }
   };
-
+  const numValid = (value) => {
+    const num = value.replace(/[^0-9]/g, '')
+    setPhoneNumber(num)
+  }
   const renderCompany = () => {
     return (
       <div className={style.inputArea}>
@@ -261,11 +265,12 @@ function signIn({ router: { query } }) {
           <SignInput
             value={phoneNumber}
             onChange={(e) => {
-              setPhoneNumber(e.target.value);
+              numValid(e.target.value)
             }}
             placeholder="전화번호를 입력하세요"
-            type="number"
+            type="text"
             errorText={phoneNumberError}
+            maxLength="13"
           />
         </div>
         <div className={style.dFlex}>
@@ -281,6 +286,7 @@ function signIn({ router: { query } }) {
       </div>
     );
   };
+
 
   return (
     <div>

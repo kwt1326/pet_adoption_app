@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import Axios from "axios";
+import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { Image } from "cloudinary-react";
 
 import Header from "../../../components/Header";
 import { CREATE_POST_MUTATION } from "../../../quries/adoptionPostQuery";
-import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../../constants/config";
+import { IMG_UPLOAD_URI } from "../../../constants/config";
 
 import styles from './Register.module.scss';
 
-function Register(props) {
+function Register() {
+  const router = useRouter();
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
@@ -19,13 +21,12 @@ function Register(props) {
     price: "",
     age: "",
     weight: "",
-    isGenderMale: true,
-    vaccinated: true,
-    neutered: true,
+    isGenderMale: "1",
+    vaccinated: "1",
+    neutered: "1",
     characteristic: "",
     othersInfo: "",
   });
-  const [image, setImage] = useState(null);
   const {
     title,
     content,
@@ -42,8 +43,10 @@ function Register(props) {
     othersInfo,
   } = inputs;
 
+  const [uploadedImgs, setUploadedImgs] = useState([]);
+
   const onClickChoose = (element) => {
-    const { name, value } = element.target;
+    const { name } = element.target;
     const checkboxes = document.getElementsByName(name);
     checkboxes.forEach((cb: HTMLInputElement) => {
       cb.checked = false;
@@ -60,7 +63,7 @@ function Register(props) {
   };
   const [postQuery] = useMutation(CREATE_POST_MUTATION);
   const writePostFunc = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     const response = await postQuery({
       variables: {
         input: {
@@ -72,33 +75,47 @@ function Register(props) {
           price: Number(inputs.price),
           age: Number(inputs.age),
           weight: Number(inputs.weight),
-          isGenderMale: inputs.isGenderMale,
-          vaccinated: inputs.vaccinated,
-          neutered: inputs.neutered,
+          isGenderMale: inputs.isGenderMale === "1",
+          vaccinated: inputs.vaccinated === "1",
+          neutered: inputs.neutered === "1",
           characteristic: inputs.characteristic,
           othersInfo: inputs.othersInfo,
+          uri: uploadedImgs,
         },
       },
     });
+    if (response.errors) {
+      return alert(response.errors[0].message);  
+    }
     alert("제출이 완료되었습니다.");
+    router.replace('/');
   };
 
   const uploadImage = (e) => {
-    e.preventDefault();
+    const image = e.target.files[0];
     const formData = new FormData();
     formData.append("file", image);
     formData.append("upload_preset", process.env.CLOUD_NAME);
-    Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
-      console.log(response);
-    });
+    Axios.post(IMG_UPLOAD_URI, formData).then(
+      (response) => {
+        if (response.status === 200) {
+          alert("사진이 성공적으로 업로드 되었습니다.");
+          setUploadedImgs([...uploadedImgs, response.data.secure_url]);
+        } else {
+          alert(response.statusText)
+        }
+      }
+    ).catch(e => console.error(e));
+
+    e.target.value = null;
   };
   return (
     <div>
       <Header
         children="입양글 작성하기"
-        rightBtn={{ func: () => void 0, text: '완료' }}
+        rightBtn={{ func: writePostFunc, text: '완료' }}
       />
-      <div className={styles.formstyle}>
+      <div className={styles.form_style}>
         <div className={styles.title}>
           <input
             name="title"
@@ -107,7 +124,7 @@ function Register(props) {
             placeholder="제목을 적어주세요"
           ></input>
         </div>
-        <div className={styles.tablestyle}>
+        <div className={styles.table_style}>
           <form>
             <table>
               <tbody>
@@ -130,26 +147,25 @@ function Register(props) {
                 </tr>
                 <tr>
                   <td className={styles.name}>타입</td>
-
                   <td className={styles.dogorcat}>
-                    <div>
+                    <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
                           name="type"
-                          value="강아지"
+                          value="dog"
                           onClick={(e) => onClickChoose(e)}
                           onChange={onChange}
                         ></input>
                         강아지
                       </label>
                     </div>
-                    <div>
+                    <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
                           name="type"
-                          value="고양이"
+                          value="cat"
                           onChange={onChange}
                           onClick={(e) => onClickChoose(e)}
                         ></input>
@@ -161,7 +177,7 @@ function Register(props) {
                 <tr>
                   <td className={styles.name}>성별</td>
                   <td className={styles.gender}>
-                    <div>
+                    <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
@@ -173,7 +189,7 @@ function Register(props) {
                         수컷
                       </label>
                     </div>
-                    <div>
+                    <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
@@ -220,7 +236,7 @@ function Register(props) {
                 <tr>
                   <td className={styles.name}>예방접종</td>
                   <td className={styles.vaccinated}>
-                    <div>
+                  <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
@@ -232,7 +248,7 @@ function Register(props) {
                         접종
                       </label>
                     </div>
-                    <div>
+                    <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
@@ -249,7 +265,7 @@ function Register(props) {
                 <tr>
                   <td className={styles.name}>중성화</td>
                   <td className={styles.neutered}>
-                    <div>
+                  <div className={styles.input_check_wrap}>
                       <label>
                         <input
                           type="checkbox"
@@ -307,24 +323,32 @@ function Register(props) {
             </div>
             <div className={styles.picture}>
               <div className={styles.name}>사진</div>
+              <label
+                className={styles.input_file_button}
+                htmlFor="input-file"
+              >여기를 클릭하여 파일을 업로드하세요.</label>
               <input
                 type="file"
-                onChange={(e) => {
-                  setImage(e.target.files[0]);
-                }}
-              ></input>
-              <button onClick={uploadImage}> 사진 업로드 </button>
+                id="input-file"
+                accept="image/png, image/jpeg"
+                onChange={uploadImage}
+                style={{ display: "none" }}
+              />
               <div className={styles.pictureWrapper}>
-                <div className={styles.pictureChoice}>
-                  <Image
-                    className={styles.pictureitem}
-                    cloudName={process.env.CLOUD_NAME}
-                    src={`https://res.cloudinary.com/${process.env.PRESET_NAME}/image/upload/v1643722889/vazvgydltxgzmxgrejud.png`}
-                  ></Image>
+                <div className={styles.picture_wrapper_inner}>
+                  {uploadedImgs?.map((url: string) => (
+                    <div className={styles.pictureChoice}>
+                      <Image
+                        className={styles.pictureitem}
+                        cloudName={process.env.CLOUD_NAME}
+                        src={url}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <button onClick={writePostFunc}> 제출하기</button>
+            <button className={styles.submit_btn} onClick={writePostFunc}>제출하기</button>
           </form>
         </div>
       </div>

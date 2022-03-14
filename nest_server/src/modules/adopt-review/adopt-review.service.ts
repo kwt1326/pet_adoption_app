@@ -27,7 +27,10 @@ import { CreateAdoptReviewPictureInput } from './dtos/create-review-picture.dto'
 import { CreateCommentInput } from './dtos/create-comment.dto';
 import { User, UserType } from 'src/entities/user.entity';
 import { Comment } from 'src/entities/comment.entity';
-import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
+import {
+  GetAdoptReviewOutput,
+  GetAdoptReviewsArgs,
+} from './dtos/get-adopt-reviews.dto';
 
 @Injectable()
 export class AdoptReviewService {
@@ -58,14 +61,32 @@ export class AdoptReviewService {
     if (!(user && user.userType === UserType.ADOPTEE)) {
       throw new UnauthorizedException('게시물을 생성할 권한이 없습니다.');
     }
-    const { ...createInput } = createReviewInput;
+    const { uris, ...createInput } = createReviewInput;
     const adopteeUser: AdopteeUser =
       await this.adopteeUserRepository.getOneAdopteeUserById(user.id);
-    return await this.adoptReviewRepository.createAndSaveReview(
-      adopteeUser,
-      createInput,
-    );
+    const adoptReview: AdoptReview =
+      await this.adoptReviewRepository.createAndSaveReview(
+        adopteeUser,
+        createInput,
+      );
+    await this.createAdoptReviewPictures(adoptReview, uris);
+    return adoptReview;
   }
+
+  async createAdoptReviewPictures(
+    adoptReview: AdoptReview,
+    uris: string[],
+  ): Promise<void> {
+    if (uris) {
+      uris.forEach(async (uri) => {
+        await this.adoptReviewPictureRepository.createAdoptReviewPicture({
+          adoptReview,
+          uri,
+        });
+      });
+    }
+  }
+
   async getReviewWithCheckingNotFound(reviewId: number): Promise<AdoptReview> {
     const review: AdoptReview =
       await this.adoptReviewRepository.getOneAdoptReviewById(reviewId);
@@ -81,34 +102,75 @@ export class AdoptReviewService {
   ): Promise<AdoptReview> {
     const review = await this.getReviewWithCheckingNotFound(reviewId);
     if (review.userId !== userId) {
-      console.log(review, userId);
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
     return review;
   }
 
-  async getOneAdoptReview(id: number): Promise<AdoptReview> {
-    return await this.getReviewWithCheckingNotFound(id);
+  async getOneAdoptReview(
+    id: number,
+    user: User,
+  ): Promise<GetAdoptReviewOutput> {
+    const review = await this.getReviewWithCheckingNotFound(id);
+    return this.getAdoptReviewWithIsLiked(review, user.id);
   }
 
   async getAdoptReviews(
     getAdoptReviewsArgs: GetAdoptReviewsArgs,
-  ): Promise<AdoptReview[]> {
-    return await this.adoptReviewRepository.getAdoptReviews(
+    user: User,
+  ): Promise<GetAdoptReviewOutput[]> {
+    const reviews = await this.adoptReviewRepository.getAdoptReviews(
       getAdoptReviewsArgs,
     );
+    const reviewsWithIsLiked: GetAdoptReviewOutput[] =
+      this.getAdoptReviewsWithIsLiked(reviews, user.id);
+    return reviewsWithIsLiked;
+  }
+
+  getAdoptReviewsWithIsLiked(
+    reviews: AdoptReview[],
+    userId: number,
+  ): GetAdoptReviewOutput[] {
+    return reviews.map((review) =>
+      this.getAdoptReviewWithIsLiked(review, userId),
+    );
+  }
+
+  getAdoptReviewWithIsLiked(
+    review: AdoptReview,
+    userId: number,
+  ): GetAdoptReviewOutput {
+    return {
+      ...review,
+      isLiked: this.isAlreadyInLikes(review, userId),
+    };
+  }
+
+  isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
+    return review.likes.some((like) => like.userId === userId);
   }
 
   async updateAdoptReview(
     updateReviewInput: UpdateAdoptReviewInput,
     user: User,
   ): Promise<AdoptReview> {
-    const { id, ...restOfUpdateInput } = updateReviewInput;
+    const { id, uris, ...restOfUpdateInput } = updateReviewInput;
     const review = await this.getReviewWithVerifyingAuthority(id, user.id);
+    await this.updateAdoptReviewPictures(review, uris);
     return await this.adoptReviewRepository.updateAdoptReview(
       review,
       restOfUpdateInput,
     );
+  }
+
+  async updateAdoptReviewPictures(
+    review: AdoptReview,
+    uris: string[],
+  ): Promise<void> {
+    const filteredUris = uris.filter(
+      (uri) => !review.pictures.map((picture) => picture.uri).includes(uri),
+    );
+    await this.createAdoptReviewPictures(review, filteredUris);
   }
 
   async deleteAdoptReview(
@@ -122,21 +184,6 @@ export class AdoptReviewService {
     return deleteResult;
   }
 
-  async createAdoptReviewPicture(
-    input: CreateAdoptReviewPictureInput,
-    user: User,
-  ) {
-    const { reviewId, uri } = input;
-    const adoptReview: AdoptReview = await this.getReviewWithVerifyingAuthority(
-      reviewId,
-      user.id,
-    );
-    return await this.adoptReviewPictureRepository.createAdoptReviewPicture({
-      adoptReview,
-      uri,
-    });
-  }
-
   async deleteAdoptReviewPicture(id: number, user: User) {
     await this.getReviewWithVerifyingAuthority(id, user.id);
     const resOutput: DeleteRequestOutput = {
@@ -145,10 +192,6 @@ export class AdoptReviewService {
       ).affected,
     };
     return resOutput;
-  }
-
-  isAlreadyInLikes(review: AdoptReview, userId: number): boolean {
-    return review.likes.some((like) => like.userId === userId);
   }
 
   async toggleAdoptionReviewLike(

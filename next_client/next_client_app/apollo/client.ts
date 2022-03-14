@@ -21,7 +21,7 @@ const isSSR = () => /noUserAgentSSR/i.test(userAgent);
 const isMobile = () => Boolean(isAndroid() || isIOS() || isOpera() || isWindows())
 const isDesktop = () => Boolean(!isMobile() && !isSSR())
 
-const localHost = isAndroid() ? '172.30.1.5' : 'localhost';
+const localHost = 'localhost' //isMobile() ? /* my ip address */ '192.168.1.119' : 'localhost';
 
 const uri = process.env.NODE_ENV === "production" ?
   'https://withpet-api.hminnn.xyz/graphql' :
@@ -40,9 +40,9 @@ const httpLink = createHttpLink({ uri });
 // });
 
 const authLink = setContext((_, { headers }) => {
-  if (isAndroid()) {
-    deviceLogin(token);
-  }
+  // if (isMobile()) {
+  //   deviceLogin(token);
+  // }
   return {
     headers: {
       ...headers,

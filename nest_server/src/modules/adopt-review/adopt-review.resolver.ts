@@ -16,7 +16,10 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
 import { AuthUser } from '../auth/decorators/auth.decorator';
 import { User } from 'src/entities/user.entity';
-import { GetAdoptReviewsArgs } from './dtos/get-adopt-reviews.dto';
+import {
+  GetAdoptReviewOutput,
+  GetAdoptReviewsArgs,
+} from './dtos/get-adopt-reviews.dto';
 
 @Resolver()
 export class AdoptReviewResolver {
@@ -31,16 +34,19 @@ export class AdoptReviewResolver {
     return this.adoptReviewService.createAdoptReview(user, createReviewInput);
   }
 
-  @Query(() => AdoptReview)
-  getOneAdoptReview(@Args('id') id: number) {
-    return this.adoptReviewService.getOneAdoptReview(id);
+  @UseGuards(GqlAuthGuard)
+  @Query(() => GetAdoptReviewOutput)
+  getOneAdoptReview(@Args('id') id: number, @AuthUser() user: User) {
+    return this.adoptReviewService.getOneAdoptReview(id, user);
   }
 
-  @Query(() => [AdoptReview])
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [GetAdoptReviewOutput])
   getAdoptReviews(
     @Args('getAdoptReviewsArgs') getAdoptReviewsArgs: GetAdoptReviewsArgs,
+    @AuthUser() user: User,
   ) {
-    return this.adoptReviewService.getAdoptReviews(getAdoptReviewsArgs);
+    return this.adoptReviewService.getAdoptReviews(getAdoptReviewsArgs, user);
   }
 
   @UseGuards(GqlAuthGuard)
@@ -59,18 +65,6 @@ export class AdoptReviewResolver {
   @Mutation(() => DeleteRequestOutput)
   deleteAdoptReview(@Args('id') id: number, @AuthUser() user: User) {
     return this.adoptReviewService.deleteAdoptReview(id, user);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => AdoptReviewPicture)
-  createAdoptReviewPicture(
-    @Args('input') createAdoptReviewPictureInput: CreateAdoptReviewPictureInput,
-    @AuthUser() user: User,
-  ) {
-    return this.adoptReviewService.createAdoptReviewPicture(
-      createAdoptReviewPictureInput,
-      user,
-    );
   }
 
   @UseGuards(GqlAuthGuard)
