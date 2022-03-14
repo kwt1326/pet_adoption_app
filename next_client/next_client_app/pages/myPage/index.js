@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./mypage.module.scss";
 import Header from "../../components/Header/index";
 import Link from "next/link";
 import { FaFile, FaBoxOpen, FaAngleRight } from "react-icons/fa";
+import { getOneUser } from "../../hooks/getOneUser";
 import { useUserInfo } from "../../hooks/user";
 
 const myPage = () => {
   const userInfo = useUserInfo();
+  const oneUser = getOneUser();
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  // useEffect(() => {
+  //   oneUser = getOneUser();
+  // }, [nickname]);
 
   return (
     <div>
@@ -14,9 +21,10 @@ const myPage = () => {
       <div className={style.container}>
         <div className={style.userInfo}>
           <div>
-            <span className={style.nickname}>{userInfo?.nickname || "사용자"}</span> 님, 안녕하세요!
+            <span className={style.nickname}>{oneUser?.nickname}</span>
+            님, 안녕하세요!
           </div>
-          <span className={style.email}>{userInfo?.email || "이메일"}</span>
+          <span className={style.email}>{userInfo?.email}</span>
         </div>
         <ul className={style.list}>
           <Link href="personalInfo">

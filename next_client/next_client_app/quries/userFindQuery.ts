@@ -7,9 +7,8 @@ export const GET_ONE_ADOPTEE_USER = gql`
         email
         userType
       }
+      userId
       nickname
-      isAuthenticated
-      authenticatedAt
     }
   }
 `;
@@ -21,13 +20,8 @@ export const GET_ONE_ADOPT_USER = gql`
         email
         userType
       }
+      userId
       nickname
-      companyName
-      address
-      phoneNumber
-      pageUri
-      isAuthenticated
-      isProfit
     }
   }
 `;
