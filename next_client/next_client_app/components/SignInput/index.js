@@ -4,7 +4,14 @@ import style from "./SingInput.module.scss";
 function SignInput({ value, onChange, placeholder, type, errorText, maxLength }) {
   return (
     <div className={style.container}>
-      <input value={value} onChange={onChange} placeholder={placeholder} type={type} maxLength={maxLength} className={style.inputContent} ></input>
+      <input
+        type={type || 'text'}
+        className={style.inputContent}
+        placeholder={placeholder || ''}
+        value={value || ''}
+        maxLength={maxLength || 100}
+        onChange={onChange}
+      />
       {errorText !== "" ? <div style={{ marginTop: "5px", fontSize: "12px", color: "crimson" }}>{errorText}</div> : null}
     </div>
   );

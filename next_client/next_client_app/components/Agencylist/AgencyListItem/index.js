@@ -14,12 +14,6 @@ function AgencyListItem({ item }) {
           <div className={styles.title}>
             업체명 {">"} {companyName || "이름없음"}
           </div>
-          <div className={styles.sale}>
-            {/* <span>분양 중 {forSale} 마리 / </span>
-            <span>분양 완료 {saleComplete} 마리</span> */}
-            <span>분양 중 2 마리 / </span>
-            <span>분양 완료 2마리</span>
-          </div>
           <button className={styles.button}>인증완료 </button>
         </div>
       </div>

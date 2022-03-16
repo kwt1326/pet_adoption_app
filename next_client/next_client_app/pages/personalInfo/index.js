@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { concat, useMutation, useLazyQuery, useQuery } from "@apollo/client";
-import style from "./personalInfo.module.scss";
+import { useRouter } from "next/router";
+import { useMutation, useLazyQuery } from "@apollo/client";
+
 import Header from "../../components/Header/index";
-import { DELETE_ONE_USER, UPDATE_ADOPTEE_USER, UPDATE_ADOPT_USER } from "../../quries/userQuery";
-import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
-import { CHECK_DUPLICATE } from "../../quries/authQuery";
 import { useUserInfo } from "../../hooks/user";
-import { getOneUser } from "../../hooks/getOneUser";
 import { localLogout } from "../../utils/authUtil";
-import Router from "next/router";
+
+import { CHECK_DUPLICATE } from "../../quries/authQuery";
+import { DELETE_ONE_USER, UPDATE_ADOPTEE_USER, UPDATE_ADOPT_USER } from "../../quries/userQuery";
+
+import style from "./personalInfo.module.scss";
+
 
 const personalInfo = () => {
+  const router = useRouter();
   const userInfo = useUserInfo();
+
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditNickname, setIsEditNickname] = useState(false);
   const [nickname, setNickname] = useState(userInfo?.nickname);
@@ -23,8 +27,6 @@ const personalInfo = () => {
   const [updateAdopteeUserQuery] = useMutation(UPDATE_ADOPTEE_USER);
   const [updateAdoptUserQuery] = useMutation(UPDATE_ADOPT_USER);
 
-  let oneUser = getOneUser();
-
   //유저삭제
   const removeUser = async () => {
     const id = userInfo.id;
@@ -33,8 +35,12 @@ const personalInfo = () => {
         id: parseFloat(id),
       },
     });
-    localLogout();
-    Router.push("/");
+
+    if (!response.errors) {
+      alert('정상적으로 회원탈퇴 되었습니다. withPet 을 이용해주셔서 감사합니다.')
+      localLogout();
+      router.push("/");
+    }
   };
 
   const [checkDuplicateNicknameQuery] = useLazyQuery(CHECK_DUPLICATE, {
@@ -48,42 +54,49 @@ const personalInfo = () => {
 
   // 닉네임 수정 시
   const editNickname = async () => {
-    const store = userInfo?.nickname;
-    const response = await checkDuplicateNicknameQuery();
+    let response = await checkDuplicateNicknameQuery();
+    if (response.error) { return alert(response.error.message) }
+
     let state = response?.data?.checkDuplicateField?.result;
-    if (state === true) {
-      setNicknameError("이미 존재하는 닉네임입니다.");
-    } else {
-      setIsEditNickname(false);
-      if (userInfo?.userType === "ADOPTEE_USER") {
-        const response = await updateAdopteeUserQuery({
-          variables: {
-            input: {
-              id: parseFloat(userInfo?.id),
-              nickname: nickname,
-            },
+    if (state === true) { return setNicknameError("이미 존재하는 닉네임입니다."); }
+
+    setIsEditNickname(false);
+    if (userInfo?.userType === "ADOPTEE_USER") {
+      response = await updateAdopteeUserQuery({
+        variables: {
+          input: {
+            id: parseFloat(userInfo?.id),
+            nickname: nickname,
           },
-        });
-      } else if (userInfo?.userType === "ADOPT_USER") {
-        const response = await updateAdoptUserQuery({
-          variables: {
-            input: {
-              id: parseFloat(userInfo?.id),
-              nickname: nickname,
-            },
+        },
+      });
+      if (response.error) { return alert(response.error.message) }
+    } else if (userInfo?.userType === "ADOPT_USER") {
+      response = await updateAdoptUserQuery({
+        variables: {
+          input: {
+            id: parseFloat(userInfo?.id),
+            nickname: nickname,
           },
-        });
-      }
+        },
+      });
+      if (response.error) { return alert(response.error.message) }
     }
+
+    alert('닉네임이 성공적으로 수정되었습니다. 다시 로그인 해주세요.');
+    localLogout();
+    return router.push("/");
   };
+
   //패스워드 수정 시
   const editPassword = async () => {
     const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (passwordReg.test(password)) {
       setPasswordError("");
       setIsEditPassword(false);
+      let response = {};
       if (userInfo?.userType === "ADOPTEE_USER") {
-        const response = await updateAdopteeUserQuery({
+        response = await updateAdopteeUserQuery({
           variables: {
             input: {
               id: parseFloat(userInfo?.id),
@@ -93,8 +106,9 @@ const personalInfo = () => {
             },
           },
         });
+        if (response.error) { return alert(response.error.message) }
       } else if (userInfo?.userType === "ADOPT_USER") {
-        const response = await updateAdoptUserQuery({
+        response = await updateAdoptUserQuery({
           variables: {
             input: {
               id: parseFloat(userInfo?.id),
@@ -104,21 +118,28 @@ const personalInfo = () => {
             },
           },
         });
+        if (response.error) { return alert(response.error.message) }
       }
-      setPassword("");
-    } else {
-      setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
+
+      alert('비밀번호가 성공적으로 수정되었습니다. 다시 로그인 해주세요.');
+      localLogout();
+      return router.push("/");
     }
+
+    setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
   };
-  const cancleNickname = () => {
+
+  const cancelNickname = () => {
     setIsEditNickname(false);
     setNickname(userInfo?.nickname);
   };
-  const canclePassword = () => {
+
+  const cancelPassword = () => {
     setIsEditPassword(false);
     setPassword("");
     setPasswordError("");
   };
+
   return (
     <div>
       <Header children={"개인정보 수정"} />
@@ -151,7 +172,7 @@ const personalInfo = () => {
                   <button
                     className={style.btn}
                     onClick={() => {
-                      cancleNickname();
+                      cancelNickname();
                     }}
                   >
                     취소
@@ -160,7 +181,7 @@ const personalInfo = () => {
                 </div>
               ) : (
                 <div>
-                  <span>{oneUser?.nickname}</span>
+                  <span>{userInfo?.nickname}</span>
                   <button
                     className={style.btn}
                     onClick={() => {
@@ -200,7 +221,7 @@ const personalInfo = () => {
                     <button
                       className={style.btn}
                       onClick={() => {
-                        canclePassword();
+                        cancelPassword();
                       }}
                     >
                       취소
