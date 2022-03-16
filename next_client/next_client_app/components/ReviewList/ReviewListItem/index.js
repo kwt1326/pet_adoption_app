@@ -1,12 +1,14 @@
 import React, { Fragment } from "react";
-import styles from "./ReviewListItem.module.scss";
 import { BsHeart } from "react-icons/bs";
 import { FaRegCommentDots } from "react-icons/fa";
+
+import styles from "./ReviewListItem.module.scss";
 
 function ReviewListItem({ item, toggleLikeMutation }) {
   const isExistPicture = item.pictures.length > 0 ? true : false;
   const isLikes = item.likes.length;
   const commentCount = item.comments.length;
+
   return (
     <div className={styles.ReviewContainer}>
       <div className={styles.title}>{item.title}</div>
@@ -45,7 +47,7 @@ function ReviewListItem({ item, toggleLikeMutation }) {
         </div>
 
         <div className={styles.comment}>
-          <FaRegCommentDots></FaRegCommentDots>댓글 {commentCount}
+          <FaRegCommentDots />댓글 {commentCount}
         </div>
       </div>
     </div>

@@ -141,7 +141,7 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
               </ul>
             </li>
             <li>
-              <Link href="/authagency">
+              <Link href="/authAgency">
                 <a>인증업체현황</a>
               </Link>
             </li>

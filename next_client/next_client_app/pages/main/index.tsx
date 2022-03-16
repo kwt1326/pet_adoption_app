@@ -93,7 +93,7 @@ function Main() {
           </Link>
         </li>
         <li>
-          <Link href="/authagency">
+          <Link href="/authAgency">
             <a>
               <div>
                 <FaBuilding />

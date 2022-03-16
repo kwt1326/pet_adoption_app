@@ -15,8 +15,9 @@ function ReviewList(props) {
   const [isStartObserve, setStartObserve] = useState(false);
 
   const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
+
   const toggleLikeMutation = async (postId) => {
-    const result = await toggleLike({
+    await toggleLike({
       variables: {
         input: {
           postId,
@@ -24,6 +25,7 @@ function ReviewList(props) {
       },
     });
   };
+  
   const getPostInputData = useCallback(
     () => ({
       variables: {
@@ -34,10 +36,12 @@ function ReviewList(props) {
     }),
     [page]
   );
+  
   const { loading, data, fetchMore } = useQuery(
     QUERY_ADOPTREVIEW_LIST,
     getPostInputData()
   );
+
   const getListMore = async () => {
     const result = await fetchMore(getPostInputData());
     if (result?.error) {
@@ -45,6 +49,7 @@ function ReviewList(props) {
       alert(result.error.message);
     }
   };
+  
   useEffect(() => {
     if (mount && pageEndRef && !isStartObserve) {
       try {
@@ -73,6 +78,7 @@ function ReviewList(props) {
   useEffect(() => {
     setMount(true);
   }, []);
+
   const loadMore = () => setPage((prev) => prev + 1);
 
   if (data?.getAdoptReviews) {
@@ -93,7 +99,7 @@ function ReviewList(props) {
                   key={i}
                   item={item}
                   toggleLikeMutation={toggleLikeMutation}
-                ></ReviewListItem>
+                />
               </div>
             </Link>
           ))}
@@ -103,6 +109,5 @@ function ReviewList(props) {
   }
   return null;
 }
-/*        <div ref={setPageEndRef}>{loading && <span>loading...</span>}</div>
- */
+
 export default ReviewList;
