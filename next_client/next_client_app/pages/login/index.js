@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useApolloClient } from "@apollo/client";
 import { withRouter } from "next/router";
 import Link from "next/link";
-import { useLazyQuery, useApolloClient } from "@apollo/client";
 
 import Header from "../../components/Header";
 import SignInput from "../../components/SignInput";
@@ -14,8 +14,6 @@ function login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorText, setErrorText] = useState("");
-
-  // const [loginQuery] = useLazyQuery(LOGIN_QUERY);
 
   const validateForm = () => {
     let validated = true;
