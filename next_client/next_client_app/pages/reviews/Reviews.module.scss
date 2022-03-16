@@ -1,0 +1,76 @@
+.writeReview {
+  margin: 10px;
+  background-color: #00aaff;
+  border-radius: 70%;
+  width: 40px;
+  border: none;
+  height: 40px;
+  color: white;
+}
+
+.PostContainer {
+  margin-top: 10px;
+  background-color: white;
+  padding: 10px;
+  .title {
+    padding-top: 10px;
+
+    color: #666666;
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 5px;
+  }
+  .detail {
+    padding-bottom: 5px;
+
+    display: flex;
+    color: #999999;
+    justify-content: space-between;
+    .nickname {
+    }
+    .date {
+    }
+  }
+  .content {
+    padding-bottom: 5px;
+  }
+  .pictureWrapper {
+    .image {
+      width: 100%;
+      padding-left: 10px;
+      padding-bottom: 10px;
+      border-radius: 20px;
+    }
+  }
+  .ItempictureWrapper {
+    .image {
+      width: 100%;
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
+  }
+  .reaction {
+    display: flex;
+    justify-content: space-around;
+
+    .isLikes {
+      display: flex;
+      padding: 10px;
+    }
+    .comment {
+      padding: 10px;
+    }
+  }
+  .Itemreaction {
+    display: flex;
+    justify-content: space-between;
+
+    .isLikes {
+      display: flex;
+      padding-right: 20px;
+    }
+    .comment {
+      padding-left: 20px;
+    }
+  }
+}

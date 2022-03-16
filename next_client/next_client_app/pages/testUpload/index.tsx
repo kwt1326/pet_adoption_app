@@ -5,16 +5,18 @@ import Header from '../../components/Header';
 import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../constants/config";
 
 function TEST() {
-  const [file, setFile] = useState(null)
-
+  const [file, setFile] = useState(null);
+  const [filename, setFileName ] = useState(null);
   const uploadImage = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", process.env.CLOUD_NAME);
+    formData.append("upload_preset", process.env.PRESET_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
+      console.log(response);
       const requestData = response.data;
-      const fileName = requestData.secure_url; // TEST: https://res.cloudinary.com/duzqh6xr0/image/upload/v1643722889/vazvgydltxgzmxgrejud.png
+//      const fileName = requestData.secure_url; // TEST: https://res.cloudinary.com/duzqh6xr0/image/upload/v1643722889/vazvgydltxgzmxgrejud.png
+      setFileName(requestData.secure_url);  
     });
   };
 
@@ -28,7 +30,7 @@ function TEST() {
       <Image
         style={{ width: '200px', height: '200px' }}
         cloudName={process.env.CLOUD_NAME}
-        src={`${IMG_HOST_URI}/ehwg1zei5rf3sj4mftmz.jpg`}
+        src={filename}
       ></Image>
     </div>
   )  
