@@ -154,18 +154,18 @@
       }
     }
   }
-
-  .input_check_wrap {
-    margin-right: 15px;
-  }
-
+  
   .upload_btn {
     @include btn_default();
     height: 40px;
     width: 50%;
   }
-
+  
   .submit_btn {
     @include btn_default();
   }
+}
+
+.input_check_wrap {
+  margin-right: 15px;
 }
