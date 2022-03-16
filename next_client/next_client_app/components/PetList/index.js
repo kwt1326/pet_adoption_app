@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useMutation, useQuery } from "@apollo/client";
+import Link from "next/link";
+
 import PetListItem from "./PetListItem";
+import { useIntersection } from '../../hooks/useIntersection';
 import {
   GET_ADOPTION_POST_LIST,
   TOGGLE_LIKE_MUTATION,
 } from "../../quries/adoptionPostQuery";
-import Link from "next/link";
+
 import style from "./PetList.module.scss";
 
 function PetList({ petType, category, likedOnly }) {
   const [page, setPage] = useState(1);
-  const [pageEndRef, setPageEndRef] = useState(null);
-  const [isStartObserve, setStartObserve] = useState(false);
-
+  
   const getIsProfit = useCallback(
     () => (category === "all" ? undefined : category === "petshop"),
     [category]
@@ -36,7 +37,7 @@ function PetList({ petType, category, likedOnly }) {
     GET_ADOPTION_POST_LIST,
     getPostInputData()
   );
-  const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
+  const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION);
 
   const toggleLikeMutation = async (postId) => {
     const result = await toggleLike({
@@ -63,24 +64,7 @@ function PetList({ petType, category, likedOnly }) {
     }
   };
 
-  useEffect(() => {
-    if (pageEndRef && !isStartObserve) {
-      try {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            if (entries[0].isIntersecting) {
-              loadMore();
-            }
-          },
-          { threshold: 0.5 }
-        );
-        observer.observe(pageEndRef);
-        setStartObserve(true);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [pageEndRef]);
+  const [, setObserverRef] = useIntersection(async (_entry, _observer) => loadMore());
 
   useEffect(() => {
     setPage(1);
@@ -115,7 +99,7 @@ function PetList({ petType, category, likedOnly }) {
             </Link>
           ))}
         </div>
-        <div className={style.div_intersection_observer} ref={setPageEndRef}>
+        <div className={style.div_intersection_observer} ref={setObserverRef}>
           {loading && <span>loading...</span>}
         </div>
       </section>

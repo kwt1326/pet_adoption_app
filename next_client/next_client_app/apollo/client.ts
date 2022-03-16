@@ -5,6 +5,7 @@ import { setContext } from "@apollo/client/link/context";
 import Cookie from 'universal-cookie';
 
 import { deviceLogin } from "../utils/nativeInterfaceUtil";
+import { mergeList } from "../utils/mergeList";
 
 const token = (new Cookie()).get(process.env.JWT_KEY)
 
@@ -88,9 +89,13 @@ const client = new ApolloClient({
           getPosts: {
             keyArgs: false,
             merge(existing = [], incoming, { args: { getPostsArgs } }) {
-              let _existing = existing;
-              if (getPostsArgs?.page === 1) _existing = [];
-              return [..._existing, ...incoming];
+              return mergeList(existing, incoming, getPostsArgs?.page);
+            }
+          },
+          getAuthenticatedAdoptUsers: {
+            keyArgs: false,
+            merge(existing = [], incoming, { args: { getAdoptUsersArgs } }) {
+              return mergeList(existing, incoming, getAdoptUsersArgs?.page);
             }
           }
         },
