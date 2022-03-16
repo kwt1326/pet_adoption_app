@@ -13,7 +13,7 @@ import style from "./PetList.module.scss";
 
 function PetList({ petType, category, likedOnly }) {
   const [page, setPage] = useState(1);
-  
+
   const getIsProfit = useCallback(
     () => (category === "all" ? undefined : category === "petshop"),
     [category]
@@ -29,6 +29,7 @@ function PetList({ petType, category, likedOnly }) {
           isLiked: likedOnly,
         },
       },
+      fetchPolicy: 'cache-and-network'
     }),
     [petType, category, likedOnly, page]
   );
@@ -53,6 +54,7 @@ function PetList({ petType, category, likedOnly }) {
       return;
     }
     setPage(1);
+    getListMore();
     window.scrollTo(0, 0);
   };
 
@@ -105,6 +107,7 @@ function PetList({ petType, category, likedOnly }) {
       </section>
     );
   }
+
   return null;
 }
 

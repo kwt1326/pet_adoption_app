@@ -28,7 +28,10 @@ function PetListItem({ petitem, toggleLikeMutation }) {
       )}
       <div
         className={styles.like_box}
-        onClick={() => toggleLikeMutation(petitem?.id)}
+        onClick={(e) => {
+          e.preventDefault();
+          toggleLikeMutation(petitem?.id)
+        }}
       >
         <AiFillHeart size={15} color={isLiked ? "#ff6f8b" : "gray"} />
       </div>

@@ -8,27 +8,36 @@ import { Image } from "cloudinary-react";
 import Axios from "axios";
 import { IMG_HOST_URI, IMG_UPLOAD_URI } from "../../../constants/config";
 
-function Register(props) {
-  const [file, setFile] = useState(null);
-  const [filename, setFileName] = useState(null);
-  const uploadImage = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", process.env.PRESET_NAME);
-    Axios.post(IMG_UPLOAD_URI, formData).then((response) => {
-      console.log(response);
-      const requestData = response.data;
-      //      const fileName = requestData.secure_url; // TEST: https://res.cloudinary.com/duzqh6xr0/image/upload/v1643722889/vazvgydltxgzmxgrejud.png
-      setFileName(requestData.secure_url);
-    });
-  };
+function Register() {
   const router = useRouter();
+  const [uploadedImgs, setUploadedImgs] = useState([]);
+
+  const uploadImage = (e) => {
+    const image = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", process.env.PRESET_NAME);
+    Axios.post(IMG_UPLOAD_URI, formData).then(
+      (response) => {
+        if (response.status === 200) {
+          alert("사진이 성공적으로 업로드 되었습니다.");
+          setUploadedImgs([...uploadedImgs, response.data.secure_url]);
+        } else {
+          alert(response.statusText)
+        }
+      }
+    ).catch(e => console.error(e));
+
+    e.target.value = null;
+  };
+
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
   });
+
   const { title, content } = inputs;
+
   const onChange = (e) => {
     const { value, name } = e.target;
     setInputs({
@@ -36,7 +45,9 @@ function Register(props) {
       [name]: value,
     });
   };
+
   const [postQuery] = useMutation(CREATE_POST_ADOPTREVIEW);
+
   const writePostFunc = async (e) => {
     e.preventDefault();
     const response = await postQuery({
@@ -44,19 +55,19 @@ function Register(props) {
         input: {
           title: inputs.title,
           content: inputs.content,
-          uris: [filename],
+          uris: uploadedImgs,
         },
       },
     });
 
     alert("제출이 완료되었습니다.");
   };
+
   return (
     <div>
       <Header
         children="입양후기 글쓰기"
-        rightBtn={{ func: () => writePostFunc, text: "완료" }}
-        leftBtn={{ func: () => void 0, text: "/reviews" }}
+        rightBtn={{ func: writePostFunc, text: "완료" }}
       />
       <div className={styles.container}>
         <div className={styles.title}>
@@ -68,35 +79,41 @@ function Register(props) {
           ></input>
         </div>
         <div className={styles.review}>
-          <input
+          <textarea
             name="content"
             onChange={onChange}
             value={content}
             placeholder="분양 후기를 들려주세요"
-          ></input>
+          ></textarea>
         </div>
-
-        <div className={styles.pictureList}>
-          <div>
-            <input
-              type="file"
-              onChange={(e) => {
-                setFile(e.target.files[0]);
-              }}
-            ></input>
-            <div className={styles.pictureWrapper}>
-              <Image
-                className={styles.pictureitem}
-                cloudName={process.env.CLOUD_NAME}
-                src={filename}
-              ></Image>
+        <div className={styles.picture}>
+          <div className={styles.name}>사진</div>
+          <label
+            className={styles.input_file_button}
+            htmlFor="input-file"
+          >여기를 클릭하여 파일을 업로드하세요.</label>
+          <input
+            type="file"
+            id="input-file"
+            accept="image/png, image/jpeg"
+            onChange={uploadImage}
+            style={{ display: "none" }}
+          />
+          <div className={styles.picture_wrapper}>
+            <div className={styles.picture_wrapper_inner}>
+              {uploadedImgs?.map(url => (
+                <div className={styles.pictureChoice}>
+                  <Image
+                    className={styles.pictureitem}
+                    cloudName={process.env.CLOUD_NAME}
+                    src={url}
+                  />
+                </div>
+              ))}
             </div>
-            <div className={styles.pictureWrapper}></div>
-            <div className={styles.pictureWrapper}></div>
-            <button onClick={uploadImage}> 사진 업로드 </button>
           </div>
         </div>
-        <button onClick={writePostFunc}> 완료</button>
+        <button className={styles.submit_btn} onClick={writePostFunc}>제출하기</button>
       </div>
     </div>
   );

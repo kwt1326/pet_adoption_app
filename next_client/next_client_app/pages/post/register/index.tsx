@@ -95,7 +95,7 @@ const Register: React.FC<{}> = () => {
     const image = e.target.files[0];
     const formData = new FormData();
     formData.append("file", image);
-    formData.append("upload_preset", process.env.CLOUD_NAME);
+    formData.append("upload_preset", process.env.PRESET_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then(
       (response) => {
         if (response.status === 200) {

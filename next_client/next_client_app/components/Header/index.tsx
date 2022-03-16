@@ -32,11 +32,9 @@ const Header = (props: Partial<{
             </Link>
           )}
           {props?.children && !props?.leftBtn && (
-            <Link href="/">
-              <a>
-                <FaChevronLeft />
-              </a>
-            </Link>
+            <div onClick={() => router.back()}>
+              <FaChevronLeft />
+            </div>
           )}
           {!props?.children && (
             <div className={styles.hamberger} onClick={onOffSidebar}>

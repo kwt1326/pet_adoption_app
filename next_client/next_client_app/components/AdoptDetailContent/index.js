@@ -1,8 +1,9 @@
 import React from "react";
-import style from "./AdoptDetailContent.module.scss";
+import { ImLocation } from "react-icons/im";
 import { BsPhone } from "react-icons/bs";
 
-import { ImLocation } from "react-icons/im";
+import style from "./AdoptDetailContent.module.scss";
+
 function AdoptDetailContent({ category, petitem }) {
   const title = petitem.title;
   const content = petitem.content;
@@ -101,7 +102,6 @@ function AdoptDetailContent({ category, petitem }) {
               </div>
             </div>
           </div>
-          <div className={style.map}>지도</div>
         </div>
       )}
     </div>
