@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Image } from "cloudinary-react";
 import { BsHeart } from "react-icons/bs";
 import { FaRegCommentDots } from "react-icons/fa";
 
@@ -17,37 +18,32 @@ function ReviewListItem({ item, toggleLikeMutation }) {
         <div className={styles.date}>{item.date}</div>
       </div>
       <div className={styles.content}>{item.content}</div>
-      <div className={styles.pictureWrapper}>
-        {isExistPicture ? (
-          item.pictures.map((picture, i) => (
-            <img
-              key={i}
-              className={styles.image}
-              src={picture.uri}
-              alt="pet_thumbnail_img"
-            />
-          ))
-        ) : (
-          <Fragment>
-            <img
-              className={styles.image}
-              src="/images/no_image.svg"
-              alt="no_image"
-            />
-          </Fragment>
-        )}
-      </div>
+      {isExistPicture && (
+        <div className={styles.pictureWrapper}>
+          <div className={styles.picture_wrapper_inner}>
+            {item.pictures.map((picture, i) => (
+              <div key={i} className={styles.image}>
+                <img
+                  src={picture.uri}
+                  alt="pet_thumbnail_img"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className={styles.reaction}>
         <div
           className={styles.isLikes}
           onClick={() => toggleLikeMutation(item?.id)}
         >
           <BsHeart size={15} />
-          <div> 좋아요 {isLikes}</div>
+          <span>좋아요 {isLikes}</span>
         </div>
 
         <div className={styles.comment}>
-          <FaRegCommentDots />댓글 {commentCount}
+          <FaRegCommentDots size={15} />
+          <span>댓글 {commentCount}</span>
         </div>
       </div>
     </div>

@@ -30,13 +30,15 @@ const myPage = () => {
               <FaAngleRight />
             </li>
           </Link>
-          <li>
-            <div>
-              <FaBoxOpen className={style.icon} />
-              <span>찜 리스트</span>
-            </div>
-            <FaAngleRight />
-          </li>
+          <Link href="favorities">
+            <li>
+              <div>
+                <FaBoxOpen className={style.icon} />
+                <span>찜 리스트</span>
+              </div>
+              <FaAngleRight />
+            </li>
+          </Link>
         </ul>
       </div>
     </div>

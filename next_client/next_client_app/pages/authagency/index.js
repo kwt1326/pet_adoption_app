@@ -4,24 +4,25 @@ import { useIntersection } from '../../hooks/useIntersection';
 import AgencyList from "../../components/Agencylist";
 import Header from "../../components/Header/index";
 
-function authAgency() {
-  const GET_ADOPT_USERS_QUERY = gql`
-    query getAuthenticatedAdoptUsers($getAdoptUsersArgs: GetAdoptUsersArgs!) {
-      getAuthenticatedAdoptUsers(getAdoptUsersArgs: $getAdoptUsersArgs) {
-        user {
-          email
-        }
-        companyName
+const GET_ADOPT_USERS_QUERY = gql`
+  query getAuthenticatedAdoptUsers($input: GetAdoptUsersArgs!) {
+    getAuthenticatedAdoptUsers(getAdoptUsersArgs: $input) {
+      id
+      user {
+        email
       }
+      companyName
     }
-  `;
+  }
+`;
 
+function authAgency() {
   const [page, setPage] = useState(1);
-  const [, setObserverRef] = useIntersection(async (_entry, _observer) => loadMore());
+  const [, setObserverRef] = useIntersection((_entry, _observer) => loadMore());
 
   const getListInputData = useCallback(() => ({
     variables: {
-      getAdoptUsersArgs: { page },
+      input: { page },
     },
   }), [page])
 
@@ -43,13 +44,15 @@ function authAgency() {
 
   const AuthenticatedAdoptUsers = data?.getAuthenticatedAdoptUsers || [];
 
-  return (
-    <div>
-      <Header children="인증업체 리스트" />
-      <AgencyList list={AuthenticatedAdoptUsers}></AgencyList>
-      <div ref={setObserverRef} style={{ width: '100%', height: 10 }} />
-    </div>
-  );
+  if (AuthenticatedAdoptUsers) {
+    return (
+      <div>
+        <Header children="인증업체 리스트" />
+        <AgencyList list={AuthenticatedAdoptUsers} />
+        <div ref={setObserverRef} style={{ width: '100%', height: 10 }} />
+      </div>
+    );
+  }
 }
 
 export default authAgency;

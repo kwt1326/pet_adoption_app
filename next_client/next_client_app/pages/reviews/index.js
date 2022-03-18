@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { RiPencilLine } from "react-icons/ri";
 
 import Header from "../../components/Header/index";
@@ -9,18 +8,19 @@ import styles from "./Reviews.module.scss";
 
 function adoptReview() {
   return (
-    <div>
+    <div className={styles.container}>
       <Header
         children={"입양후기"}
         rightBtn={undefined}
-        leftBtn={{ func: () => void 0, text: "/main" }}
       />
       <ReviewList />
-      <Link href="/reviews/register">
-        <button className={styles.writeReview}>
-          <RiPencilLine />
-        </button>
-      </Link>
+      <div className={styles.register_btn}>
+        <Link href="/reviews/register">
+          <div className={styles.writeReview}>
+            <RiPencilLine />
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }

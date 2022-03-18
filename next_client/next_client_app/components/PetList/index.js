@@ -29,7 +29,6 @@ function PetList({ petType, category, likedOnly }) {
           isLiked: likedOnly,
         },
       },
-      fetchPolicy: 'cache-and-network'
     }),
     [petType, category, likedOnly, page]
   );
@@ -66,7 +65,7 @@ function PetList({ petType, category, likedOnly }) {
     }
   };
 
-  const [, setObserverRef] = useIntersection(async (_entry, _observer) => loadMore());
+  const [, setObserverRef] = useIntersection((_entry, _observer) => loadMore());
 
   useEffect(() => {
     setPage(1);

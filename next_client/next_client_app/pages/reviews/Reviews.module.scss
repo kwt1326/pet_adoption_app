@@ -1,3 +1,16 @@
+.container {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+
+  .register_btn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
 .writeReview {
   margin: 10px;
   background-color: #00aaff;

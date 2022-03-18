@@ -1,4 +1,16 @@
-.listContainer {
-  padding-top: 3px;
-  background-color: #f3f3f3;
+.container {
+  min-height: 50vh;
+  height: calc(100% - 62px);
+  overflow: auto;
+
+  .listContainer {
+    padding-top: 3px;
+    background-color: #f3f3f3;
+  }
+}
+.div_intersection_observer {
+  width: 100%;
+  min-height: 5px;
+  background-color: white;
+  border: none;
 }

@@ -88,16 +88,25 @@ const client = new ApolloClient({
           },
           getPosts: {
             keyArgs: false,
+            read(existing) { return existing },
             merge(existing = [], incoming, { args: { getPostsArgs } }) {
               return mergeList(existing, incoming, getPostsArgs?.page);
             }
           },
           getAuthenticatedAdoptUsers: {
             keyArgs: false,
+            read(existing) { return existing },
             merge(existing = [], incoming, { args: { getAdoptUsersArgs } }) {
               return mergeList(existing, incoming, getAdoptUsersArgs?.page);
             }
-          }
+          },
+          getAdoptReviews: {
+            keyArgs: false,
+            read(existing) { return existing },
+            merge(existing = [], incoming, { args: { getAdoptReviewsArgs } }) {
+              return mergeList(existing, incoming, getAdoptReviewsArgs?.page);
+            }
+          },
         },
       },
     },

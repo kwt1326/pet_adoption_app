@@ -1,41 +1,39 @@
-import ReviewListItem from "./ReviewListItem";
-import styles from "./ReviewList.module.scss";
-import Link from "next/link";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, Fragment } from "react";
 import { useMutation, useQuery } from "@apollo/client";
+import Link from "next/link";
+
+import ReviewListItem from "./ReviewListItem";
+import { useIntersection } from '../../hooks/useIntersection';
 import {
   QUERY_ADOPTREVIEW_LIST,
   TOGGLE_LIKE_MUTATION,
 } from "../../quries/adoptionPostReviewsQuery";
 
-function ReviewList(props) {
-  const [mount, setMount] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageEndRef, setPageEndRef] = useState(null);
-  const [isStartObserve, setStartObserve] = useState(false);
+import styles from "./ReviewList.module.scss";
 
-  const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
+function ReviewList() {
+  const [page, setPage] = useState(1);
+  const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION);
 
   const toggleLikeMutation = async (postId) => {
-    await toggleLike({
-      variables: {
-        input: {
-          postId,
-        },
-      },
+    const result = await toggleLike({
+      variables: { input: { postId, }, },
     });
+    if (result?.errors) {
+      console.error(result.errors);
+      alert(result.errors);
+      return;
+    }
+    setPage(1);
+    getListMore();
+    window.scrollTo(0, 0);
   };
   
-  const getPostInputData = useCallback(
-    () => ({
-      variables: {
-        input: {
-          page,
-        },
-      },
-    }),
-    [page]
-  );
+  const loadMore = useCallback(() => setPage(prev => prev + 1), []);
+
+  const getPostInputData = useCallback(() => ({
+    variables: { input: { page }, },
+  }), [page]);
   
   const { loading, data, fetchMore } = useQuery(
     QUERY_ADOPTREVIEW_LIST,
@@ -49,50 +47,23 @@ function ReviewList(props) {
       alert(result.error.message);
     }
   };
+
+  const [, setObserverRef] = useIntersection((_entry, _observer) => loadMore());
   
   useEffect(() => {
-    if (mount && pageEndRef && !isStartObserve) {
-      try {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            if (entries[0].isIntersecting) {
-              loadMore();
-            }
-          },
-          { threshold: 0.5 }
-        );
-        observer.observe(pageEndRef);
-        setStartObserve(true);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [pageEndRef]);
-
-  useEffect(() => {
-    if (mount) {
-      getListMore();
-    }
+    getListMore();
   }, [page]);
-
-  useEffect(() => {
-    setMount(true);
-  }, []);
-
-  const loadMore = () => setPage((prev) => prev + 1);
 
   if (data?.getAdoptReviews) {
     const list = data?.getAdoptReviews;
 
     return (
-      <section>
+      <section className={styles.container}>
         <div className={styles.listContainer}>
           {list.map((item, i) => (
             <Link
               key={i}
-              href={{
-                pathname: `/reviews/${list[i].id}`,
-              }}
+              href={`/reviews/${list[i].id}`}
             >
               <div>
                 <ReviewListItem
@@ -103,6 +74,9 @@ function ReviewList(props) {
               </div>
             </Link>
           ))}
+          <div className={styles.div_intersection_observer} ref={setObserverRef}>
+            {loading && <span>loading...</span>}
+          </div>
         </div>
       </section>
     );

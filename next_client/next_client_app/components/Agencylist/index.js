@@ -5,7 +5,7 @@ function AgencyList({ list }) {
   return (
     <div style={{ minHeight: '100vh' }}>
       {list.map((item, index) => (
-        <AgencyListItem key={index} item={item}></AgencyListItem>
+        <AgencyListItem key={index} item={item} />
       ))}
     </div>
   );
