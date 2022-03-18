@@ -1,10 +1,9 @@
 import { ApolloClient, createHttpLink, InMemoryCache, makeVar, split } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
-// import { WebSocketLink } from "@apollo/client/link/ws";
+// import { WebSocketLink } from "@apollo/client/link/ws"; // IF USING WEB SOCKET
 import Cookie from 'universal-cookie';
 
-import { deviceLogin } from "../utils/nativeInterfaceUtil";
 import { mergeList } from "../utils/mergeList";
 
 const token = (new Cookie()).get(process.env.JWT_KEY)
@@ -22,7 +21,7 @@ const isSSR = () => /noUserAgentSSR/i.test(userAgent);
 const isMobile = () => Boolean(isAndroid() || isIOS() || isOpera() || isWindows())
 const isDesktop = () => Boolean(!isMobile() && !isSSR())
 
-const localHost = 'localhost' //isMobile() ? /* my ip address */ '192.168.1.119' : 'localhost';
+const localHost = 'localhost' // isMobile() ? /* my ip address */ '192.168.1.119' : 'localhost';
 
 const uri = process.env.NODE_ENV === "production" ?
   'https://withpet-api.hminnn.xyz/graphql' :
@@ -30,6 +29,7 @@ const uri = process.env.NODE_ENV === "production" ?
 
 const httpLink = createHttpLink({ uri });
 
+// IF USING WEB SOCKET
 // const wsLink = new WebSocketLink({
 //   uri: 'ws://localhost:8090/subscriptions',
 //   options: {
@@ -41,9 +41,6 @@ const httpLink = createHttpLink({ uri });
 // });
 
 const authLink = setContext((_, { headers }) => {
-  // if (isMobile()) {
-  //   deviceLogin(token);
-  // }
   return {
     headers: {
       ...headers,
@@ -57,10 +54,10 @@ const splitLink = split(
     const definition = getMainDefinition(query);
     return (
       definition.kind === "OperationDefinition"
-      // && definition.operation === "subscription"
+      // && definition.operation === "subscription" // IF USING WEB SOCKET
     );
   },
-  // wsLink,
+  // wsLink, // IF USING WEB SOCKET
   authLink.concat(httpLink)
 )
 

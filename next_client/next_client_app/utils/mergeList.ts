@@ -1,3 +1,4 @@
+// remove duplicate list
 const mergeArr = (a, b) => {
   return Array.from(new Set([...a, ...b].map(m => m.__ref))).map(r => ({ __ref: r }))
 }
