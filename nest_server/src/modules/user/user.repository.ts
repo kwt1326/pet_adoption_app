@@ -21,8 +21,7 @@ export class UserRepository extends Repository<User> {
   }
 
   async createUser(createAccountInput: CreateAccountUserInput): Promise<User> {
-    const user = await this.create({ ...createAccountInput });
-    return await this.save(user);
+    return await this.create({ ...createAccountInput });
   }
 
   async deleteOneUserById(id: number) {
@@ -38,12 +37,12 @@ export class UserRepository extends Repository<User> {
 
 @EntityRepository(AdopteeUser)
 export class AdopteeUserRepository extends Repository<AdopteeUser> {
-  async createAdopteeUser(
+  async createAndSaveAdopteeUser(
     createAccountInput: CreateAccountAdopteeUserInput,
     user: User,
-  ): Promise<void> {
-    const adopteeUser = this.create({ user, ...createAccountInput });
-    await this.save(adopteeUser);
+  ): Promise<AdopteeUser> {
+    const adopteeUser = await this.create({ user, ...createAccountInput });
+    return await this.save(adopteeUser);
   }
 
   async getOneAdopteeUserById(id: number): Promise<AdopteeUser> {
@@ -87,12 +86,12 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
 
 @EntityRepository(AdoptUser)
 export class AdoptUserRepository extends Repository<AdoptUser> {
-  async createAdoptUser(
+  async createAndSaveAdoptUser(
     createAccountInput: CreateAccountAdoptUserInput,
     user: User,
-  ): Promise<void> {
-    const adoptUser = this.create({ user, ...createAccountInput });
-    await this.save(adoptUser);
+  ): Promise<AdoptUser> {
+    const adoptUser = await this.create({ user, ...createAccountInput });
+    return await this.save(adoptUser);
   }
 
   async getOneAdoptUserById(id: number): Promise<AdoptUser> {
