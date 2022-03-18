@@ -76,7 +76,7 @@ function Register() {
             onChange={onChange}
             value={title}
             placeholder="제목을 적어주세요"
-          ></input>
+          />
         </div>
         <div className={styles.review}>
           <textarea
@@ -84,7 +84,7 @@ function Register() {
             onChange={onChange}
             value={content}
             placeholder="분양 후기를 들려주세요"
-          ></textarea>
+          />
         </div>
         <div className={styles.picture}>
           <div className={styles.name}>사진</div>

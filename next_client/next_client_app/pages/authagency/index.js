@@ -12,6 +12,7 @@ const GET_ADOPT_USERS_QUERY = gql`
         email
       }
       companyName
+      isAuthenticated
     }
   }
 `;

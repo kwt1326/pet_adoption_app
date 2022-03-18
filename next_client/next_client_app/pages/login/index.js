@@ -44,6 +44,7 @@ function login(props) {
         if (responseData) {
           localLogin(responseData.result.token);
           props.router.push('/');
+          return;
         }
       }
       console.log(error);

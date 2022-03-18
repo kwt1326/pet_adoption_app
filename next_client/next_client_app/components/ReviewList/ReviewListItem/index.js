@@ -35,12 +35,14 @@ function ReviewListItem({ item, toggleLikeMutation }) {
       <div className={styles.reaction}>
         <div
           className={styles.isLikes}
-          onClick={() => toggleLikeMutation(item?.id)}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleLikeMutation(item?.id)
+          }}
         >
           <BsHeart size={15} />
           <span>좋아요 {isLikes}</span>
         </div>
-
         <div className={styles.comment}>
           <FaRegCommentDots size={15} />
           <span>댓글 {commentCount}</span>

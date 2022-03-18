@@ -11,7 +11,8 @@
 .ReviewContainer {
   margin-top: 10px;
   background-color: white;
-  padding: 10px;
+  padding: 1rem 1rem 0 1rem;
+
   .title {
     color: #666666;
     font-size: 20px;
@@ -65,6 +66,8 @@
   .reaction {
     display: flex;
     justify-content: space-around;
+    border-top: 1px solid #bababa;
+    margin: 0 -1rem;
 
     .isLikes {
       @include icon();

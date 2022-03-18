@@ -12,19 +12,23 @@
 
   .title {
     border-bottom: 1px solid;
+
     input {
+      width: 100%;
       font-size: 20px;
       border: none;
-      padding: 5px;
+      padding: 10px 0;
+      font-size: 18px;
+      font-weight: bold;
     }
   }
   .review {
-    padding: 20px 0 0 0;
+    padding: 15px 0 0 0;
+
     textarea {
       width: 100%;
       border: none;
       min-height: 200px;
-      padding: 10px;
       resize: none;
     }
   }

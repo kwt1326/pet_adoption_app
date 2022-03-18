@@ -14,7 +14,7 @@ export const GET_ONE_ADOPTEE_USER = gql`
 `;
 
 export const GET_ONE_ADOPT_USER = gql`
-  query getOneAdopteeUser($id: Float!) {
+  query getOneAdoptUser($id: Float!) {
     getOneAdoptUser(id: $id) {
       user {
         email
@@ -22,6 +22,19 @@ export const GET_ONE_ADOPT_USER = gql`
       }
       userId
       nickname
+    }
+  }
+`;
+
+export const GET_ADOPT_USER_DETAIL = gql`
+  query getOneAdoptUser($id: Float!) {
+    getOneAdoptUser(id: $id) {
+      userId
+      companyName
+      address
+      phoneNumber
+      pageUri
+      isAuthenticated
     }
   }
 `;

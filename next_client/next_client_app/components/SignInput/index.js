@@ -12,7 +12,7 @@ function SignInput({ value, onChange, placeholder, type, errorText, maxLength })
         maxLength={maxLength || 100}
         onChange={onChange}
       />
-      {errorText !== "" ? <div style={{ marginTop: "5px", fontSize: "12px", color: "crimson" }}>{errorText}</div> : null}
+      {errorText !== "" ? <div style={{ margin: "5px 0", fontSize: "12px", color: "crimson" }}>{errorText}</div> : null}
     </div>
   );
 }

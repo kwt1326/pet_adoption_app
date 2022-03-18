@@ -1,21 +1,16 @@
-import React, { useEffect, useState, useCallback } from "react";
-import SingleComment from "./SingleComment";
-import ReplyComment from "./ReplyComment";
-import { v4 as uuidv4 } from "uuid";
-import styles from "./Comment.module.scss";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 
-import {
-  CREATE_POST_ADOPTREVIEW_COMMENT,
-  QUERY_ADOPTREVIEW,
-} from "../../quries/adoptionPostReviewsQuery";
+import SingleComment from "./SingleComment";
+import ReplyComment from "./ReplyComment";
+import styles from "./Comment.module.scss";
+
+import { CREATE_POST_ADOPTREVIEW_COMMENT } from "../../quries/adoptionPostReviewsQuery";
+
 function Comment({ postid, reviewItem }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [postQuery] = useMutation(CREATE_POST_ADOPTREVIEW_COMMENT);
-  const { loading, error, data } = useQuery(QUERY_ADOPTREVIEW, {
-    variables: { input: postid },
-  });
 
   useEffect(() => {
     let templist = [];
@@ -56,9 +51,9 @@ function Comment({ postid, reviewItem }) {
     setComment("");
     setComments(templist);
   };
+
   return (
     <div>
-      <br />
       {comments &&
         comments.map(
           (commentitem, index) =>

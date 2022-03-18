@@ -15,9 +15,9 @@ function ReviewList() {
   const [page, setPage] = useState(1);
   const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION);
 
-  const toggleLikeMutation = async (postId) => {
+  const toggleLikeMutation = async (id) => {
     const result = await toggleLike({
-      variables: { input: { postId, }, },
+      variables: { input: Number(id), },
     });
     if (result?.errors) {
       console.error(result.errors);
@@ -65,13 +65,11 @@ function ReviewList() {
               key={i}
               href={`/reviews/${list[i].id}`}
             >
-              <div>
-                <ReviewListItem
-                  key={i}
-                  item={item}
-                  toggleLikeMutation={toggleLikeMutation}
-                />
-              </div>
+              <ReviewListItem
+                key={i}
+                item={item}
+                toggleLikeMutation={toggleLikeMutation}
+              />
             </Link>
           ))}
           <div className={styles.div_intersection_observer} ref={setObserverRef}>
