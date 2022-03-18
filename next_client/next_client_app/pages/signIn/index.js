@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
-import { withRouter } from "next/router";
-import Router from "next/router";
 import { useMutation, useLazyQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+
 import { CORP_SIGN_UP_QUERY } from "../../quries/authQuery";
 import { SIGN_UP_QUERY } from "../../quries/authQuery";
 import { CHECK_DUPLICATE } from "../../quries/authQuery";
@@ -9,8 +9,9 @@ import SignInput from "../../components/SignInput";
 import Header from "../../components/Header";
 import style from "./signIn.module.scss";
 
-function signIn({ router: { query } }) {
-  const signInType = query.type;
+function signIn() {
+  const router = useRouter();
+  const signInType = router.query.type;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -107,7 +108,9 @@ function signIn({ router: { query } }) {
       if (passwordReg.test(password)) {
         setPasswordError("");
       } else {
-        setPasswordError("최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요");
+        setPasswordError(
+          "최소 8글자 이상 최소 하나의 문자 및 하나의 숫자로 구성해주세요"
+        );
         validated = false;
       }
     }
@@ -167,12 +170,18 @@ function signIn({ router: { query } }) {
       setPhoneNumber(phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"));
     }
     if (phoneNumber.length === 11) {
-      console.log(phoneNumber)
-      setPhoneNumber(phoneNumber.replace(/-/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3"));
+      console.log(phoneNumber);
+      setPhoneNumber(
+        phoneNumber
+          .replace(/-/g, "")
+          .replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3")
+      );
     }
   }, [phoneNumber]);
+
   const [signUpQuery] = useMutation(SIGN_UP_QUERY);
   const [corpSignUpQuery] = useMutation(CORP_SIGN_UP_QUERY);
+
   const handleUserCreate = async () => {
     let validated = await validateForm();
     let response = {};
@@ -204,37 +213,46 @@ function signIn({ router: { query } }) {
         });
       }
       if (!response.error) {
-        Router.push("/");
+        alert("회원가입이 성공하였습니다!");
+        router.push("/");
       }
     }
   };
   const numValid = (value) => {
-    const num = value.replace(/[^0-9]/g, '')
-    setPhoneNumber(num)
-  }
+    const num = value.replace(/[^0-9]/g, "");
+    setPhoneNumber(num);
+  };
   const renderCompany = () => {
     return (
       <div className={style.inputArea}>
         <h4>기업정보</h4>
-        <div className={style.dFlex}>
+        <div className={`${style.dFlex} ${style.input_radios_wrap}`}>
           <input
+            className={style.input_radio}
             type="radio"
             value="true"
+            name="company_input_radio"
             checked={profit === true}
             onChange={(e) => {
               setProfit(JSON.parse(e.target.value));
             }}
           />
-          업체
+          <label htmlFor="company_input_radio">
+            업체
+          </label>
           <input
+            className={style.input_radio}
             checked={profit === false}
             value="false"
             type="radio"
+            name="noprofit_input_radio"
             onChange={(e) => {
               setProfit(JSON.parse(e.target.value));
             }}
           />
-          보호소
+          <label htmlFor="noprofit_input_radio">
+            보호소
+          </label>
         </div>
         <div className={style.dFlex}>
           <SignInput
@@ -265,7 +283,7 @@ function signIn({ router: { query } }) {
           <SignInput
             value={phoneNumber}
             onChange={(e) => {
-              numValid(e.target.value)
+              numValid(e.target.value);
             }}
             placeholder="전화번호를 입력하세요"
             type="text"
@@ -286,7 +304,6 @@ function signIn({ router: { query } }) {
       </div>
     );
   };
-
 
   return (
     <div>
@@ -359,7 +376,6 @@ function signIn({ router: { query } }) {
       </div>
 
       <div className={style.searchContainer}>
-        {/* <div className={style.validText}>{errorText}</div> */}
         <button className={style.button} onClick={handleUserCreate}>
           회원가입하기
         </button>
@@ -367,4 +383,4 @@ function signIn({ router: { query } }) {
     </div>
   );
 }
-export default withRouter(signIn);
+export default signIn;

@@ -1,0 +1,100 @@
+@mixin btn_default() {
+  color: #ffffff;
+  width: 100%;
+  height: 60px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0f13ff;
+}
+
+.container {
+  padding: 20px;
+
+  .title {
+    border-bottom: 1px solid;
+
+    input {
+      width: 100%;
+      font-size: 20px;
+      border: none;
+      padding: 10px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+  .review {
+    padding: 15px 0 0 0;
+
+    textarea {
+      width: 100%;
+      border: none;
+      min-height: 200px;
+      resize: none;
+    }
+  }
+
+  .picture {
+    padding-top: 15px;
+    padding-bottom: 10px;
+
+    .input_file_button {
+      width: 100%;
+      color: #bcbcbc;
+      padding: 15px;
+      margin-bottom: 5px;
+      border: 1px solid #bcbcbc;
+    }
+
+    .name {
+      padding-bottom: 25px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      height: 200px;
+      border: none;
+    }
+    
+    .picture_wrapper {
+      position: relative;
+      overflow-x: auto;
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      height: 120px;
+      margin-top: 25px;
+
+      .picture_wrapper_inner {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .pictureChoice {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        margin: 10px;
+        margin-left: 0;
+
+        .pictureitem {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+  
+  .upload_btn {
+    @include btn_default();
+    height: 40px;
+    width: 50%;
+  }
+  
+  .submit_btn {
+    @include btn_default();
+  }
+}

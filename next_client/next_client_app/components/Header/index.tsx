@@ -11,24 +11,30 @@ const Header = (props: Partial<{
   rightBtn: {
     func: React.MouseEventHandler<HTMLButtonElement>;
     text: string;
-  }
+  },
+  leftBtn: {
+    func: React.MouseEventHandler<HTMLButtonElement>;
+    text: string;
+  },
 }>) => {
   const router = useRouter();
-
-  const [sidebarOnOff, setSidebarOnOff] = useState(false);
-  
+  const [sidebarOnOff, setSidebarOnOff] = useState(false);  
   const onOffSidebar = () => setSidebarOnOff(!sidebarOnOff);
-
   return (
     <div>
       <div className={styles.header}>
         <div className={styles.left}>
-          {props?.children && (
-            <Link href="/">
+          {props?.children && props?.leftBtn && (
+            <Link href={`${props?.leftBtn.text}`}>
               <a>
                 <FaChevronLeft />
               </a>
             </Link>
+          )}
+          {props?.children && !props?.leftBtn && (
+            <div onClick={() => router.back()}>
+              <FaChevronLeft />
+            </div>
           )}
           {!props?.children && (
             <div className={styles.hamberger} onClick={onOffSidebar}>
@@ -49,7 +55,7 @@ const Header = (props: Partial<{
         )}
         {props?.rightBtn && (
           <button className={styles.right_btn} onClick={props?.rightBtn?.func}>{props?.rightBtn?.text}</button>
-        )}
+)}
         {!props?.children && (
           <Link href={'/'}>
             <a>

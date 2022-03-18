@@ -1,13 +1,12 @@
 import React, { Fragment } from "react";
-import dayjs from 'dayjs';
-import { AiFillHeart } from 'react-icons/ai';
+import dayjs from "dayjs";
+import { AiFillHeart } from "react-icons/ai";
 import { comma } from "../../../helpers/comma";
 import styles from "./PetListItem.module.scss";
 
 function PetListItem({ petitem, toggleLikeMutation }) {
   const pet = petitem?.pet;
   const writter = petitem?.writter;
-  
   const text = petitem.title;
   const isLiked = petitem.isLiked;
   const isProfit = writter?.isProfit;
@@ -15,42 +14,55 @@ function PetListItem({ petitem, toggleLikeMutation }) {
   const petBreed = pet?.breed;
   const price = comma(pet?.price);
   const src = isExistPicture ? pet?.pictures[0]?.uri : "/images/no_image.svg";
-  const gender = pet?.isGenderMale ? '수컷' : '암컷';
-  const boneAt = dayjs().diff(dayjs(pet?.createdAt), 'month')
-  const createdAt = dayjs(petitem?.createdAt).format('YYYY/MM/DD');
+  const gender = pet?.isGenderMale ? "수컷" : "암컷";
+  const boneAt = dayjs().diff(dayjs(pet?.createdAt), "month");
+  const createdAt = dayjs(petitem?.createdAt).format("YYYY/MM/DD");
   const description = `${boneAt}개월 / ${gender} / ${petBreed}`;
 
   const Badges = () => (
     <Fragment>
-      {isProfit ?
-        <div className={styles.badge_shop}>{'펫샵'}</div> :
-        <div className={styles.badge_not_shop}>{'보호소'}</div>
-      }
-      <div className={styles.like_box} onClick={() => toggleLikeMutation(petitem?.id)}>
-        <AiFillHeart size={15} color={isLiked ? '#ff6f8b' : 'gray'} />
+      {isProfit ? (
+        <div className={styles.badge_shop}>{"펫샵"}</div>
+      ) : (
+        <div className={styles.badge_not_shop}>{"보호소"}</div>
+      )}
+      <div
+        className={styles.like_box}
+        onClick={(e) => {
+          e.preventDefault();
+          toggleLikeMutation(petitem?.id)
+        }}
+      >
+        <AiFillHeart size={15} color={isLiked ? "#ff6f8b" : "gray"} />
       </div>
     </Fragment>
-  )
+  );
 
   const PetImage = () => (
     <div className={styles.pet_item_image}>
       <div className={styles.pet_item_image_wrap}>
-        {
-          isExistPicture ? (
-            <Fragment>
-              <img className={styles.pet_image} src={src} alt="pet_thumbnail_img" />
-              <Badges />
-            </Fragment>
-          ) : (
-            <Fragment>
-              <img className={styles.pet_no_image} src="/images/no_image.svg" alt="no_image" />
-              <Badges />
-            </Fragment>
-          )
-        }
+        {isExistPicture ? (
+          <Fragment>
+            <img
+              className={styles.pet_image}
+              src={src}
+              alt="pet_thumbnail_img"
+            />
+            <Badges />
+          </Fragment>
+        ) : (
+          <Fragment>
+            <img
+              className={styles.pet_no_image}
+              src="/images/no_image.svg"
+              alt="no_image"
+            />
+            <Badges />
+          </Fragment>
+        )}
       </div>
     </div>
-  )
+  );
 
   return (
     <div className={styles.pet_item_container}>

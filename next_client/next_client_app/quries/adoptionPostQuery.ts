@@ -48,16 +48,28 @@ export const GET_ADOPTION_POST_LIST = gql`
     getPosts(getPostsArgs: $input) {
       id
       title
+      content
       isLiked
       createdAt
       writter {
         isProfit
+        companyName
+        phoneNumber
+        address
       }
       pet {
+        id
+        name
+        age
         breed
         price
         isGenderMale
         createdAt
+        vaccinated
+        weight
+        neutered
+        characteristic
+        othersInfo
         pictures {
           uri
         }  
@@ -66,6 +78,39 @@ export const GET_ADOPTION_POST_LIST = gql`
   }
 `;
 
+export const GET_ADOPTION_POST = gql`
+query getPost($input: Float!) {
+  getPost(id: $input) {
+    id
+    title
+    content
+    isLiked
+    createdAt
+    writter {
+      isProfit
+      companyName
+      phoneNumber
+      address
+    }
+    pet {
+      id
+      name
+      age
+      breed
+      price
+      isGenderMale
+      createdAt
+      vaccinated
+      weight
+      neutered
+      characteristic
+      othersInfo
+      pictures {
+        uri
+      }  
+    }
+  }
+}`;
 export const CREATE_POST_MUTATION = gql`
   mutation createAdoptionPost($input: CreateAdoptionPostArgs!) {
     createAdoptionPost(postArgs: $input) {

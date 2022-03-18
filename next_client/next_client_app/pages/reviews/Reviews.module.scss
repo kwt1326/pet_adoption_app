@@ -1,0 +1,90 @@
+.container {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+
+  .register_btn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+
+    .writeReview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px;
+      background-color: #00aaff;
+      border-radius: 70%;
+      width: 40px;
+      border: none;
+      height: 40px;
+      color: white;
+    }
+  }
+}
+
+.detail_container {
+  .top_content {
+    padding: 1rem;
+  }
+  .title {
+    color: #666666;
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 10px;
+  }
+  .detail {
+    padding-bottom: 10px;
+
+    display: flex;
+    color: #999999;
+    justify-content: space-between;
+  }
+  .content {
+    padding-bottom: 5px;
+  }
+  .pictureWrapper {
+    .image {
+      width: 100%;
+      border-radius: 20px;
+    }
+  }
+  .ItempictureWrapper {
+    .image {
+      width: 100%;
+    }
+  }
+  .reaction {
+    display: flex;
+    justify-content: space-around;
+
+    .isLikes {
+      display: flex;
+      padding: 10px;
+    }
+    .comment {
+      padding: 10px;
+    }
+  }
+  .Itemreaction {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #bababa;
+    padding: 10px 0;
+    margin-top: 10px;
+
+    .isLikes {
+      display: flex;
+      padding-right: 20px;
+      align-items: center;
+
+      span {
+        margin-left: 4px;
+      }
+    }
+    .comment {
+      padding-left: 20px;
+    }
+  }
+}

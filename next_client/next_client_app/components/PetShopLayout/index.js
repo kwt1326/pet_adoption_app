@@ -6,11 +6,7 @@ function PetShopLayout({ petType, category, notUseTab, likedOnly }) {
   return (
     <Fragment>
       {!notUseTab && <Categories category={category} />}
-      <PetList
-        petType={petType}
-        category={category}
-        likedOnly={likedOnly}
-      />
+      <PetList petType={petType} category={category} likedOnly={likedOnly} />
     </Fragment>
   );
 }

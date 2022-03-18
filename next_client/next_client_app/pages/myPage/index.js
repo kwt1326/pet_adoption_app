@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import style from "./mypage.module.scss";
-import Header from "../../components/Header/index";
+import React from "react";
 import Link from "next/link";
 import { FaFile, FaBoxOpen, FaAngleRight } from "react-icons/fa";
+
 import { useUserInfo } from "../../hooks/user";
+import Header from "../../components/Header/index";
+import style from "./mypage.module.scss";
 
 const myPage = () => {
   const userInfo = useUserInfo();
@@ -14,9 +15,10 @@ const myPage = () => {
       <div className={style.container}>
         <div className={style.userInfo}>
           <div>
-            <span className={style.nickname}>{userInfo?.nickname || "사용자"}</span> 님, 안녕하세요!
+            <span className={style.nickname}>{userInfo?.nickname}</span>
+            님, 안녕하세요!
           </div>
-          <span className={style.email}>{userInfo?.email || "이메일"}</span>
+          <span className={style.email}>{userInfo?.email}</span>
         </div>
         <ul className={style.list}>
           <Link href="personalInfo">
@@ -28,13 +30,15 @@ const myPage = () => {
               <FaAngleRight />
             </li>
           </Link>
-          <li>
-            <div>
-              <FaBoxOpen className={style.icon} />
-              <span>찜 리스트</span>
-            </div>
-            <FaAngleRight />
-          </li>
+          <Link href="favorities">
+            <li>
+              <div>
+                <FaBoxOpen className={style.icon} />
+                <span>찜 리스트</span>
+              </div>
+              <FaAngleRight />
+            </li>
+          </Link>
         </ul>
       </div>
     </div>

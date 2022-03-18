@@ -1,7 +1,7 @@
-import React from "react";
+import React , { Fragment, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 
 import Carousel from "./carousel";
@@ -14,7 +14,9 @@ import styles from "./Main.module.scss";
 function Main() {
   const router = useRouter();
 
-  const { loading, data, fetchMore } = useQuery(GET_RECENTLY_ADOPTION_POST_LIST);
+  const { data, refetch } = useQuery(GET_RECENTLY_ADOPTION_POST_LIST, {
+    fetchPolicy: 'cache-and-network'
+  });
   const [toggleLike, toggleLikeResult] = useMutation(TOGGLE_LIKE_MUTATION);
   
   const toggleLikeMutation = async (postId) => {
@@ -30,20 +32,31 @@ function Main() {
       alert(result.errors);
       return;
     }
-    fetchMore({});
+    refetch();
   }
 
+  useEffect(() => {
+    refetch();
+  }, [])
+
   const RecentlyPetList = (props: { type: string }) => {
-    if (!loading && data) {
+    if (data) {
       const { getRecentlyPosts } = data;
       return (
         <div className={styles.list_container}>
           {getRecentlyPosts && getRecentlyPosts[props.type].map((petitem, i) => (
-            <PetListItem
+            <Link
+              href={`/post/detail/${petitem.id}`}
               key={i}
-              petitem={petitem}
-              toggleLikeMutation={toggleLikeMutation}
-            />
+            >
+              <div>
+                <PetListItem
+                  key={i}
+                  petitem={petitem}
+                  toggleLikeMutation={toggleLikeMutation}
+                />
+              </div>
+            </Link>
           ))}
         </div>
       )
@@ -52,7 +65,7 @@ function Main() {
   }
 
   return (
-    <div>
+    <Fragment>
       <Header children={undefined} rightBtn={undefined} />
       <Carousel />
       <ul className={styles.nav}>
@@ -87,7 +100,7 @@ function Main() {
           </Link>
         </li>
         <li>
-          <Link href="/authagency">
+          <Link href="/authAgency">
             <a>
               <div>
                 <FaBuilding />
@@ -110,7 +123,7 @@ function Main() {
         </div>
       </div>
       <div className={styles.spacing_box} />
-    </div>
+    </Fragment>
   );
 };
 

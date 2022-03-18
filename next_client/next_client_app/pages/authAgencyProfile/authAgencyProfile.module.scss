@@ -1,18 +1,28 @@
+.container {
+  background-color: #eceaea;
+}
+
 .basicInfo {
-  margin: 10px;
+  margin-top: 10px;
+  padding: 1rem;
+  background-color: #fff;
+
   .title {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
   }
   .content {
     display: flex;
     flex-direction: column;
+    padding-top: 5px;
+
     .contentitem {
       display: flex;
-      padding: 10px;
+      padding: 10px 0;
+
       .subtitle {
         color: gray;
-        width: 15%;
+        min-width: 78px;
       }
     }
   }

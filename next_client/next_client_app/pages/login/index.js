@@ -1,28 +1,20 @@
 import React, { useState } from "react";
+import { useApolloClient } from "@apollo/client";
 import { withRouter } from "next/router";
 import Link from "next/link";
-import { useLazyQuery } from "@apollo/client";
 
 import Header from "../../components/Header";
-import SignInput from '../../components/SignInput';
+import SignInput from "../../components/SignInput";
 import { LOGIN_QUERY } from "../../quries/authQuery";
-import { localLogin } from '../../utils/authUtil';
+import { localLogin } from "../../utils/authUtil";
 import style from "./login.module.scss";
 
 function login(props) {
+  const client = useApolloClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isCookie, setIsCookie] = useState("");
   const [errorText, setErrorText] = useState("");
-  const [loginQuery] = useLazyQuery(LOGIN_QUERY, {
-    variables: {
-      input: {
-        email: email,
-        password: password,
-      },
-    },
-    fetchPolicy: "no-cache",
-  });
+
   const validateForm = () => {
     let validated = true;
     if (!email) {
@@ -37,22 +29,32 @@ function login(props) {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const response = await loginQuery();
-      const responseData = response?.data?.login;
-      console.log(response)
-      if (responseData) {
-        localLogin(responseData.result.token);
-        setIsCookie(responseData.result.token);
-        props.router.push('/');
-      } else {
-        setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
+      const { data, error } = await client.query({
+        query: LOGIN_QUERY,
+        variables: {
+          input: {
+            email: email,
+            password: password,
+          },
+        },
+        errorPolicy: 'ignore' // TODO: error catch
+      });
+      if (data) {
+        const responseData = data?.login;
+        if (responseData) {
+          localLogin(responseData.result.token);
+          props.router.push('/');
+          return;
+        }
       }
+      console.log(error);
+      setErrorText("아이디 혹은 비밀번호가 존재하지 않습니다");
     }
   };
 
   return (
     <div>
-      <Header children={"로그인"} isLogin={isCookie} />
+      <Header children={"로그인"} />
       <div className={style.container}>
         <form onSubmit={onSubmit} className={style.inputArea}>
           <SignInput
@@ -77,9 +79,8 @@ function login(props) {
         <div className={style.join}>
           <Link
             href={{
-              pathname: "signIn",
+              pathname: "/signIn",
               query: { type: "개인" },
-              as: "/signIn",
             }}
           >
             <a>개인 회원가입</a>
@@ -87,9 +88,8 @@ function login(props) {
           <span> / </span>
           <Link
             href={{
-              pathname: "signIn",
+              pathname: "/signIn",
               query: { type: "업체" },
-              as: "/signIn",
             }}
           >
             <a>업체 회원가입</a>

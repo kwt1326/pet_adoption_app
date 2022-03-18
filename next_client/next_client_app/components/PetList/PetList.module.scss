@@ -1,4 +1,6 @@
 .container {
+  min-height: 100vh;
+
   .pet_list {
     display: grid;
     grid-template-columns: 1fr 1fr;

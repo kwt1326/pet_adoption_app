@@ -107,13 +107,15 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
     getAdoptUsersArgs: GetAdoptUsersArgs,
   ): Promise<AdoptUser[]> {
     const { page } = getAdoptUsersArgs;
-    const users = await this.createQueryBuilder('adoptUser')
+    let users = await this.createQueryBuilder('adoptUser')
       .leftJoinAndSelect('adoptUser.user', 'user')
       .where('adoptUser.isAuthenticated = true')
       .skip(10 * (page - 1))
       .take(10)
       .orderBy('adoptUser.userId', 'DESC')
       .getMany();
+
+    users = users.map((value) => ({ ...value, id: value.userId }));
     return users;
   }
 

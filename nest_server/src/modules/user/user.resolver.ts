@@ -21,7 +21,10 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth-guard';
 import { AuthUser } from '../auth/decorators/auth.decorator';
-import { GetAdoptUsersArgs } from './dtos/get-adopt-users.dto';
+import {
+  GetAdoptUsersArgs,
+  GetAuthenticatedAdoptUsersOutput,
+} from './dtos/get-adopt-users.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -54,7 +57,7 @@ export class UserResolver {
     return this.userService.getOneAdoptUser(id);
   }
 
-  @Query(() => [AdoptUser])
+  @Query(() => [GetAuthenticatedAdoptUsersOutput])
   getAuthenticatedAdoptUsers(
     @Args('getAdoptUsersArgs') getAdoptUsersArgs: GetAdoptUsersArgs,
   ) {

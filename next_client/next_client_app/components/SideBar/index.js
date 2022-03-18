@@ -4,7 +4,10 @@ import { IoCloseOutline } from "react-icons/io5";
 
 import { useUserInfo } from "../../hooks/user";
 import { localLogout } from "../../utils/authUtil";
-import { GET_ONE_ADOPTEE_USER, GET_ONE_ADOPT_USER } from "../../quries/userFindQuery";
+import {
+  GET_ONE_ADOPTEE_USER,
+  GET_ONE_ADOPT_USER,
+} from "../../quries/userFindQuery";
 import styles from "./SideBar.module.scss";
 
 const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
@@ -61,7 +64,9 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
       <div className={styles.userSection}>
         <div className={styles.login}>
           <div className={styles.loginText}>
-            <span className={styles.nickname}>{userInfo?.nickname || "사용자"}</span>
+            <span className={styles.nickname}>
+              {userInfo?.nickname || "사용자"}
+            </span>
             <span> 님 어서오세요.</span>
           </div>
           <IoCloseOutline onClick={closeSidebar} />
@@ -83,7 +88,11 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
     );
   };
   return (
-    <div className={sidebarOnOff ? `${styles.modal} ${styles.openSidebar}` : styles.modal}>
+    <div
+      className={
+        sidebarOnOff ? `${styles.modal} ${styles.openSidebar}` : styles.modal
+      }
+    >
       {sidebarOnOff ? (
         <section>
           {userInfo ? <AfterLogin /> : <BeforeLogin />}
@@ -132,7 +141,7 @@ const Sidebar = ({ router, sidebarOnOff, onOffSidebar }) => {
               </ul>
             </li>
             <li>
-              <Link href="/authagency">
+              <Link href="/authAgency">
                 <a>인증업체현황</a>
               </Link>
             </li>

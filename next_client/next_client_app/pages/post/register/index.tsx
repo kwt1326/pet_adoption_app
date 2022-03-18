@@ -10,14 +10,14 @@ import { IMG_UPLOAD_URI } from "../../../constants/config";
 
 import styles from './Register.module.scss';
 
-function Register() {
+const Register: React.FC<{}> = () => {
   const router = useRouter();
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
     name: "",
     breed: "",
-    type: "강아지",
+    type: "dog",
     price: "",
     age: "",
     weight: "",
@@ -95,7 +95,7 @@ function Register() {
     const image = e.target.files[0];
     const formData = new FormData();
     formData.append("file", image);
-    formData.append("upload_preset", process.env.CLOUD_NAME);
+    formData.append("upload_preset", process.env.PRESET_NAME);
     Axios.post(IMG_UPLOAD_URI, formData).then(
       (response) => {
         if (response.status === 200) {
@@ -109,6 +109,30 @@ function Register() {
 
     e.target.value = null;
   };
+
+  const CheckBox = (props: {
+    name: string;
+    label: string;
+    value: string | number;
+    checked: boolean;
+    onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  }) => (
+    <div className={styles.input_check_wrap}>
+      <label>
+        <input
+          type="checkbox"
+          name={props.name}
+          value={props.value}
+          onClick={props.onClick}
+          onChange={props.onChange}
+          checked={props.checked}
+        />
+        {props.label}
+      </label>
+    </div>
+  )
+
   return (
     <div>
       <Header
@@ -148,59 +172,43 @@ function Register() {
                 <tr>
                   <td className={styles.name}>타입</td>
                   <td className={styles.dogorcat}>
-                    <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="type"
-                          value="dog"
-                          onClick={(e) => onClickChoose(e)}
-                          onChange={onChange}
-                        ></input>
-                        강아지
-                      </label>
-                    </div>
-                    <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="type"
-                          value="cat"
-                          onChange={onChange}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        고양이
-                      </label>
-                    </div>
+                    <CheckBox
+                      name="type"
+                      label="강아지"
+                      value="dog"
+                      checked={inputs.type === "dog"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
+                    <CheckBox
+                      name="type"
+                      label="고양이"
+                      value="cat"
+                      checked={inputs.type === "cat"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
                   </td>
                 </tr>
                 <tr>
                   <td className={styles.name}>성별</td>
                   <td className={styles.gender}>
-                    <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="isGenderMale"
-                          value={1}
-                          onChange={onChange}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        수컷
-                      </label>
-                    </div>
-                    <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="isGenderMale"
-                          value={0}
-                          onChange={onChange}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        암컷
-                      </label>
-                    </div>
+                    <CheckBox
+                      name="isGenderMale"
+                      label="수컷"
+                      value={"1"}
+                      checked={inputs.isGenderMale === "1"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
+                    <CheckBox
+                      name="isGenderMale"
+                      label="암컷"
+                      value={"0"}
+                      checked={inputs.isGenderMale === "0"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -236,58 +244,43 @@ function Register() {
                 <tr>
                   <td className={styles.name}>예방접종</td>
                   <td className={styles.vaccinated}>
-                  <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="vaccinated"
-                          onChange={onChange}
-                          value={1}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        접종
-                      </label>
-                    </div>
-                    <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="vaccinated"
-                          onChange={onChange}
-                          value={0}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        미접종
-                      </label>
-                    </div>
+                    <CheckBox
+                      name="vaccinated"
+                      label="접종"
+                      value={"1"}
+                      checked={inputs.vaccinated === "1"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
+                    <CheckBox
+                      name="vaccinated"
+                      label="미접종"
+                      value={"0"}
+                      checked={inputs.vaccinated === "0"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
                   </td>
                 </tr>
                 <tr>
                   <td className={styles.name}>중성화</td>
                   <td className={styles.neutered}>
-                  <div className={styles.input_check_wrap}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="neutered"
-                          value={1}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        접종
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="neutered"
-                          onChange={onChange}
-                          value={0}
-                          onClick={(e) => onClickChoose(e)}
-                        ></input>
-                        미접종
-                      </label>
-                    </div>
+                    <CheckBox
+                      name="neutered"
+                      label="접종"
+                      value={"1"}
+                      checked={inputs.neutered === "1"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
+                    <CheckBox
+                      name="neutered"
+                      label="미접종"
+                      value={"0"}
+                      checked={inputs.neutered === "0"}
+                      onClick={onClickChoose}
+                      onChange={onChange}
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -336,17 +329,16 @@ function Register() {
               />
               <div className={styles.pictureWrapper}>
                 <div className={styles.picture_wrapper_inner}>
-
+                  {uploadedImgs?.map((url: string) => (
+                    <div className={styles.pictureChoice}>
+                      <Image
+                        className={styles.pictureitem}
+                        cloudName={process.env.CLOUD_NAME}
+                        src={url}
+                      />
+                    </div>
+                  ))}
                 </div>
-                {uploadedImgs?.map((url: string) => (
-                  <div className={styles.pictureChoice}>
-                    <Image
-                      className={styles.pictureitem}
-                      cloudName={process.env.CLOUD_NAME}
-                      src={url}
-                    />
-                  </div>
-                ))}
               </div>
             </div>
             <button className={styles.submit_btn} onClick={writePostFunc}>제출하기</button>
