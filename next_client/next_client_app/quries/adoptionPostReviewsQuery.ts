@@ -14,7 +14,7 @@ export const QUERY_ADOPTREVIEW_LIST = gql`
     getAdoptReviews(getAdoptReviewsArgs: $input) {
       id
       title
-      content   
+      content
       adopteeUser {
         nickname
       }
@@ -23,6 +23,7 @@ export const QUERY_ADOPTREVIEW_LIST = gql`
       {
         uri
       }
+      isLiked
       likes {
         userId
         reviewId

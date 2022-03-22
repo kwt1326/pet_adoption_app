@@ -41,26 +41,13 @@ function PetListItem({ petitem, toggleLikeMutation }) {
   const PetImage = () => (
     <div className={styles.pet_item_image}>
       <div className={styles.pet_item_image_wrap}>
-        {isExistPicture ? (
-          <Fragment>
-            <img
-              className={styles.pet_image}
-              src={src}
-              alt="pet_thumbnail_img"
-            />
-            <Badges />
-          </Fragment>
-        ) : (
-          <Fragment>
-            <img
-              className={styles.pet_no_image}
-              src="/images/no_image.svg"
-              alt="no_image"
-            />
-            <Badges />
-          </Fragment>
-        )}
+        <img
+          className={isExistPicture ? styles.pet_image : styles.pet_no_image}
+          src={isExistPicture ? src : "/images/no_image.svg"}
+          alt="pet_thumbnail_img"
+        />
       </div>
+        <Badges />
     </div>
   );
 

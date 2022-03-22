@@ -65,11 +65,13 @@ function ReviewList() {
               key={i}
               href={`/reviews/${list[i].id}`}
             >
-              <ReviewListItem
-                key={i}
-                item={item}
-                toggleLikeMutation={toggleLikeMutation}
-              />
+              <div>
+                <ReviewListItem
+                  key={i}
+                  item={item}
+                  toggleLikeMutation={toggleLikeMutation}
+                />
+              </div>
             </Link>
           ))}
           <div className={styles.div_intersection_observer} ref={setObserverRef}>

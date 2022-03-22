@@ -1,6 +1,7 @@
 import React from "react";
 import { ImLocation } from "react-icons/im";
 import { BsPhone } from "react-icons/bs";
+import { phoneHyphen } from "../../utils/phoneHyphen";
 
 import style from "./AdoptDetailContent.module.scss";
 
@@ -92,9 +93,7 @@ function AdoptDetailContent({ category, petitem }) {
             <div className={style.info}>
               <div className={style.phoneNumber}>
                 <BsPhone className={style.icon}></BsPhone>
-                {writer.phoneNumber.substring(0, 3)} -{" "}
-                {writer.phoneNumber.substring(3, 7)} -{" "}
-                {writer.phoneNumber.substring(7, 11)}
+                {phoneHyphen(writer.phoneNumber)}
               </div>
               <div className={style.address}>
                 <ImLocation className={style.icon}></ImLocation>

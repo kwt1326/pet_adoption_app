@@ -61,6 +61,7 @@ function Register() {
     });
 
     alert("제출이 완료되었습니다.");
+    router.push('/reviews');
   };
 
   return (

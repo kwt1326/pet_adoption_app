@@ -1,12 +1,13 @@
 import React , { Fragment, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { FaDog, FaCat, FaListAlt, FaBuilding } from "react-icons/fa";
 
 import Carousel from "./carousel";
 import Header from "../../components/Header/index";
 import PetListItem from "../../components/PetList/PetListItem";
+
 import { GET_RECENTLY_ADOPTION_POST_LIST, TOGGLE_LIKE_MUTATION } from "../../quries/adoptionPostQuery";
 
 import styles from "./Main.module.scss";
@@ -100,7 +101,7 @@ function Main() {
           </Link>
         </li>
         <li>
-          <Link href="/authAgency">
+          <Link href="/authAgencies">
             <a>
               <div>
                 <FaBuilding />

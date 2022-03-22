@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Image } from "cloudinary-react";
-import { BsHeart } from "react-icons/bs";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { FaRegCommentDots } from "react-icons/fa";
 
 import styles from "./ReviewListItem.module.scss";
@@ -40,7 +40,7 @@ function ReviewListItem({ item, toggleLikeMutation }) {
             toggleLikeMutation(item?.id)
           }}
         >
-          <BsHeart size={15} />
+          {item.isLiked ? <BsHeartFill size={15} /> : <BsHeart size={15} />}
           <span>좋아요 {isLikes}</span>
         </div>
         <div className={styles.comment}>
