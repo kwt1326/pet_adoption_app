@@ -11,6 +11,10 @@ import { AdopteeUser } from '../../../entities/adoptee-user.entity';
 import { AdoptUser } from '../../../entities/adopt-user.entity';
 import { User, UserType } from '../../../entities/user.entity';
 
+export interface LoginInput {
+  email: string;
+  password: string;
+}
 export interface CreateAccountUserInput {
   email: string;
   nickname?: string;
