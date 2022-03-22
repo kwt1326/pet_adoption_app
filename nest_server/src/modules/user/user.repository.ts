@@ -20,8 +20,8 @@ export class UserRepository extends Repository<User> {
     return await this.findOne({ email });
   }
 
-  async createUser(createAccountInput: CreateAccountUserInput): Promise<User> {
-    return await this.create({ ...createAccountInput });
+  createUser(createAccountInput: CreateAccountUserInput): User {
+    return this.create({ ...createAccountInput });
   }
 
   async deleteOneUserById(id: number) {
@@ -41,7 +41,7 @@ export class AdopteeUserRepository extends Repository<AdopteeUser> {
     createAccountInput: CreateAccountAdopteeUserInput,
     user: User,
   ): Promise<AdopteeUser> {
-    const adopteeUser = await this.create({ user, ...createAccountInput });
+    const adopteeUser = this.create({ user, ...createAccountInput });
     return await this.save(adopteeUser);
   }
 
@@ -90,7 +90,7 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
     createAccountInput: CreateAccountAdoptUserInput,
     user: User,
   ): Promise<AdoptUser> {
-    const adoptUser = await this.create({ user, ...createAccountInput });
+    const adoptUser = this.create({ user, ...createAccountInput });
     return await this.save(adoptUser);
   }
 

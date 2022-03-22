@@ -57,7 +57,7 @@ export class UserService {
   ): Promise<User> {
     const { email, nickname, password, userType } = createAccountInput;
     await this.exceptionHandlingForDuplicateField({ email, nickname });
-    const user = await this.userRepository.createUser({
+    const user = this.userRepository.createUser({
       email,
       password: await this.hashingPassword(password),
       userType,
