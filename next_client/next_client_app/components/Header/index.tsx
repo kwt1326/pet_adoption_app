@@ -32,7 +32,7 @@ const Header = (props: Partial<{
             </Link>
           )}
           {props?.children && !props?.leftBtn && (
-            <div onClick={() => router.back()}>
+            <div onClick={() => router.push('/')}>
               <FaChevronLeft />
             </div>
           )}

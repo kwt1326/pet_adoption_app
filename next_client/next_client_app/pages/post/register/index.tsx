@@ -64,11 +64,26 @@ const Register: React.FC<{}> = () => {
   const [postQuery] = useMutation(CREATE_POST_MUTATION);
   const writePostFunc = async (e) => {
     e?.preventDefault();
+
+    if (!inputs.title) {
+      return alert("제목을 입력해주세요.")
+    } else if (!inputs.name) {
+      return alert("이름을 입력해주세요.")
+    } else if (!inputs.age) {
+      return alert("나이를 입력해주세요.")
+    } else if (!inputs.price) {
+      return alert("가격을 입력해주세요.")
+    } else if (!inputs.weight) {
+      return alert("몸무게를 입력해주세요.")
+    } else if (!inputs.breed) {
+      return alert("품종을 입력해주세요.")
+    }
+
     const response = await postQuery({
       variables: {
         input: {
           title: inputs.title,
-          content: inputs.content,
+          content: inputs.content || "",
           name: inputs.name,
           breed: inputs.breed,
           type: inputs.type,
@@ -78,8 +93,8 @@ const Register: React.FC<{}> = () => {
           isGenderMale: inputs.isGenderMale === "1",
           vaccinated: inputs.vaccinated === "1",
           neutered: inputs.neutered === "1",
-          characteristic: inputs.characteristic,
-          othersInfo: inputs.othersInfo,
+          characteristic: inputs.characteristic || "",
+          othersInfo: inputs.othersInfo || "",
           uri: uploadedImgs,
         },
       },
@@ -153,7 +168,7 @@ const Register: React.FC<{}> = () => {
             <table>
               <tbody>
                 <tr>
-                  <td className={styles.name}>이름</td>
+                  <td className={styles.name}>이름 *</td>
                   <td>
                     <input
                       name="name"
@@ -164,7 +179,7 @@ const Register: React.FC<{}> = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td className={styles.name}>나이</td>
+                  <td className={styles.name}>나이 *</td>
                   <td>
                     <input onChange={onChange} name="age" value={age}></input>
                   </td>
@@ -212,7 +227,7 @@ const Register: React.FC<{}> = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td className={styles.name}>가격</td>
+                  <td className={styles.name}>가격 *</td>
                   <td>
                     <input
                       onChange={onChange}
@@ -222,7 +237,7 @@ const Register: React.FC<{}> = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td className={styles.name}>몸무게</td>
+                  <td className={styles.name}>몸무게 *</td>
                   <td>
                     <input
                       onChange={onChange}
@@ -232,7 +247,7 @@ const Register: React.FC<{}> = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td className={styles.name}>품종</td>
+                  <td className={styles.name}>품종 *</td>
                   <td>
                     <input
                       onChange={onChange}
