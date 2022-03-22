@@ -10,6 +10,7 @@ import {
   CreateAccountAdoptUserInput,
   CreateAccountOutput,
   CreateAccountUserInput,
+  LoginInput,
 } from './dtos/create-account.dto';
 import {
   AdopteeUserRepository,
@@ -46,6 +47,49 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
+  async hashingPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    return await bcrypt.hash(password, salt);
+  }
+
+  async createUserAccount(
+    createAccountInput: CreateAccountUserInput,
+  ): Promise<User> {
+    const { email, nickname, password, userType } = createAccountInput;
+    await this.exceptionHandlingForDuplicateField({ email, nickname });
+    const user = this.userRepository.createUser({
+      email,
+      password: await this.hashingPassword(password),
+      userType,
+    });
+    return user;
+  }
+
+  async exceptionHandlingForDuplicateField(
+    checkFieldInput: CheckDuplicateFieldInput,
+  ) {
+    const resultOfCheckDup = await this.checkDuplicateField(checkFieldInput);
+    if (resultOfCheckDup.result) {
+      throw new BadRequestException('Please do a duplicate test.');
+    }
+  }
+
+  async checkDuplicateField(
+    checkFieldInput: CheckDuplicateFieldInput,
+  ): Promise<CheckDuplicateFieldOutput> {
+    const { email, nickname } = checkFieldInput;
+    const resOutput: CheckDuplicateFieldOutput = {
+      result: false,
+    };
+    if (email) {
+      resOutput.result = await this.checkDuplicateEmail(email);
+    }
+    if (nickname && !resOutput.result) {
+      resOutput.result = await this.checkDuplicateNickname(nickname);
+    }
+    return resOutput;
+  }
+
   async checkDuplicateEmail(email: string): Promise<boolean> {
     const isDup: boolean = (await this.userRepository.findOneByEmail(email))
       ? true
@@ -62,77 +106,50 @@ export class UserService {
     return isDup;
   }
 
-  async checkDuplicateField(
-    checkFieldInput: CheckDuplicateFieldInput,
-  ): Promise<CheckDuplicateFieldOutput> {
-    const { email, nickname } = checkFieldInput;
-    const resOutput: CheckDuplicateFieldOutput = {
-      result: false,
-    };
-    if (email) resOutput.result = await this.checkDuplicateEmail(email);
-    if (nickname)
-      resOutput.result = await this.checkDuplicateNickname(nickname);
-    return resOutput;
-  }
-
-  async hashingPassword(password: string) {
-    const salt = await bcrypt.genSalt();
-    return await bcrypt.hash(password, salt);
-  }
-
-  async createUserAccount(
-    createAccountInput: CreateAccountUserInput,
-  ): Promise<User> {
-    const { email, nickname, password, userType } = createAccountInput;
-    const resultOfCheckDup = await this.checkDuplicateField({
-      email,
-      nickname,
-    });
-    if (resultOfCheckDup.result) {
-      throw new BadRequestException('Please do a duplicate test.');
-    }
-
-    const hashedPassword = await this.hashingPassword(password);
-    const createUserInput: CreateAccountUserInput = {
-      email,
-      password: hashedPassword,
-      userType,
-    };
-
-    return await this.userRepository.createUser(createUserInput);
-  }
-
   async createAdopteeAccount(
     createAccountInput: CreateAccountAdopteeUserInput,
   ): Promise<CreateAccountOutput> {
-    const createAccountUserInput: CreateAccountUserInput = {
+    const user: User = await this.createAndGetUser({
       ...createAccountInput,
       userType: UserType.ADOPTEE,
-    };
-    const user: User = await this.createUserAccount(createAccountUserInput);
-    await this.adopteeUserRepository.createAdopteeUser(
+    });
+    await this.adopteeUserRepository.createAndSaveAdopteeUser(
       createAccountInput,
       user,
     );
     const { email, password } = createAccountInput;
-    const token = (await this.authService.login({ email, password }))?.result
-      ?.token;
+    const token = await this.getAccessToken({ email, password });
     return { token };
   }
 
   async createAdoptAccount(
     createAccountInput: CreateAccountAdoptUserInput,
   ): Promise<CreateAccountOutput> {
-    const createAccountUserInput: CreateAccountUserInput = {
+    const user: User = await this.createAndGetUser({
       ...createAccountInput,
       userType: UserType.ADOPT,
-    };
-    const user: User = await this.createUserAccount(createAccountUserInput);
-    await this.adoptUserRepository.createAdoptUser(createAccountInput, user);
+    });
+    await this.adoptUserRepository.createAndSaveAdoptUser(
+      createAccountInput,
+      user,
+    );
     const { email, password } = createAccountInput;
-    const token = (await this.authService.login({ email, password }))?.result
-      ?.token;
+    const token = await this.getAccessToken({ email, password });
     return { token };
+  }
+
+  async createAndGetUser(
+    createAccountUserInput: CreateAccountUserInput,
+  ): Promise<User> {
+    return await this.createUserAccount(createAccountUserInput);
+  }
+
+  async getAccessToken(loginInput: LoginInput): Promise<string> {
+    return (await this.authService.login(loginInput))?.result?.token;
+  }
+
+  async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
+    return await this.getAdopteeUserWithExceptionHandling(id);
   }
 
   async getAdopteeUserWithExceptionHandling(id: number): Promise<AdopteeUser> {
@@ -145,12 +162,38 @@ export class UserService {
     return adopteeUser;
   }
 
+  async getAllAdopteeUser(): Promise<AdopteeUser[]> {
+    return await this.adopteeUserRepository.getAllAdopteeUser();
+  }
+
+  async getOneAdoptUser(id: number): Promise<AdoptUser> {
+    return await this.getAdoptUserWithExceptionHandling(id);
+  }
+
   async getAdoptUserWithExceptionHandling(id: number): Promise<AdoptUser> {
     const adoptUser = await this.adoptUserRepository.getOneAdoptUserById(id);
     if (!adoptUser) {
       throw new BadRequestException(`id:${id}인 업체유저는 존재하지 않습니다.`);
     }
     return adoptUser;
+  }
+
+  async getAuthenticatedAdoptUsers(
+    getAdoptUsersArgs: GetAdoptUsersArgs,
+  ): Promise<AdoptUser[]> {
+    return await this.adoptUserRepository.getAuthenticatedAdoptUsers(
+      getAdoptUsersArgs,
+    );
+  }
+
+  async deleteOneUser(id: number, user: User) {
+    user.userType === UserType.ADOPTEE
+      ? await this.getAdopteeUserWithVerifyingAuthority(id, user)
+      : await this.getAdoptUserWithVerifyingAuthority(id, user);
+    const deleteResult: DeleteRequestOutput = {
+      result: (await this.userRepository.deleteOneUserById(id)).affected,
+    };
+    return deleteResult;
   }
 
   async getAdopteeUserWithVerifyingAuthority(
@@ -173,36 +216,6 @@ export class UserService {
       throw new UnauthorizedException('해당 요청에 대한 권한이 없습니다.');
     }
     return targetUser;
-  }
-
-  async getOneAdopteeUser(id: number): Promise<AdopteeUser> {
-    return await this.getAdopteeUserWithExceptionHandling(id);
-  }
-
-  async getAllAdopteeUser(): Promise<AdopteeUser[]> {
-    return await this.adopteeUserRepository.getAllAdopteeUser();
-  }
-
-  async getOneAdoptUser(id: number): Promise<AdoptUser> {
-    return await this.getAdoptUserWithExceptionHandling(id);
-  }
-
-  async getAuthenticatedAdoptUsers(
-    getAdoptUsersArgs: GetAdoptUsersArgs,
-  ): Promise<AdoptUser[]> {
-    return await this.adoptUserRepository.getAuthenticatedAdoptUsers(
-      getAdoptUsersArgs,
-    );
-  }
-
-  async deleteOneUser(id: number, user: User) {
-    user.userType === UserType.ADOPTEE
-      ? await this.getAdopteeUserWithVerifyingAuthority(id, user)
-      : await this.getAdoptUserWithVerifyingAuthority(id, user);
-    const deleteResult: DeleteRequestOutput = {
-      result: (await this.userRepository.deleteOneUserById(id)).affected,
-    };
-    return deleteResult;
   }
 
   async updateAdopteeUser(updateInput: UpdateAdopteeUserInput, user: User) {

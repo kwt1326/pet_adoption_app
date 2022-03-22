@@ -43,7 +43,7 @@ export class AdoptReviewRepository extends Repository<AdoptReview> {
     adopteeUser: AdopteeUser,
     createInput: CreateReviewInput,
   ): Promise<AdoptReview> {
-    const adoptReview = await this.create({ adopteeUser, ...createInput });
+    const adoptReview = this.create({ adopteeUser, ...createInput });
     return await this.save(adoptReview);
   }
 
@@ -108,12 +108,12 @@ export class AdoptReviewPictureRepository extends Repository<AdoptReviewPicture>
   async createAdoptReviewPicture(
     input: CreatePictureInput,
   ): Promise<AdoptReviewPicture> {
-    const picture = await this.create({ ...input });
+    const picture = this.create({ ...input });
     return await this.save(picture);
   }
 
   async deleteAdoptReviewPicture(id: number): Promise<DeleteResult> {
-    const result = getConnection()
+    const result = await getConnection()
       .createQueryBuilder()
       .delete()
       .from(AdoptReviewPicture)
@@ -129,7 +129,7 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
     adopteeUser: AdopteeUser,
     likePost: AdoptReview,
   ) {
-    const reviewLike = await this.create({
+    const reviewLike = this.create({
       adopteeUser,
       likePost,
     });
@@ -152,16 +152,16 @@ export class AdoptionReviewLikeRepository extends Repository<AdoptionReviewLike>
 @EntityRepository(Comment)
 export class AdoptReviewCommentRepository extends Repository<Comment> {
   async findOneCommentById(id: number) {
-    return this.findOne({ id }, { relations: ['parent', 'child'] });
+    return await this.findOne({ id }, { relations: ['parent', 'child'] });
   }
 
   async createAdoptReviewComment(createInput: CreateCommentArgs) {
     const comment = this.create(createInput);
-    return this.save(comment);
+    return await this.save(comment);
   }
 
   async deleteAdoptReviewComment(id: number): Promise<DeleteResult> {
-    const result = getConnection()
+    const result = await getConnection()
       .createQueryBuilder()
       .delete()
       .from(Comment)
@@ -176,6 +176,6 @@ export class AdoptReviewCommentRepository extends Repository<Comment> {
   ): Promise<Comment> {
     const { content } = input;
     const changedComment = { ...comment, content };
-    return this.save(changedComment);
+    return await this.save(changedComment);
   }
 }
