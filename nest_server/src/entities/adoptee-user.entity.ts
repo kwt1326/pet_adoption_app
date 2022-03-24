@@ -18,7 +18,8 @@ export class AdopteeUser extends CoreDateEntity {
   @Field(() => User, { nullable: true })
   user: User;
 
-  @Column({ nullable: false, unique: true })
+  // 이미 unique 한 userId 가 있다는 에러가 나옴.. 그래서 제거합니다.
+  // @Column({ nullable: false, unique: true })
   @PrimaryColumn()
   @Field(() => Int)
   userId: number;
