@@ -13,7 +13,6 @@ import {
   ToggleAdoptionPostLikeOutput,
 } from './dtos/create-adoption-post.dto';
 import { User, UserType } from 'src/entities/user.entity';
-import { AdoptionPost } from 'src/entities/adoption-post.entity';
 import { AdoptionPostService } from './adoption-post.service';
 import { UserService } from '../user/user.service';
 import { AuthUser } from '../auth/decorators/auth.decorator';

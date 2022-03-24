@@ -108,7 +108,13 @@ export class AdoptUserRepository extends Repository<AdoptUser> {
     const { page } = getAdoptUsersArgs;
     let users = await this.createQueryBuilder('adoptUser')
       .leftJoinAndSelect('adoptUser.user', 'user')
-      .where('adoptUser.isAuthenticated = true')
+      .where(
+        `adoptUser.isAuthenticated = ${
+          // ORA-00904 "TRUE" 타입이 존재하지 않습니다. (ORACLE RDBS 에서 boolean 을 지원하지 않음) NUMBER 로 저장되어 있기 때문에 조치합니다.
+          // ORACLE RDBS 에서 boolean 타입을 정의할때는 char(1) 형식으로 컬럼 정의후, "Y" : "N" 으로 검사합니다. (이 프로젝트에서 사용할 경우 Entity 단에서 수동 매핑 해야함)
+          process.env.NODE_ENV !== 'prod' ? 'true' : 1
+        }`,
+      )
       .skip(10 * (page - 1))
       .take(10)
       .orderBy('adoptUser.userId', 'DESC')
