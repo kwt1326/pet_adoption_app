@@ -28,13 +28,13 @@ function ReviewList() {
     getListMore();
     window.scrollTo(0, 0);
   };
-  
+
   const loadMore = useCallback(() => setPage(prev => prev + 1), []);
 
   const getPostInputData = useCallback(() => ({
     variables: { input: { page }, },
   }), [page]);
-  
+
   const { loading, data, fetchMore } = useQuery(
     QUERY_ADOPTREVIEW_LIST,
     getPostInputData()
@@ -49,7 +49,7 @@ function ReviewList() {
   };
 
   const [, setObserverRef] = useIntersection((_entry, _observer) => loadMore());
-  
+
   useEffect(() => {
     getListMore();
   }, [page]);
