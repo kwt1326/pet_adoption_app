@@ -85,11 +85,13 @@ function PetList({ petType, category, likedOnly }) {
         <div className={style.pet_list}>
           {petList.map((petitem, i) => (
             <Link key={i} href={`/post/detail/${petitem.id}`}>
-              <PetListItem
-                key={i}
-                petitem={petitem}
-                toggleLikeMutation={toggleLikeMutation}
-              />
+              <div>
+                <PetListItem
+                  key={i}
+                  petitem={petitem}
+                  toggleLikeMutation={toggleLikeMutation}
+                />
+              </div>
             </Link>
           ))}
         </div>
