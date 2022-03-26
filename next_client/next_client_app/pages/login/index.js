@@ -37,6 +37,7 @@ function login(props) {
             password: password,
           },
         },
+        fetchPolicy: "no-cache",
         errorPolicy: 'ignore' // TODO: error catch
       });
       if (data) {

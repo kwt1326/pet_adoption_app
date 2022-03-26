@@ -5,7 +5,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 
 import styles from "./ReviewListItem.module.scss";
 
-function ReviewListItem({ item, toggleLikeMutation }) {
+function ReviewListItem({ item, toggleLikeMutation, refreshFunc }) {
   const isExistPicture = item.pictures.length > 0 ? true : false;
   const isLikes = item.likes.length;
   const commentCount = item.comments.length;

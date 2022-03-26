@@ -37,7 +37,7 @@ function SingleComment({ commentitem, refreshFunc, postid }) {
         <form className={styles.formLayout} onSubmit={onSubmit}>
           <div
             className={styles.commentLayout}
-            style={{ "padding-left": "10px" }}
+            style={{ marginLeft: "40px" }}
           >
             <textarea
               className={styles.comment}

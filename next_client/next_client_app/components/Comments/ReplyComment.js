@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SingleComment from "./SingleComment";
 function ReplyComment({ postid, comments, parentCommentId, refreshFunc }) {
   const [ChildCommentNumber, setChildCommentNumber] = useState(0);
-  const [OpenReplyComments, setOpenReplyComments] = useState(false);
+  const [OpenReplyComments, setOpenReplyComments] = useState(true);
   useEffect(() => {
     let commentNumber = 0;
     comments.map((comment) => {
@@ -34,19 +34,8 @@ function ReplyComment({ postid, comments, parentCommentId, refreshFunc }) {
       </div>
     ));
 
-  const handleChange = () => {
-    setOpenReplyComments(!OpenReplyComments);
-  };
   return (
     <div>
-      {ChildCommentNumber > 0 && (
-        <p
-          style={{ fontSize: "xx-small", margin: "10px", color: "gray" }}
-          onClick={handleChange}
-        >
-          View {ChildCommentNumber} more comment(s)
-        </p>
-      )}
       {OpenReplyComments && renderReplyComment(parentCommentId)}
     </div>
   );

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { BsHeart } from "react-icons/bs";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 
 import Comment from "../../components/Comments/Comment";
 import Header from "../../components/Header";
@@ -34,13 +34,25 @@ function ReviewDetail() {
     getDetail()
     window.scrollTo(0, 0);
   };
+  const refreshComment = async (id) => {
+    getDetail()
+  };
+
 
   if (data?.getOneAdoptReview) {
     const reviewItem = data.getOneAdoptReview;
     const reviewComments = reviewItem.comments;
     const isLikedCount = reviewItem?.likes?.length;
     const isExistPicture = reviewItem?.pictures?.length > 0;
-    const commentCount = reviewItem?.comments?.length;
+
+    const commentCount = (reviewItem) => {
+      let count = reviewItem?.comments?.length;
+      for (let i = 0; i < reviewItem.comments.length; i++) {
+        count += reviewItem.comments[i].child.length;
+      }
+      return count;
+
+    }
     const createdAt = dayjs(reviewItem?.createdAt).format("YYYY/MM/DD");
     const nickname = reviewItem?.adopteeUser?.nickname;
 
@@ -78,16 +90,16 @@ function ReviewDetail() {
             )}
           </div>
           <div className={styles.Itemreaction}>
-            <div className={styles.comment}>댓글 ({commentCount})</div>
+            <div className={styles.comment} >댓글 ({commentCount(reviewItem)})</div>
             <div
               className={styles.isLikes}
               onClick={() => toggleLikeMutation(reviewItem?.id)}
             >
-              <BsHeart size={15} />
+              {reviewItem.isLiked ? <BsHeartFill size={15} /> : <BsHeart size={15} />}
               <span>좋아요 ({isLikedCount})</span>
             </div>
           </div>
-          <Comment postid={postid} reviewItem={reviewItem} />
+          <Comment postid={postid} reviewItem={reviewItem} refreshComment={refreshComment} />
         </div>
       </div>
     );
