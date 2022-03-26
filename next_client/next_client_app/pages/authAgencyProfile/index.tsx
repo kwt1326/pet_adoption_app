@@ -8,20 +8,17 @@ import Header from "../../components/Header";
 import styles from "./authAgencyProfile.module.scss";
 
 import { GET_ADOPT_USER_DETAIL } from "../../quries/userFindQuery";
+import { phoneHyphen } from "../../utils/phoneHyphen";
 
 function AuthAgencyProfile() {
   const router = useRouter();
-  const userInfo = useUserInfo();
   const [getDetail, { data }] = useLazyQuery(GET_ADOPT_USER_DETAIL);
 
   useEffect(() => {
-    if (userInfo.userType !== "ADOPT_USER") {
-      router.back();
-    }
-    userInfo?.id && getDetail({
-      variables: { id: userInfo?.id }
+    getDetail({
+      variables: { id: Number(router.query?.id) }
     });
-  }, [userInfo?.id])
+  }, [router.query?.id])
 
   if (data?.getOneAdoptUser) {
     const _data = data?.getOneAdoptUser
@@ -40,7 +37,7 @@ function AuthAgencyProfile() {
           <div className={styles.content}>
             <div className={styles.contentitem}>
               <div className={styles.subtitle}>대표전화</div>
-              <div>{phoneNumber}</div>
+              <div>{phoneHyphen(phoneNumber)}</div>
             </div>
             <div className={styles.contentitem}>
               <div className={styles.subtitle}>홈페이지</div>
