@@ -64,6 +64,7 @@ export const QUERY_ADOPTREVIEW = gql`
         userId
         reviewId
       }
+      isLiked
       comments 
       {
         id

@@ -7,11 +7,10 @@ import styles from "./Comment.module.scss";
 
 import { CREATE_POST_ADOPTREVIEW_COMMENT } from "../../quries/adoptionPostReviewsQuery";
 
-function Comment({ postid, reviewItem }) {
+function Comment({ postid, reviewItem, refreshComment }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [postQuery] = useMutation(CREATE_POST_ADOPTREVIEW_COMMENT);
-
   useEffect(() => {
     let templist = [];
     for (let i = 0; i < reviewItem.comments.length; i++) {
@@ -34,6 +33,7 @@ function Comment({ postid, reviewItem }) {
     });
     const templist = comments.concat(response?.data?.createAdoptReviewComment);
     setComments(templist);
+    refreshComment(postid);
   };
 
   const onSubmit = async (e) => {
@@ -50,6 +50,8 @@ function Comment({ postid, reviewItem }) {
     const templist = comments.concat(response?.data?.createAdoptReviewComment);
     setComment("");
     setComments(templist);
+    refreshComment(postid);
+
   };
 
   return (
@@ -74,6 +76,7 @@ function Comment({ postid, reviewItem }) {
             )
         )}
       <form className={styles.formLayout} onSubmit={onSubmit}>
+
         <div className={styles.commentLayout}>
           <textarea
             className={styles.comment}
@@ -81,7 +84,7 @@ function Comment({ postid, reviewItem }) {
             onChange={handleClickComment}
             value={comment}
           ></textarea>
-          <button className={styles.button} onSubmit={onSubmit}>
+          <button className={styles.button} onSubmit={onSubmit} >
             등록
           </button>
         </div>
