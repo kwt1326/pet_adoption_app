@@ -41,7 +41,7 @@ export class AdoptReviewService {
     @InjectRepository(AdopteeUserRepository)
     private readonly adopteeUserRepository: AdopteeUserRepository,
 
-    @InjectRepository(AdopteeUserRepository)
+    @InjectRepository(AdoptUserRepository)
     private readonly adoptUserRepository: AdoptUserRepository,
 
     @InjectRepository(AdoptReviewPictureRepository)
